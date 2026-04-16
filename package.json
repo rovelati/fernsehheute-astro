@@ -7,16 +7,12 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "ASTRO_ADAPTER=cloudflare astro build",
-    "build:node": "astro build",
-    "postbuild": "node scripts/generate-sitemap-film.js",
+    "build": "astro build",
     "preview": "astro preview",
     "typecheck": "astro check --no-watch",
     "notify-indexing": "node scripts/notify-indexing.js"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.1.9",
-    "@astrojs/node": "^10.0.4",
     "@astrojs/sitemap": "^3.7.2",
     "@supabase/supabase-js": "^2.103.2",
     "@tailwindcss/vite": "^4.2.2",

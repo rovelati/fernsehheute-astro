@@ -23,6 +23,8 @@ function getClient() {
 // Channels
 // ---------------------------------------------------------------------------
 
+// Real schema programs_de (2026): id, channel_id, title, description, start_time, end_time, date, time_slot, genre, rating, poster_url, slug, created_at
+// Real schema channels_de (2026): id, channel_id, name, logo_url, channel_number, category, created_at, stream_url, website_url
 interface RawChannel {
   id: number;
   channel_id: string;
@@ -30,9 +32,8 @@ interface RawChannel {
   logo_url: string | null;
   channel_number: number | null;
   category: string | null;
-  visible: boolean | null;
-  position: number | null;
-  source: string | null;
+  stream_url: string | null;
+  website_url: string | null;
 }
 
 function mapChannel(raw: RawChannel): Channel {
@@ -44,23 +45,23 @@ function mapChannel(raw: RawChannel): Channel {
     logo,
     type: 'Generalista',
     programs: [],
-    visible: raw.visible ?? true,
-    position: raw.position ?? 999,
-    source: raw.source ?? undefined,
+    visible: true,
+    position: raw.channel_number ?? 999,
+    streamUrl: raw.stream_url ?? undefined,
+    website: raw.website_url ?? undefined,
   };
 }
 
 /**
- * Fetch canali visibili ordinati per posizione.
- * Nota: channels_de non ha una tabella channels_config separata (diverso dal progetto IT).
+ * Fetch tutti i canali ordinati per channel_number.
+ * channels_de: id, channel_id, name, logo_url, channel_number, category, stream_url, website_url
  */
 export async function fetchChannels(): Promise<Channel[]> {
   const supabase = getClient();
   const { data, error } = await supabase
     .from('channels_de')
-    .select('*')
-    .eq('visible', true)
-    .order('position', { ascending: true })
+    .select('id, channel_id, name, logo_url, channel_number, category, stream_url, website_url')
+    .order('channel_number', { ascending: true, nullsFirst: false })
     .limit(500);
 
   if (error) throw error;
@@ -77,26 +78,24 @@ interface RawProgram {
   title: string;
   slug: string | null;
   description: string | null;
-  start_time: string;   // snake_case — stesso nel DB e nel tipo Program
+  start_time: string;
   end_time: string;
   date: string;
   genre: string | null;
   poster_url: string | null;
-  indexable: boolean | null;
 }
 
 function mapProgram(raw: RawProgram): Program {
   return {
     id: String(raw.id),
     title: raw.title,
-    start_time: raw.start_time,   // snake_case: conservato (diverso dall'IT che usa startTime)
+    slug: raw.slug ?? undefined,
+    start_time: raw.start_time,
     end_time: raw.end_time,
     date: raw.date,
     category: raw.genre ?? '',
     description: raw.description ?? '',
-    slug: raw.slug ?? undefined,
     poster_url: raw.poster_url ?? null,
-    indexable: raw.indexable ?? false,
     channel_id: raw.channel_id,
   };
 }
@@ -115,7 +114,7 @@ export async function fetchProgramsForDate(date: string, channelId?: string): Pr
   while (true) {
     let q = supabase
       .from('programs_de')
-      .select('id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url, indexable')
+      .select('id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url')
       .eq('date', date)
       .order('start_time', { ascending: true })
       .range(from, from + PAGE - 1);
@@ -148,7 +147,7 @@ export async function fetchProgramsWithEnrichment(date: string, channelId?: stri
     let q = supabase
       .from('programs_de')
       .select(`
-        id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url, indexable,
+        id, channel_id, title, description, start_time, end_time, date, genre, poster_url,
         content_enrichment_de (image_url, confidence)
       `)
       .eq('date', date)
@@ -176,13 +175,13 @@ export async function fetchProgramsWithEnrichment(date: string, channelId?: stri
  * Fetch film indicizzabili aggiornati nelle ultime N ore.
  * Usato da notify-indexing.js e generate-sitemap-film.js.
  */
-export async function fetchIndexableFilms(sinceHours = 24): Promise<{ channel_id: string; slug: string }[]> {
+export async function fetchIndexableFilms(sinceHours = 24): Promise<{ channel_id: string; title: string }[]> {
   const supabase = getClient();
   const since = new Date(Date.now() - sinceHours * 3600 * 1000).toISOString();
   const { data } = await supabase
     .from('programs_de')
-    .select('channel_id, slug')
-    .eq('indexable', true)
+    .select('channel_id, title')
+    .not('description', 'is', null)
     .gte('created_at', since)
     .limit(200);
   return data ?? [];

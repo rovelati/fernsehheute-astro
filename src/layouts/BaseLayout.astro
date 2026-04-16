@@ -1,0 +1,68 @@
+---
+/**
+ * BaseLayout — fernsehheute.de
+ * HTML shell condivisa da tutte le pagine.
+ * Favicon in /public/ root. Dark mode via classe .dark su <html>.
+ */
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl?: string;
+  /** Array di oggetti JSON-LD da iniettare come <script type="application/ld+json"> */
+  jsonLd?: object[];
+  noindex?: boolean;
+  /** og:image assoluta */
+  ogImage?: string;
+}
+
+const { title, description, canonicalUrl, jsonLd, noindex, ogImage } = Astro.props;
+const SITE_URL = 'https://fernsehheute.de';
+const resolvedCanonical = canonicalUrl ?? new URL(Astro.url.pathname, SITE_URL).href;
+const defaultOgImage = `${SITE_URL}/og-default.png`;
+---
+
+<!doctype html>
+<html lang="de" class="">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  {description && <meta name="description" content={description} />}
+  <link rel="canonical" href={resolvedCanonical} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={resolvedCanonical} />
+  <meta property="og:title" content={title} />
+  {description && <meta property="og:description" content={description} />}
+  <meta property="og:image" content={ogImage ?? defaultOgImage} />
+  <meta property="og:locale" content="de_DE" />
+  <meta property="og:site_name" content="FernsehHeute" />
+
+  <!-- JSON-LD -->
+  {jsonLd?.map(schema => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))}
+
+  <!-- Dark mode init: nessun flash -->
+  <script is:inline>
+    (function () {
+      try {
+        var s = localStorage.getItem('theme');
+        var d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (s === 'dark' || (!s && d)) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 min-h-screen antialiased">
+  <slot />
+</body>
+</html>

@@ -1,0 +1,183 @@
+---
+/**
+ * Homepage — TV Programm heute Abend
+ *
+ * Zeigt alle deutschen TV-Sender mit ihren Abendsendungen (ab 17:00 Berliner Zeit).
+ * Daten werden zur Build-Zeit aus Supabase geladen (SSG / output: 'static').
+ *
+ * channel_id-Normalisierung:
+ *   channels_de.channel_id = "de-das-erste"
+ *   programs_de.channel_id = "das-erste"
+ *   → normCid() strips "de-" prefix and ".de" suffix
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ChannelRow from '../components/ChannelRow.astro';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
+import { buildHubHomeJsonLd } from '../utils/jsonld';
+import type { Channel, Program } from '../types';
+
+// ── Normalise channel_id for matching ───────────────────────────────────────
+// channels_de stores "de-das-erste", programs_de stores "das-erste"
+const normCid = (cid: string): string =>
+  cid.toLowerCase()
+    .replace(/^de-/, '')
+    .replace(/\.de$/, '');
+
+// ── AGF 2025 audience rank (largest to smallest) ─────────────────────────────
+const AGF_ORDER = [
+  'rtl', 'zdf', 'das-erste', 'sat1', 'prosieben', 'vox', 'rtl2', 'kabel-eins',
+  'sixx', 'super-rtl', 'nitro', 'tele5', 'zdf-neo', 'zdfinfo', '3sat', 'arte',
+  'phoenix', 'one', 'sport1', 'eurosport-1', 'dmax', 'tlc', 'n-tv', 'ntv', 'welt',
+  'tagesschau24', 'kika', 'comedy-central', 'disney-channel', 'ard-alpha',
+  'sat1-gold', 'prosieben-maxx', 'kabel-eins-doku', 'ard-alpha', 'mdr',
+  'ndr', 'wdr', 'br', 'swr', 'hr', 'rbb',
+];
+
+// ── Build-time data fetch ─────────────────────────────────────────────────────
+const today = getTodayInBerlin();
+const dateLabel = formatDateDE(today);
+
+let channelsWithPrograms: (Channel & { slug: string })[] = [];
+let fetchError: string | null = null;
+
+try {
+  const [channels, allPrograms] = await Promise.all([
+    fetchChannels(),
+    fetchProgramsForDate(today),
+  ]);
+
+  // Group programs by normalised channel_id
+  const programsByChannel = new Map<string, Program[]>();
+  for (const prog of allPrograms) {
+    const key = normCid(prog.channel_id ?? '');
+    if (!programsByChannel.has(key)) programsByChannel.set(key, []);
+    programsByChannel.get(key)!.push(prog);
+  }
+
+  // Attach evening programs (17:00+ Berlin) to each channel
+  for (const ch of channels) {
+    const slug = normCid(ch.id);
+    const programs = (programsByChannel.get(slug) ?? [])
+      .filter(p => getBerlinHour(p.start_time) >= 17)
+      .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+    if (programs.length > 0) {
+      channelsWithPrograms.push({ ...ch, programs, slug });
+    }
+  }
+
+  // Sort by AGF 2025 popularity
+  channelsWithPrograms.sort((a, b) => {
+    const ai = AGF_ORDER.indexOf(a.slug);
+    const bi = AGF_ORDER.indexOf(b.slug);
+    if (ai === -1 && bi === -1) return (a.position ?? 999) - (b.position ?? 999);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+
+} catch (err) {
+  if (err instanceof Error) {
+    fetchError = err.message;
+  } else if (err && typeof err === 'object') {
+    fetchError = JSON.stringify(err);
+  } else {
+    fetchError = String(err);
+  }
+  console.error('[index.astro] fetch error:', fetchError);
+}
+
+// ── JSON-LD ───────────────────────────────────────────────────────────────────
+const jsonLd = buildHubHomeJsonLd({
+  channels: channelsWithPrograms,
+  today,
+});
+
+const description =
+  `TV Programm heute Abend (${dateLabel}): alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und ` +
+  `weiteren deutschen Sendern mit Sendezeiten auf einen Blick.`;
+---
+
+<BaseLayout
+  title={`TV Programm heute Abend — ${dateLabel} | FernsehHeute`}
+  description={description}
+  jsonLd={jsonLd}
+>
+  <Header today={today} activeSection="/" />
+
+  <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+
+    <!-- Page heading -->
+    <div class="mb-5">
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">
+        TV Programm heute Abend
+      </h1>
+      <p class="text-zinc-500 dark:text-zinc-400 mt-1">{dateLabel}</p>
+    </div>
+
+    <!-- Quick-jump channel pills -->
+    {channelsWithPrograms.length > 0 && (
+      <nav class="flex flex-wrap gap-1.5 mb-6" aria-label="Sender-Schnellnavigation">
+        {channelsWithPrograms.slice(0, 14).map(ch => (
+          <a
+            href={`/${ch.slug}`}
+            class="text-xs px-2.5 py-1 rounded-full border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:border-blue-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          >
+            {ch.name}
+          </a>
+        ))}
+      </nav>
+    )}
+
+    <!-- Category shortcut links -->
+    <div class="flex flex-wrap gap-2 mb-6">
+      {[
+        { href: '/film-heute-abend',   icon: '🎬', label: 'Filme heute Abend'   },
+        { href: '/serien-heute-abend', icon: '📺', label: 'Serien heute Abend'  },
+        { href: '/sport-heute-abend',  icon: '⚽', label: 'Sport heute Abend'  },
+        { href: '/morgen',             icon: '📅', label: 'Programm morgen'     },
+      ].map(item => (
+        <a
+          href={item.href}
+          class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors font-medium"
+        >
+          <span aria-hidden="true">{item.icon}</span>
+          {item.label}
+        </a>
+      ))}
+    </div>
+
+    <!-- Error state -->
+    {fetchError && (
+      <div class="mb-6 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm">
+        <strong>Datenabruf fehlgeschlagen:</strong> {fetchError}
+      </div>
+    )}
+
+    <!-- Channel list -->
+    {channelsWithPrograms.length > 0 ? (
+      <section aria-label={`${channelsWithPrograms.length} Sender mit Abendsendungen`}>
+        <p class="text-xs text-zinc-400 dark:text-zinc-600 mb-3">
+          {channelsWithPrograms.length} Sender · Sendungen ab 17:00 Uhr
+        </p>
+        <div>
+          {channelsWithPrograms.map(channel => (
+            <ChannelRow channel={channel} slug={channel.slug} />
+          ))}
+        </div>
+      </section>
+    ) : !fetchError ? (
+      <div class="text-center py-16 text-zinc-500 dark:text-zinc-400">
+        <p class="text-4xl mb-4" aria-hidden="true">📺</p>
+        <p class="text-lg font-medium">Keine Programmdaten verfügbar</p>
+        <p class="text-sm mt-1">Bitte versuche es später erneut.</p>
+      </div>
+    ) : null}
+
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,43 @@
+---
+/**
+ * Footer — fernsehheute.de
+ */
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-16 border-t border-zinc-200 dark:border-zinc-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+
+      <!-- Brand -->
+      <div>
+        <p class="font-semibold text-zinc-900 dark:text-zinc-100">FernsehHeute.de</p>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+          TV Programm Deutschland — täglich aktuell
+        </p>
+      </div>
+
+      <!-- Links -->
+      <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-zinc-500 dark:text-zinc-400">
+        <a href="/" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Heute Abend</a>
+        <a href="/morgen" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Morgen</a>
+        <a href="/film-heute-abend" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Filme</a>
+        <a href="/serien-heute-abend" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Serien</a>
+        <a href="/sport-heute-abend" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Sport</a>
+        <span class="text-zinc-200 dark:text-zinc-700" aria-hidden="true">|</span>
+        <a href="/impressum" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Impressum</a>
+        <a href="/datenschutz" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Datenschutz</a>
+        <a href="/sitemap-index.xml" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Sitemap</a>
+      </nav>
+    </div>
+
+    <div class="mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-900 text-xs text-zinc-400 dark:text-zinc-600 space-y-1">
+      <p>© {year} FernsehHeute.de — TV Programm Deutschland. Alle Rechte vorbehalten.</p>
+      <p>
+        Programmdaten: IPTV-EPG.org (EPG Germany) — Senderlogos © jeweilige Rundfunkanstalten —
+        Filminformationen: <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" class="underline hover:text-zinc-500 dark:hover:text-zinc-400">TMDb</a> —
+        Nutzung für redaktionelle Zwecke.
+      </p>
+    </div>
+  </div>
+</footer>
