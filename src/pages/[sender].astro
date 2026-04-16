@@ -1,0 +1,260 @@
+---
+/**
+ * /[sender] — Senderprogramm-Seite (z.B. /rtl, /zdf, /das-erste)
+ *
+ * getStaticPaths() lädt ALLE Kanäle + alle Programme des heutigen Tags in
+ * genau 2 Supabase-Aufrufen. Jede Kanalseite bekommt dann seine Programme
+ * als Props — kein separater DB-Aufruf pro Seite.
+ *
+ * URL-Schema: /<slug>  wobei slug = normCid(channel_id)
+ *   channels_de  "de-das-erste" → slug "das-erste"  → /das-erste
+ *   channels_de  "rtl"          → slug "rtl"        → /rtl
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../utils/timeSlots';
+import { buildHubChannelJsonLd } from '../utils/jsonld';
+import { getChannelStream } from '../utils/channelStreams';
+import type { Channel, Program } from '../types';
+
+// ── Normalise channel_id ──────────────────────────────────────────────────────
+const normCid = (cid: string): string =>
+  cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+
+// ── getStaticPaths: 2 DB-Calls für alle Seiten ───────────────────────────────
+export async function getStaticPaths() {
+  function normCidLocal(cid: string): string {
+    return cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+  }
+
+  const today = getTodayInBerlin();
+
+  const [channels, allPrograms] = await Promise.all([
+    fetchChannels(),
+    fetchProgramsForDate(today),
+  ]);
+
+  // Group & sort programs by normalised channel_id
+  const programsByChannel = new Map<string, Program[]>();
+  for (const prog of allPrograms) {
+    const key = normCidLocal(prog.channel_id ?? '');
+    if (!programsByChannel.has(key)) programsByChannel.set(key, []);
+    programsByChannel.get(key)!.push(prog);
+  }
+  for (const arr of programsByChannel.values()) {
+    arr.sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+  }
+
+  // Emit one static path per channel that has programs today
+  return channels
+    .filter(ch => (programsByChannel.get(normCidLocal(ch.id))?.length ?? 0) > 0)
+    .map(ch => {
+      const slug = normCidLocal(ch.id);
+      const programs = programsByChannel.get(slug) ?? [];
+      return {
+        params: { sender: slug },
+        props: {
+          channel: { ...ch, programs } as Channel,
+          today,
+          slug,
+        },
+      };
+    });
+}
+
+// ── Page props ────────────────────────────────────────────────────────────────
+interface Props {
+  channel: Channel;
+  today: string;
+  slug: string;
+}
+
+const { channel, today, slug } = Astro.props;
+const programs: Program[] = channel.programs ?? [];
+const dateLabel = formatDateDE(today);
+
+// ── Stream info ───────────────────────────────────────────────────────────────
+const dbStream = channel.streamUrl;
+const staticStream = getChannelStream(slug);
+const streamUrl = dbStream ?? staticStream?.url ?? null;
+const streamLabel = staticStream?.label ?? channel.name;
+const hasStream = !!streamUrl;
+
+// ── Time groups ───────────────────────────────────────────────────────────────
+interface TimeGroup { label: string; programs: Program[] }
+
+function groupByTime(progs: Program[]): TimeGroup[] {
+  const groups: Record<string, Program[]> = {
+    'Vormittag (bis 12:00)':   [],
+    'Nachmittag (12–17 Uhr)':  [],
+    'Abend (17–22 Uhr)':       [],
+    'Nacht (ab 22 Uhr)':       [],
+  };
+  for (const p of progs) {
+    const h = getBerlinHour(p.start_time);
+    if      (h < 12) groups['Vormittag (bis 12:00)'].push(p);
+    else if (h < 17) groups['Nachmittag (12–17 Uhr)'].push(p);
+    else if (h < 22) groups['Abend (17–22 Uhr)'].push(p);
+    else             groups['Nacht (ab 22 Uhr)'].push(p);
+  }
+  return Object.entries(groups)
+    .filter(([, arr]) => arr.length > 0)
+    .map(([label, progs]) => ({ label, programs: progs }));
+}
+
+const timeGroups = groupByTime(programs);
+
+// ── JSON-LD ───────────────────────────────────────────────────────────────────
+const jsonLd = buildHubChannelJsonLd({ channel, programs, today });
+
+const pageTitle    = `${channel.name} Programm heute — ${dateLabel}`;
+const description  = `TV Programm ${channel.name} heute (${dateLabel}): alle Sendungen, Sendezeiten und Beschreibungen.`;
+const canonicalUrl = `https://fernsehheute.de/${slug}`;
+---
+
+<BaseLayout
+  title={`${pageTitle} | FernsehHeute`}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  jsonLd={jsonLd}
+>
+  <Header today={today} activeSection="/" />
+
+  <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+
+    <!-- Channel header -->
+    <div class="flex items-start gap-4 mb-6 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+      <!-- Logo -->
+      <div class="shrink-0 flex items-center justify-center w-20 h-14 bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-100 dark:border-zinc-800 p-2">
+        <img
+          src={channel.logo}
+          alt={`${channel.name} Logo`}
+          width="64"
+          height="48"
+          loading="eager"
+          class="max-w-[64px] max-h-[48px] w-auto h-auto object-contain"
+          onerror="this.style.display='none'"
+        />
+      </div>
+
+      <!-- Name + meta -->
+      <div class="flex-1 min-w-0">
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">
+          {channel.name}
+        </h1>
+        <p class="text-zinc-500 dark:text-zinc-400 mt-0.5 text-sm">
+          TV Programm heute · {dateLabel}
+        </p>
+        <div class="flex flex-wrap items-center gap-2 mt-2">
+          {hasStream && (
+            <a
+              href={streamUrl!}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/60 transition-colors font-medium"
+            >
+              <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true"></span>
+              Live ansehen — {streamLabel}
+            </a>
+          )}
+          {channel.website && !streamUrl && (
+            <a
+              href={channel.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+            >
+              Website
+            </a>
+          )}
+          <a href="/" class="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+            ← Alle Sender
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Program schedule -->
+    {timeGroups.length > 0 ? (
+      <div class="space-y-8">
+        {timeGroups.map(group => (
+          <section>
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-3 pb-1 border-b border-zinc-100 dark:border-zinc-800">
+              {group.label}
+            </h2>
+            <ul class="space-y-0" role="list">
+              {group.programs.map(prog => (
+                <li class="flex gap-3 py-2.5 border-b border-zinc-50 dark:border-zinc-900 last:border-0">
+                  <!-- Time -->
+                  <div class="shrink-0 w-12 text-right">
+                    <time
+                      datetime={prog.start_time}
+                      class="text-sm font-semibold tabular-nums text-zinc-500 dark:text-zinc-400"
+                    >
+                      {formatTime(prog.start_time)}
+                    </time>
+                  </div>
+
+                  <!-- Info -->
+                  <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                      <p class="font-medium text-sm text-zinc-900 dark:text-zinc-100 leading-snug">
+                        {prog.title}
+                      </p>
+                      {prog.category && (
+                        <span class="text-[11px] text-zinc-400 dark:text-zinc-500 font-normal shrink-0">
+                          {prog.category}
+                        </span>
+                      )}
+                    </div>
+                    {prog.description && (
+                      <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-2 leading-relaxed">
+                        {prog.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <!-- Poster (if available) -->
+                  {prog.poster_url && (
+                    <div class="shrink-0 hidden sm:block">
+                      <img
+                        src={prog.poster_url}
+                        alt={prog.title}
+                        width="48"
+                        height="68"
+                        loading="lazy"
+                        decoding="async"
+                        class="w-12 h-[68px] object-cover rounded shadow-sm"
+                        onerror="this.style.display='none'"
+                      />
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16 text-zinc-500 dark:text-zinc-400">
+        <p class="text-4xl mb-4" aria-hidden="true">📺</p>
+        <p class="text-lg font-medium">Kein Programm verfügbar</p>
+        <p class="text-sm mt-1">Für heute sind keine Sendedaten vorhanden.</p>
+      </div>
+    )}
+
+    <!-- Bottom nav -->
+    <div class="mt-10 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex flex-wrap gap-3 text-sm">
+      <a href="/" class="text-zinc-500 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+        ← TV Programm heute Abend
+      </a>
+      <a href="/morgen" class="text-zinc-500 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+        Programm morgen →
+      </a>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
