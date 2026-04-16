@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Kein Indexieren von Testkanälen und nicht-redaktionellen Seiten
+Disallow: /testkanal-*
+Disallow: /impressum
+Disallow: /datenschutz
+
+Sitemap: https://fernsehheute.de/sitemap-index.xml

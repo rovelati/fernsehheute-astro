@@ -1,0 +1,143 @@
+---
+/**
+ * /film-heute-abend — Filme heute Abend im TV
+ *
+ * Alle Spielfilme heute Abend auf deutschen Sendern.
+ * Genre-Erkennung: keywords im genre-Feld ("Film", "Spielfilm", "Kino", "Movie")
+ *   + Titel-Klammern wie "Filmname (2023)"
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../utils/timeSlots';
+import { buildHubCategoryJsonLd } from '../utils/jsonld';
+import type { Channel, Program } from '../types';
+
+const normCid = (cid: string): string =>
+  cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+
+const today = getTodayInBerlin();
+const dateLabel = formatDateDE(today);
+
+const [channels, allPrograms] = await Promise.all([
+  fetchChannels(),
+  fetchProgramsForDate(today),
+]);
+
+// Build channel name lookup
+const channelName = new Map<string, string>();
+const channelLogo = new Map<string, string>();
+for (const ch of channels) {
+  const slug = normCid(ch.id);
+  channelName.set(slug, ch.name);
+  channelLogo.set(slug, ch.logo);
+}
+
+// Filter: Spielfilme heute Abend (ab 17:00)
+const FILM_KEYWORDS = ['film', 'spielfilm', 'kinofilm', 'movie', 'kino', 'tv-movie', 'fernsehfilm', 'dokumentarfilm'];
+
+function isFilm(prog: Program): boolean {
+  const genre = (prog.category ?? '').toLowerCase();
+  const hasYear = /\(\d{4}\)/.test(prog.title ?? '');
+  return FILM_KEYWORDS.some(k => genre.includes(k)) || hasYear;
+}
+
+const films = allPrograms
+  .filter(p => getBerlinHour(p.start_time) >= 17 && isFilm(p))
+  .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+const jsonLd = buildHubCategoryJsonLd({
+  categoryName: 'Filme',
+  categorySlug: 'film-heute-abend',
+  programs: films,
+  today,
+});
+
+const description = `Alle Spielfilme heute Abend im deutschen Fernsehen (${dateLabel}): Sendezeiten, Sender und Kurzbeschreibungen.`;
+---
+
+<BaseLayout
+  title={`Filme heute Abend im TV — ${dateLabel} | FernsehHeute`}
+  description={description}
+  canonicalUrl="https://fernsehheute.de/film-heute-abend"
+  jsonLd={jsonLd}
+>
+  <Header today={today} activeSection="/film" />
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+
+    <div class="mb-6">
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">🎬 Filme heute Abend im TV</h1>
+      <p class="text-zinc-500 dark:text-zinc-400 mt-1">{dateLabel} · {films.length} Film{films.length !== 1 ? 'e' : ''} gefunden</p>
+    </div>
+
+    {films.length > 0 ? (
+      <ul class="space-y-0" role="list">
+        {films.map(prog => {
+          const slug = normCid(prog.channel_id ?? '');
+          const name = channelName.get(slug) ?? prog.channel_id ?? '';
+          const logo = channelLogo.get(slug);
+          return (
+            <li class="flex gap-3 py-3 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
+              <!-- Poster -->
+              {prog.poster_url ? (
+                <div class="shrink-0">
+                  <img
+                    src={prog.poster_url}
+                    alt={prog.title}
+                    width="48"
+                    height="68"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-12 h-[68px] object-cover rounded shadow-sm"
+                    onerror="this.style.display='none'"
+                  />
+                </div>
+              ) : null}
+
+              <!-- Content -->
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-0.5">
+                  <time datetime={prog.start_time} class="text-sm font-semibold tabular-nums text-blue-600 dark:text-blue-400 shrink-0">
+                    {formatTime(prog.start_time)}
+                  </time>
+                  <a href={`/${slug}`} class="text-xs text-zinc-400 dark:text-zinc-500 hover:underline shrink-0">{name}</a>
+                  {prog.category && (
+                    <span class="text-[11px] text-zinc-400 dark:text-zinc-500">{prog.category}</span>
+                  )}
+                </div>
+                <p class="font-semibold text-sm text-zinc-900 dark:text-zinc-100 leading-snug">{prog.title}</p>
+                {prog.description && (
+                  <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-2 leading-relaxed">{prog.description}</p>
+                )}
+              </div>
+
+              <!-- Channel logo -->
+              {logo && (
+                <div class="shrink-0 hidden sm:flex items-center justify-center w-14 h-10">
+                  <img
+                    src={logo}
+                    alt={name}
+                    width="56"
+                    height="40"
+                    loading="lazy"
+                    class="max-w-[56px] max-h-[36px] w-auto h-auto object-contain"
+                    onerror="this.style.display='none'"
+                  />
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <div class="text-center py-16 text-zinc-500 dark:text-zinc-400">
+        <p class="text-4xl mb-4" aria-hidden="true">🎬</p>
+        <p class="text-lg font-medium">Keine Filme heute Abend gefunden</p>
+      </div>
+    )}
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getTodayInBerlin } from '../utils/timeSlots';
+
+const today = getTodayInBerlin();
+---
+
+<BaseLayout
+  title="Datenschutzerklärung | FernsehHeute"
+  description="Datenschutzerklärung von FernsehHeute.de."
+  canonicalUrl="https://fernsehheute.de/datenschutz"
+  noindex={true}
+>
+  <Header today={today} />
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+    <h1 class="text-2xl font-bold mb-6">Datenschutzerklärung</h1>
+    <div class="text-sm space-y-4 text-zinc-700 dark:text-zinc-300">
+      <h2 class="text-base font-semibold">1. Verantwortlicher</h2>
+      <p>FernsehHeute.de — fernsehheute.de</p>
+
+      <h2 class="text-base font-semibold mt-6">2. Hosting</h2>
+      <p>
+        Diese Website wird auf Cloudflare Pages (Cloudflare, Inc., 101 Townsend St., San Francisco, CA 94107, USA) gehostet.
+        Cloudflare verarbeitet beim Aufruf der Website automatisch technische Zugriffsdaten (IP-Adresse, Browsertyp, Datum/Uhrzeit).
+        Weitere Informationen: <a href="https://www.cloudflare.com/de-de/privacypolicy/" class="underline" target="_blank" rel="noopener noreferrer">Cloudflare Datenschutzrichtlinie</a>.
+      </p>
+
+      <h2 class="text-base font-semibold mt-6">3. Externe Dienste</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>
+          <strong>TMDb:</strong> Filmposter und Beschreibungen werden über die TMDb API abgerufen.
+          Bilder werden direkt von <code>image.tmdb.org</code> geladen.
+        </li>
+        <li>
+          <strong>IPTV-EPG.org:</strong> Quellprovider der TV-Programmdaten (serverseitig, keine direkte Verbindung beim Seitenaufruf).
+        </li>
+      </ul>
+
+      <h2 class="text-base font-semibold mt-6">4. Cookies / Lokaler Speicher</h2>
+      <p>
+        Diese Website verwendet <strong>localStorage</strong> ausschließlich zur Speicherung der Farbschemapräferenz (Hell/Dunkel-Modus).
+        Es werden keine Tracking-Cookies gesetzt.
+      </p>
+
+      <h2 class="text-base font-semibold mt-6">5. Keine Analyse / Kein Tracking</h2>
+      <p>Es werden keine Analyse- oder Tracking-Dienste eingesetzt.</p>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

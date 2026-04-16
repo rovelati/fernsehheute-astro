@@ -1,0 +1,118 @@
+---
+/**
+ * /sport-heute-abend — Sport heute Abend im TV
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../utils/timeSlots';
+import { buildHubCategoryJsonLd } from '../utils/jsonld';
+import type { Program } from '../types';
+
+const normCid = (cid: string): string =>
+  cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+
+const today = getTodayInBerlin();
+const dateLabel = formatDateDE(today);
+
+const [channels, allPrograms] = await Promise.all([
+  fetchChannels(),
+  fetchProgramsForDate(today),
+]);
+
+const channelName = new Map<string, string>();
+const channelLogo = new Map<string, string>();
+for (const ch of channels) {
+  const slug = normCid(ch.id);
+  channelName.set(slug, ch.name);
+  channelLogo.set(slug, ch.logo);
+}
+
+const SPORT_KEYWORDS = ['sport', 'fußball', 'bundesliga', 'champions league', 'europa league',
+  'formel 1', 'tennis', 'handball', 'basketball', 'eishockey', 'golf', 'radrennen',
+  'leichtathletik', 'schwimmen', 'olympia', 'ski', 'motorsport', 'boxing', 'boxen',
+  'ufc', 'darts', 'snooker', 'rugby', 'volleyball', 'radsport', 'marathon'];
+
+const SPORT_TITLE = ['bundesliga', 'dfb', 'champions league', 'europa league', 'conference league',
+  'formel 1', 'gp ', ' gp', 'grand prix', 'wimbledon', 'roland garros', 'us open',
+  'wm ', 'em ', 'olympia', 'tour de france'];
+
+function isSport(prog: Program): boolean {
+  const genre = (prog.category ?? '').toLowerCase();
+  const title = (prog.title ?? '').toLowerCase();
+  return SPORT_KEYWORDS.some(k => genre.includes(k)) ||
+         SPORT_TITLE.some(k => title.includes(k));
+}
+
+const sports = allPrograms
+  .filter(p => getBerlinHour(p.start_time) >= 14 && isSport(p))
+  .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+const jsonLd = buildHubCategoryJsonLd({
+  categoryName: 'Sport',
+  categorySlug: 'sport-heute-abend',
+  programs: sports,
+  today,
+});
+
+const description = `Alle Sportübertragungen heute im deutschen Fernsehen (${dateLabel}): Fußball, Formel 1, Tennis und mehr.`;
+---
+
+<BaseLayout
+  title={`Sport heute im TV — ${dateLabel} | FernsehHeute`}
+  description={description}
+  canonicalUrl="https://fernsehheute.de/sport-heute-abend"
+  jsonLd={jsonLd}
+>
+  <Header today={today} activeSection="/sport" />
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+
+    <div class="mb-6">
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">⚽ Sport heute im TV</h1>
+      <p class="text-zinc-500 dark:text-zinc-400 mt-1">{dateLabel} · {sports.length} Sendung{sports.length !== 1 ? 'en' : ''}</p>
+    </div>
+
+    {sports.length > 0 ? (
+      <ul class="space-y-0" role="list">
+        {sports.map(prog => {
+          const slug = normCid(prog.channel_id ?? '');
+          const name = channelName.get(slug) ?? prog.channel_id ?? '';
+          const logo = channelLogo.get(slug);
+          return (
+            <li class="flex gap-3 py-2.5 border-b border-zinc-100 dark:border-zinc-800 last:border-0">
+              <div class="shrink-0 w-14 text-right mt-0.5">
+                <time datetime={prog.start_time} class="text-sm font-semibold tabular-nums text-blue-600 dark:text-blue-400">
+                  {formatTime(prog.start_time)}
+                </time>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <p class="font-semibold text-sm text-zinc-900 dark:text-zinc-100 leading-snug">{prog.title}</p>
+                  {prog.category && <span class="text-[11px] text-zinc-400 dark:text-zinc-500">{prog.category}</span>}
+                </div>
+                <a href={`/${slug}`} class="text-xs text-zinc-400 dark:text-zinc-500 hover:underline">{name}</a>
+                {prog.description && (
+                  <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-2">{prog.description}</p>
+                )}
+              </div>
+              {logo && (
+                <div class="shrink-0 hidden sm:flex items-center justify-center w-14 h-10">
+                  <img src={logo} alt={name} width="56" height="40" loading="lazy"
+                    class="max-w-[56px] max-h-[36px] w-auto h-auto object-contain" onerror="this.style.display='none'" />
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    ) : (
+      <div class="text-center py-16 text-zinc-500 dark:text-zinc-400">
+        <p class="text-4xl mb-4" aria-hidden="true">⚽</p>
+        <p class="text-lg font-medium">Kein Sport heute Abend gefunden</p>
+      </div>
+    )}
+  </main>
+  <Footer />
+</BaseLayout>

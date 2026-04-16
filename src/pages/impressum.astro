@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getTodayInBerlin } from '../utils/timeSlots';
+
+const today = getTodayInBerlin();
+---
+
+<BaseLayout
+  title="Impressum | FernsehHeute"
+  description="Impressum von FernsehHeute.de — TV Programm Deutschland."
+  canonicalUrl="https://fernsehheute.de/impressum"
+  noindex={true}
+>
+  <Header today={today} />
+  <main class="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+    <h1 class="text-2xl font-bold mb-6">Impressum</h1>
+    <div class="prose prose-zinc dark:prose-invert text-sm space-y-4 text-zinc-700 dark:text-zinc-300">
+      <p>Angaben gemäß § 5 TMG:</p>
+      <p>
+        <strong>FernsehHeute.de</strong><br />
+        fernsehheute.de
+      </p>
+      <h2 class="text-base font-semibold mt-6 mb-2">Haftungsausschluss</h2>
+      <p>
+        Die Programmdaten stammen von IPTV-EPG.org (EPG Germany) und werden ohne Gewähr bereitgestellt.
+        Senderlogos sind Eigentum der jeweiligen Rundfunkanstalten und werden zu redaktionellen Zwecken verwendet.
+        Filminformationen werden von TMDb (The Movie Database) bezogen; TMDb wird nicht von FernsehHeute betrieben oder unterstützt.
+      </p>
+      <h2 class="text-base font-semibold mt-6 mb-2">Urheberrecht</h2>
+      <p>
+        Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht.
+      </p>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

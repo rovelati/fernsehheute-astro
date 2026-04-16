@@ -1,0 +1,107 @@
+---
+/**
+ * /morgen — TV Programm morgen
+ * Zeigt alle Sender mit Abendsendungen für den morgigen Tag.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ChannelRow from '../components/ChannelRow.astro';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTomorrowInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
+import type { Channel, Program } from '../types';
+
+const normCid = (cid: string): string =>
+  cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+
+const AGF_ORDER = [
+  'rtl', 'zdf', 'das-erste', 'sat1', 'prosieben', 'vox', 'rtl2', 'kabel-eins',
+  'sixx', 'super-rtl', 'nitro', 'tele5', 'zdf-neo', 'zdfinfo', '3sat', 'arte',
+  'phoenix', 'one', 'sport1', 'eurosport-1', 'dmax', 'tlc', 'n-tv', 'ntv', 'welt',
+  'tagesschau24', 'kika', 'comedy-central', 'disney-channel', 'ard-alpha',
+];
+
+const tomorrow = getTomorrowInBerlin();
+const dateLabel = formatDateDE(tomorrow);
+
+let channelsWithPrograms: (Channel & { slug: string })[] = [];
+
+try {
+  const [channels, allPrograms] = await Promise.all([
+    fetchChannels(),
+    fetchProgramsForDate(tomorrow),
+  ]);
+
+  const programsByChannel = new Map<string, Program[]>();
+  for (const prog of allPrograms) {
+    const key = normCid(prog.channel_id ?? '');
+    if (!programsByChannel.has(key)) programsByChannel.set(key, []);
+    programsByChannel.get(key)!.push(prog);
+  }
+
+  for (const ch of channels) {
+    const slug = normCid(ch.id);
+    const programs = (programsByChannel.get(slug) ?? [])
+      .filter(p => getBerlinHour(p.start_time) >= 17)
+      .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+    if (programs.length > 0) {
+      channelsWithPrograms.push({ ...ch, programs, slug });
+    }
+  }
+
+  channelsWithPrograms.sort((a, b) => {
+    const ai = AGF_ORDER.indexOf(a.slug);
+    const bi = AGF_ORDER.indexOf(b.slug);
+    if (ai === -1 && bi === -1) return (a.position ?? 999) - (b.position ?? 999);
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+} catch (err) {
+  console.error('[morgen.astro] fetch error:', err);
+}
+
+const description = `TV Programm morgen (${dateLabel}): alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern.`;
+---
+
+<BaseLayout
+  title={`TV Programm morgen — ${dateLabel} | FernsehHeute`}
+  description={description}
+  canonicalUrl="https://fernsehheute.de/morgen"
+>
+  <Header today={getTomorrowInBerlin()} activeSection="/morgen" />
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+
+    <div class="mb-5">
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">TV Programm morgen</h1>
+      <p class="text-zinc-500 dark:text-zinc-400 mt-1">{dateLabel}</p>
+    </div>
+
+    <div class="flex flex-wrap gap-2 mb-6">
+      <a href="/" class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors">
+        ← Heute
+      </a>
+    </div>
+
+    {channelsWithPrograms.length > 0 ? (
+      <section>
+        <p class="text-xs text-zinc-400 dark:text-zinc-600 mb-3">
+          {channelsWithPrograms.length} Sender · Sendungen ab 17:00 Uhr
+        </p>
+        <div>
+          {channelsWithPrograms.map(channel => (
+            <ChannelRow channel={channel} slug={channel.slug} />
+          ))}
+        </div>
+      </section>
+    ) : (
+      <div class="text-center py-16 text-zinc-500 dark:text-zinc-400">
+        <p class="text-4xl mb-4" aria-hidden="true">📅</p>
+        <p class="text-lg font-medium">Programmdaten für morgen noch nicht verfügbar</p>
+      </div>
+    )}
+  </main>
+  <Footer />
+</BaseLayout>
