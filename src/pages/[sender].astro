@@ -1,43 +1,39 @@
 ---
 /**
- * /[sender] — Senderprogramm-Seite (z.B. /rtl, /zdf, /das-erste)
+ * /[sender] — Senderprogramm-Seite (z.B. /zdf, /rtl, /das-erste)
  *
- * getStaticPaths() lädt ALLE Kanäle + alle Programme des heutigen Tags in
- * genau 2 Supabase-Aufrufen. Jede Kanalseite bekommt dann seine Programme
- * als Props — kein separater DB-Aufruf pro Seite.
- *
- * URL-Schema: /<slug>  wobei slug = normCid(channel_id)
- *   channels_de  "de-das-erste" → slug "das-erste"  → /das-erste
- *   channels_de  "rtl"          → slug "rtl"        → /rtl
+ * Struktur angelehnt an 123programmitv.it:
+ * - Hero Section: großes Logo, Sender, Datum, Live-Button
+ * - Programm-Sektionen: Prime Time (orange), Abend, Nachmittag, Vormittag, Nacht
+ * - ProgramRow mit Overlay-Klick, Kategorie-Badges, Poster
+ * - Internal Links zu anderen Sendern
+ * - SEO: Datum im Titel, Keywords, JSON-LD
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ProgramRow from '../components/ProgramRow.astro';
 import { fetchChannels, fetchProgramsForDate, fetchTmdbEnrichment } from '../lib/epg';
-import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../utils/timeSlots';
+import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
 import { buildHubChannelJsonLd } from '../utils/jsonld';
 import { getChannelStream } from '../utils/channelStreams';
+import { HUB_CHANNELS } from '../utils/hubChannels';
 import type { Channel, Program } from '../types';
 import type { ProgramEnrichment } from '../lib/epg';
 
-// ── Normalise channel_id ──────────────────────────────────────────────────────
 const normCid = (cid: string): string =>
   cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
 
-// ── getStaticPaths: 2 DB-Calls für alle Seiten ───────────────────────────────
 export async function getStaticPaths() {
-  function normCidLocal(cid: string): string {
-    return cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
-  }
+  const normCidLocal = (cid: string) =>
+    cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
 
   const today = getTodayInBerlin();
-
   const [channels, allPrograms] = await Promise.all([
     fetchChannels(),
     fetchProgramsForDate(today),
   ]);
 
-  // Group & sort programs by normalised channel_id
   const programsByChannel = new Map<string, Program[]>();
   for (const prog of allPrograms) {
     const key = normCidLocal(prog.channel_id ?? '');
@@ -48,260 +44,252 @@ export async function getStaticPaths() {
     arr.sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
   }
 
-  // Fetch TMDB enrichment for all programs (poster, cast, synopsis, year, runtime)
+  // TMDB enrichment
   const allProgramIds = [...programsByChannel.values()].flat().map(p => p.id);
-  const enrichmentMap = await fetchTmdbEnrichment(allProgramIds).catch(() => new Map<string, ProgramEnrichment>());
+  const enrichmentMap = await fetchTmdbEnrichment(allProgramIds)
+    .catch(() => new Map<string, ProgramEnrichment>());
 
-  // Merge enrichment into programs
   for (const [, progs] of programsByChannel) {
     for (const prog of progs) {
       const enrich = enrichmentMap.get(String(prog.id));
       if (enrich) {
         if (enrich.poster_url && !prog.poster_url) prog.poster_url = enrich.poster_url;
-        if (enrich.synopsis && !prog.description) prog.description = enrich.synopsis;
-        if (enrich.cast_json) (prog as Program & { cast_json?: unknown }).cast_json = enrich.cast_json;
-        if (enrich.release_year) (prog as Program & { release_year?: number }).release_year = enrich.release_year;
-        if (enrich.runtime_min) (prog as Program & { runtime_min?: number }).runtime_min = enrich.runtime_min;
+        if (enrich.synopsis   && !prog.description) prog.description = enrich.synopsis;
+        if (enrich.cast_json)    (prog as any).cast_json    = enrich.cast_json;
+        if (enrich.release_year) (prog as any).release_year = enrich.release_year;
+        if (enrich.runtime_min)  (prog as any).runtime_min  = enrich.runtime_min;
       }
     }
   }
 
-  // Emit one static path per channel that has programs today
   return channels
     .filter(ch => (programsByChannel.get(normCidLocal(ch.id))?.length ?? 0) > 0)
     .map(ch => {
       const slug = normCidLocal(ch.id);
-      const programs = programsByChannel.get(slug) ?? [];
       return {
         params: { sender: slug },
-        props: {
-          channel: { ...ch, programs } as Channel,
-          today,
-          slug,
-        },
+        props: { channel: { ...ch, programs: programsByChannel.get(slug) ?? [] } as Channel, today, slug },
       };
     });
 }
 
-// ── Page props ────────────────────────────────────────────────────────────────
-interface Props {
-  channel: Channel;
-  today: string;
-  slug: string;
-}
-
+interface Props { channel: Channel; today: string; slug: string; }
 const { channel, today, slug } = Astro.props;
 
-// Helper per accedere ai campi TMDB estesi (già mergiati in getStaticPaths)
 type ExtProgram = Program & {
-  cast_json?: { name: string; role: string; character?: string }[];
+  cast_json?:    { name: string; role: string; character?: string }[];
   release_year?: number;
-  runtime_min?: number;
+  runtime_min?:  number;
 };
-const programs: Program[] = channel.programs ?? [];
+
+const programs = (channel.programs ?? []) as ExtProgram[];
 const dateLabel = formatDateDE(today);
 
-// ── Stream info ───────────────────────────────────────────────────────────────
-const dbStream = channel.streamUrl;
+// Stream
 const staticStream = getChannelStream(slug);
-const streamUrl = dbStream ?? staticStream?.url ?? null;
-const streamLabel = staticStream?.label ?? channel.name;
-const hasStream = !!streamUrl;
+const streamUrl    = channel.streamUrl ?? staticStream?.url ?? null;
+const streamLabel  = staticStream?.label ?? channel.name;
 
-// ── Time groups ───────────────────────────────────────────────────────────────
-interface TimeGroup { label: string; programs: Program[] }
+// ── Zeit-Sektionen (Berlin) ────────────────────────────────────────────────
+// UTC-Minuten (CEST = Berlin UTC+2)
+const toUTCMin = (t: string) => { const d = new Date(t); return d.getUTCHours() * 60 + d.getUTCMinutes(); };
+const PRIME_START =  18 * 60 + 15; // 20:15 Berlin
+const PRIME_END   =  21 * 60;      // 23:00 Berlin
+const NOON_UTC    =  10 * 60;      // 12:00 Berlin
+const AFTNOON_UTC =  15 * 60;      // 17:00 Berlin
 
-function groupByTime(progs: Program[]): TimeGroup[] {
-  const groups: Record<string, Program[]> = {
-    'Vormittag (bis 12:00)':   [],
-    'Nachmittag (12–17 Uhr)':  [],
-    'Abend (17–22 Uhr)':       [],
-    'Nacht (ab 22 Uhr)':       [],
-  };
-  for (const p of progs) {
-    const h = getBerlinHour(p.start_time);
-    if      (h < 12) groups['Vormittag (bis 12:00)'].push(p);
-    else if (h < 17) groups['Nachmittag (12–17 Uhr)'].push(p);
-    else if (h < 22) groups['Abend (17–22 Uhr)'].push(p);
-    else             groups['Nacht (ab 22 Uhr)'].push(p);
-  }
-  return Object.entries(groups)
-    .filter(([, arr]) => arr.length > 0)
-    .map(([label, progs]) => ({ label, programs: progs }));
-}
+const sectionVormittag  = programs.filter(p => toUTCMin(p.start_time) < NOON_UTC);
+const sectionNachmittag = programs.filter(p => { const m = toUTCMin(p.start_time); return m >= NOON_UTC && m < AFTNOON_UTC; });
+const sectionAbend      = programs.filter(p => { const m = toUTCMin(p.start_time); return m >= AFTNOON_UTC && m < PRIME_START; });
+const sectionPrimeTime  = programs.filter(p => { const m = toUTCMin(p.start_time); return m >= PRIME_START && m < PRIME_END; });
+const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_END);
 
-const timeGroups = groupByTime(programs);
+// ── SEO ───────────────────────────────────────────────────────────────────
+const pageTitle   = `${channel.name} Programm heute — ${dateLabel}`;
+const description = `TV Programm ${channel.name} heute (${dateLabel}): alle Sendungen, Filme und Serien mit genauen Sendezeiten. Vollständiger Tagesplan für ${channel.name}.`;
+const keywords    = `${channel.name.toLowerCase()} programm heute, ${channel.name.toLowerCase()} heute abend, was läuft heute auf ${channel.name.toLowerCase()}, ${channel.name.toLowerCase()} sendeplan`;
+const canonicalUrl = `https://fernsehheute.de/${slug}`;
+const ogImage      = channel.logo?.startsWith('http') ? channel.logo : undefined;
 
-// ── JSON-LD ───────────────────────────────────────────────────────────────────
 const jsonLd = buildHubChannelJsonLd({ channel, programs, today });
 
-const pageTitle    = `${channel.name} Programm heute — ${dateLabel}`;
-const description  = `TV Programm ${channel.name} heute (${dateLabel}): alle Sendungen, Sendezeiten und Beschreibungen.`;
-const canonicalUrl = `https://fernsehheute.de/${slug}`;
+// Andere Sender für Internal Links
+const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
 ---
 
 <BaseLayout
   title={`${pageTitle} | FernsehHeute`}
-  description={description}
-  canonicalUrl={canonicalUrl}
-  jsonLd={jsonLd}
+  {description}
+  {canonicalUrl}
+  {jsonLd}
+  {ogImage}
 >
   <Header />
 
-  <main id="main-content" class="max-w-4xl mx-auto px-4 sm:px-6 py-6">
+  <!-- ── Breadcrumb ──────────────────────────────────────────────────────── -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-3">
+    <nav class="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">TV Programm heute</a>
+      <span aria-hidden="true">›</span>
+      <span class="text-slate-600 dark:text-slate-300 font-medium">{channel.name}</span>
+    </nav>
+  </div>
 
-    <!-- Channel header -->
-    <div class="flex items-start gap-4 mb-6 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+  <!-- ── Hero Section ───────────────────────────────────────────────────── -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-b border-slate-100 dark:border-slate-700/50">
+    <div class="flex items-center gap-4 mb-3">
       <!-- Logo -->
-      <div class="shrink-0 flex items-center justify-center w-20 h-14 bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-zinc-100 dark:border-zinc-800 p-2">
+      <div class="w-16 h-16 flex-shrink-0 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-600 overflow-hidden flex items-center justify-center shadow-sm p-2">
         <img
           src={channel.logo}
-          alt={`${channel.name} Logo`}
-          width="64"
-          height="48"
+          alt={`Logo ${channel.name}`}
+          width="56" height="56"
+          class="w-14 h-14 object-contain"
           loading="eager"
-          class="max-w-[64px] max-h-[48px] w-auto h-auto object-contain"
           onerror="this.style.display='none'"
         />
       </div>
-
-      <!-- Name + meta -->
-      <div class="flex-1 min-w-0">
-        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">
-          {channel.name}
+      <!-- Name + Datum -->
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+          <span class="text-blue-600 dark:text-blue-400">{channel.name}</span> Programm heute
         </h1>
-        <p class="text-zinc-500 dark:text-zinc-400 mt-0.5 text-sm">
-          TV Programm heute · {dateLabel}
-        </p>
-        <div class="flex flex-wrap items-center gap-2 mt-2">
-          {hasStream && (
-            <a
-              href={streamUrl!}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/60 transition-colors font-medium"
-            >
-              <span class="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true"></span>
-              Live ansehen — {streamLabel}
-            </a>
-          )}
-          {channel.website && !streamUrl && (
-            <a
-              href={channel.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-            >
-              Website
-            </a>
-          )}
-          <a href="/" class="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
-            ← Alle Sender
-          </a>
-        </div>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">{dateLabel}</p>
       </div>
     </div>
 
-    <!-- Program schedule -->
-    {timeGroups.length > 0 ? (
-      <div class="space-y-8">
-        {timeGroups.map(group => (
-          <section>
-            <h2 class="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-3 pb-1 border-b border-zinc-100 dark:border-zinc-800">
-              {group.label}
-            </h2>
-            <ul class="space-y-0" role="list">
-              {group.programs.map(rawProg => {
-                const prog = rawProg as ExtProgram;
-                const actors = (prog.cast_json ?? []).filter(c => c.role === 'actor').slice(0, 5);
-                const director = (prog.cast_json ?? []).find(c => c.role === 'director' || c.role === 'creator');
-                return (
-                  <li class="flex gap-3 py-2.5 border-b border-zinc-50 dark:border-zinc-900 last:border-0">
-                    <!-- Time -->
-                    <div class="shrink-0 w-12 text-right">
-                      <time
-                        datetime={prog.start_time}
-                        class="text-sm font-semibold tabular-nums text-zinc-500 dark:text-zinc-400"
-                      >
-                        {formatTime(prog.start_time)}
-                      </time>
-                    </div>
+    <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
+      Vollständiger Sendeplan für {channel.name} heute: alle Sendungen mit Uhrzeit, Beschreibung und Details.
+    </p>
 
-                    <!-- Info -->
-                    <div class="flex-1 min-w-0">
-                      <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                        <p class="font-medium text-sm text-zinc-900 dark:text-zinc-100 leading-snug">
-                          {prog.title}
-                        </p>
-                        {prog.category && (
-                          <span class="text-[11px] text-zinc-400 dark:text-zinc-500 font-normal shrink-0">
-                            {prog.category}
-                          </span>
-                        )}
-                        {prog.release_year && (
-                          <span class="text-[11px] text-zinc-400 dark:text-zinc-500 font-normal shrink-0">
-                            {prog.release_year}
-                          </span>
-                        )}
-                        {prog.runtime_min && (
-                          <span class="text-[11px] text-zinc-400 dark:text-zinc-500 font-normal shrink-0">
-                            {prog.runtime_min} Min.
-                          </span>
-                        )}
-                      </div>
-                      {prog.description && (
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-2 leading-relaxed">
-                          {prog.description}
-                        </p>
-                      )}
-                      {(actors.length > 0 || director) && (
-                        <p class="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">
-                          {director && <span class="font-medium">Regie: {director.name}</span>}
-                          {director && actors.length > 0 && <span> · </span>}
-                          {actors.length > 0 && <span>Mit: {actors.map(a => a.name).join(', ')}</span>}
-                        </p>
-                      )}
-                    </div>
-
-                    <!-- Poster TMDB (if available) -->
-                    {prog.poster_url && (
-                      <div class="shrink-0 hidden sm:block">
-                        <img
-                          src={prog.poster_url}
-                          alt={prog.title}
-                          width="48"
-                          height="68"
-                          loading="lazy"
-                          decoding="async"
-                          class="w-12 h-[68px] object-cover rounded shadow-sm"
-                          onerror="this.style.display='none'"
-                        />
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        ))}
-      </div>
-    ) : (
-      <div class="text-center py-16 text-zinc-500 dark:text-zinc-400">
-        <p class="text-4xl mb-4" aria-hidden="true">📺</p>
-        <p class="text-lg font-medium">Kein Programm verfügbar</p>
-        <p class="text-sm mt-1">Für heute sind keine Sendedaten vorhanden.</p>
-      </div>
-    )}
-
-    <!-- Bottom nav -->
-    <div class="mt-10 pt-6 border-t border-zinc-200 dark:border-zinc-800 flex flex-wrap gap-3 text-sm">
-      <a href="/" class="text-zinc-500 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-        ← TV Programm heute Abend
+    <div class="flex flex-wrap gap-2">
+      <!-- Live-Stream Button -->
+      {streamUrl && (
+        <a
+          href={streamUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
+          Live ansehen
+          <span class="text-red-200 font-normal text-xs">· {streamLabel}</span>
+        </a>
+      )}
+      <!-- Quick Links -->
+      <a href="/" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition-colors">
+        ← Alle Sender
       </a>
-      <a href="/morgen" class="text-zinc-500 dark:text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+      <a href="/film-heute-abend" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 text-xs font-semibold transition-colors border border-purple-200 dark:border-purple-800/40">
+        🎬 Filme heute Abend
+      </a>
+      <a href="/morgen" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition-colors">
         Programm morgen →
       </a>
     </div>
+  </section>
+
+  <!-- ── Programmliste ──────────────────────────────────────────────────── -->
+  <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-12">
+
+    {programs.length === 0 ? (
+      <div class="text-center py-16 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
+        <p class="text-4xl mb-3" aria-hidden="true">📺</p>
+        <p class="text-slate-500 dark:text-slate-400 font-medium">Kein Programm verfügbar für {channel.name} heute.</p>
+        <a href="/" class="mt-4 inline-block text-blue-600 hover:text-blue-700 text-sm transition-colors">← Alle Sender</a>
+      </div>
+    ) : (
+      <div class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-800/50 shadow-sm">
+
+        {/* ── Prime Time (orange) ── */}
+        {sectionPrimeTime.length > 0 && (
+          <section aria-label="Prime Time">
+            <h2 class="text-[11px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 px-4 py-2 bg-orange-50 dark:bg-orange-900/20 border-b border-orange-100 dark:border-orange-800/30 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 bg-orange-500 rounded-full inline-block" aria-hidden="true"></span>
+              Prime Time · ab 20:15 Uhr
+            </h2>
+            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              {sectionPrimeTime.map(prog => (
+                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* ── Abend ── */}
+        {sectionAbend.length > 0 && (
+          <section aria-label="Abend">
+            <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-4 py-2 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
+              Abend · 17:00 – 20:15 Uhr
+            </h2>
+            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              {sectionAbend.map(prog => (
+                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* ── Nacht ── */}
+        {sectionNacht.length > 0 && (
+          <section aria-label="Nacht">
+            <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-4 py-2 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
+              Nacht · ab 23:00 Uhr
+            </h2>
+            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              {sectionNacht.map(prog => (
+                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* ── Nachmittag ── */}
+        {sectionNachmittag.length > 0 && (
+          <section aria-label="Nachmittag">
+            <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-4 py-2 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
+              Nachmittag · 12:00 – 17:00 Uhr
+            </h2>
+            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              {sectionNachmittag.map(prog => (
+                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* ── Vormittag ── */}
+        {sectionVormittag.length > 0 && (
+          <section aria-label="Vormittag">
+            <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-4 py-2 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
+              Vormittag · bis 12:00 Uhr
+            </h2>
+            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              {sectionVormittag.map(prog => (
+                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+              ))}
+            </ul>
+          </section>
+        )}
+
+      </div>
+    )}
+
+    <!-- ── Internal Links ──────────────────────────────────────────────── -->
+    <div class="mt-8 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+      <p class="text-sm text-slate-500 dark:text-slate-400 mb-3 font-medium">Weitere Sender:</p>
+      <nav class="flex flex-wrap gap-x-4 gap-y-2 text-sm" aria-label="Andere TV-Sender">
+        {otherChannels.map(ch => (
+          <a href={`/${ch.id}`} class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline transition-colors">
+            {ch.name} Programm heute
+          </a>
+        ))}
+        <a href="/" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline transition-colors font-semibold">
+          Alle Sender heute Abend →
+        </a>
+      </nav>
+    </div>
+
   </main>
 
   <Footer />

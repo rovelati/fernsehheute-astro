@@ -1,0 +1,179 @@
+---
+/**
+ * ProgramRow — fernsehheute.de
+ * Einzelne Programmzeile mit Uhrzeit, Titel, Kategorie-Badge, Overlay-Klick.
+ * Design: angelehnt an 123programmitv.it ProgramRow.
+ */
+import { formatTime, getBerlinHour } from '../utils/timeSlots';
+import type { Program } from '../types';
+
+interface Props {
+  program: Program & {
+    cast_json?:    { name: string; role: string; character?: string }[];
+    release_year?: number;
+    runtime_min?:  number;
+  };
+  channelId?:   string;
+  channelLogo?: string;
+  channelName?: string;
+}
+
+const { program, channelId, channelLogo, channelName } = Astro.props;
+
+const startLabel = formatTime(program.start_time);
+const endLabel   = formatTime(program.end_time);
+
+// Prüfen ob gerade live
+const now = Date.now();
+const isLive = new Date(program.start_time).getTime() <= now && now < new Date(program.end_time).getTime();
+
+// Kategorie-Badge-Farben (deutsche Kategorien)
+const CATEGORY_COLORS: Record<string, string> = {
+  // Film
+  'film':           'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'spielfilm':      'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'kinofilm':       'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'tv-film':        'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'fernsehfilm':    'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'actionfilm':     'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'komödie':        'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'thriller':       'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'krimi':          'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  // Serie
+  'serie':          'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300',
+  'serienfilm':     'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300',
+  'miniserie':      'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300',
+  'dramaserie':     'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300',
+  'krimiserie':     'bg-blue-100   dark:bg-blue-900/30   text-blue-700   dark:text-blue-300',
+  // Sport
+  'sport':          'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300',
+  'fußball':        'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300',
+  'motorsport':     'bg-green-100  dark:bg-green-900/30  text-green-700  dark:text-green-300',
+  // News
+  'nachrichten':    'bg-slate-100  dark:bg-slate-700     text-slate-600  dark:text-slate-300',
+  'news':           'bg-slate-100  dark:bg-slate-700     text-slate-600  dark:text-slate-300',
+  'tagesschau':     'bg-slate-100  dark:bg-slate-700     text-slate-600  dark:text-slate-300',
+  'magazin':        'bg-slate-100  dark:bg-slate-700     text-slate-600  dark:text-slate-300',
+  // Doku
+  'dokumentation':  'bg-amber-100  dark:bg-amber-900/30  text-amber-700  dark:text-amber-300',
+  'dokumentarfilm': 'bg-amber-100  dark:bg-amber-900/30  text-amber-700  dark:text-amber-300',
+  'reportage':      'bg-amber-100  dark:bg-amber-900/30  text-amber-700  dark:text-amber-300',
+  // Show
+  'show':           'bg-pink-100   dark:bg-pink-900/30   text-pink-700   dark:text-pink-300',
+  'talkshow':       'bg-pink-100   dark:bg-pink-900/30   text-pink-700   dark:text-pink-300',
+  'unterhaltung':   'bg-pink-100   dark:bg-pink-900/30   text-pink-700   dark:text-pink-300',
+  // Kinder
+  'kinder':         'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+  'familie':        'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+  'animation':      'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+};
+
+const catKey = (program.category ?? '').toLowerCase().trim();
+const badgeClass = CATEGORY_COLORS[catKey] ?? 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400';
+
+// Cast
+const castArr = program.cast_json ?? [];
+const actors  = castArr.filter(c => c.role === 'actor').slice(0, 4).map(c => c.name);
+const director = castArr.find(c => c.role === 'director' || c.role === 'creator');
+
+// Overlay JSON
+const overlayData = JSON.stringify({
+  id:          program.id,
+  title:       program.title,
+  startTime:   program.start_time,
+  endTime:     program.end_time,
+  category:    program.category   ?? '',
+  description: program.description ?? '',
+  poster_url:  program.poster_url  ?? null,
+  cast_json:   program.cast_json   ?? null,
+  release_year: program.release_year ?? null,
+  runtime_min:  program.runtime_min  ?? null,
+  channelId:   channelId   ?? '',
+  channelLogo: channelLogo ?? '',
+  channelName: channelName ?? '',
+});
+---
+
+<li
+  data-program={overlayData}
+  role="button"
+  tabindex="0"
+  class:list={[
+    'grid grid-cols-[56px_1fr] sm:grid-cols-[56px_1fr_56px] gap-3 px-4 py-3 cursor-pointer',
+    'hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset',
+    isLive && 'bg-blue-50/50 dark:bg-blue-900/10',
+  ]}
+  aria-label={`${program.title} — ${startLabel}`}
+>
+  <!-- Uhrzeit -->
+  <div class="text-right pt-0.5 flex-shrink-0">
+    <span class="text-sm font-bold text-slate-900 dark:text-slate-100 tabular-nums block">{startLabel}</span>
+    <span class="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums block">{endLabel}</span>
+  </div>
+
+  <!-- Programminhalt -->
+  <div class="min-w-0">
+    <!-- Live-Badge -->
+    {isLive && (
+      <div class="mb-0.5">
+        <span class="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 px-1.5 py-0.5 rounded-full">
+          <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
+          Läuft
+        </span>
+      </div>
+    )}
+
+    <!-- Titel -->
+    <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-snug">
+      {program.title}
+    </p>
+
+    <!-- Kategorie + Jahr + Laufzeit -->
+    <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+      {program.category && (
+        <span class:list={['text-[10px] px-1.5 py-0.5 rounded-full font-semibold', badgeClass]}>
+          {program.category}
+        </span>
+      )}
+      {program.release_year && (
+        <span class="text-[10px] text-slate-400 dark:text-slate-500">{program.release_year}</span>
+      )}
+      {program.runtime_min && (
+        <span class="text-[10px] text-slate-400 dark:text-slate-500">{program.runtime_min} Min.</span>
+      )}
+    </div>
+
+    <!-- Beschreibung -->
+    {program.description && (
+      <p class="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+        {program.description}
+      </p>
+    )}
+
+    <!-- Cast -->
+    {(director || actors.length > 0) && (
+      <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
+        {director && <span class="font-medium">Regie: {director.name}</span>}
+        {director && actors.length > 0 && <span> · </span>}
+        {actors.length > 0 && <span>Mit: {actors.join(', ')}</span>}
+      </p>
+    )}
+  </div>
+
+  <!-- Poster (Desktop) -->
+  {program.poster_url && (
+    <div class="hidden sm:flex items-start justify-end flex-shrink-0">
+      <img
+        src={program.poster_url}
+        alt={program.title}
+        width="40"
+        height="56"
+        loading="lazy"
+        decoding="async"
+        class="w-10 h-14 object-cover rounded shadow-sm"
+        onerror="this.style.display='none'"
+      />
+    </div>
+  )}
+</li>
