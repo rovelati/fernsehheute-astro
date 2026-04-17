@@ -26,7 +26,11 @@ import requests
 from dotenv import load_dotenv
 from postgrest import APIError
 from supabase import Client, ClientOptions, create_client
-from pg_adapter import create_postgres_client
+
+try:
+    from pg_adapter import create_postgres_client
+except ImportError:
+    create_postgres_client = None  # type: ignore
 
 
 # ============================================
@@ -242,7 +246,7 @@ def update_import_status(supabase: Client, payload: Dict) -> None:
 
 def get_supabase_client() -> Client:
     database_url = os.getenv('DATABASE_URL')
-    if database_url:
+    if database_url and create_postgres_client:
         logger.info("Using direct Postgres connection from DATABASE_URL")
         return create_postgres_client(database_url)
 
