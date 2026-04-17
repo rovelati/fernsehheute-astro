@@ -1,19 +1,17 @@
 ---
 /**
  * BaseLayout — fernsehheute.de
- * HTML shell condivisa da tutte le pagine.
- * Favicon in /public/ root. Dark mode via classe .dark su <html>.
+ * HTML shell condivisa. Palette slate, ProgramOverlay globale, dark mode flash-free.
  */
 import '../styles/global.css';
+import ProgramOverlay from '../components/ProgramOverlay.astro';
 
 interface Props {
   title: string;
   description?: string;
   canonicalUrl?: string;
-  /** Array di oggetti JSON-LD da iniettare come <script type="application/ld+json"> */
   jsonLd?: object[];
   noindex?: boolean;
-  /** og:image assoluta */
   ogImage?: string;
 }
 
@@ -51,7 +49,7 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   ))}
 
-  <!-- Dark mode init: nessun flash -->
+  <!-- Dark mode init: kein Flash -->
   <script is:inline>
     (function () {
       try {
@@ -62,7 +60,8 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
     })();
   </script>
 </head>
-<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 min-h-screen antialiased">
+<body class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen antialiased">
   <slot />
+  <ProgramOverlay />
 </body>
 </html>

@@ -1,0 +1,385 @@
+---
+// ProgramOverlay.astro — fernsehheute.de
+// Globales Overlay für Programm-Details — nur client-side, nicht indexierbar.
+// Einmalig in BaseLayout.astro eingebunden; öffnet sich bei jedem [data-program]-Klick.
+---
+
+<!-- ─── Overlay Root ──────────────────────────────────────────────────────── -->
+<div
+  id="program-overlay"
+  class="fixed inset-0 z-[200] flex items-end md:items-center justify-center"
+  aria-modal="true"
+  role="dialog"
+  aria-labelledby="overlay-title-el"
+  aria-hidden="true"
+>
+  <!-- Backdrop -->
+  <div id="overlay-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+  <!-- Panel: Bottom-Sheet auf Mobile, zentriertes Modal auf Desktop -->
+  <div
+    id="overlay-panel"
+    class="relative w-full md:max-w-[520px] mx-auto max-h-[92dvh] overflow-y-auto bg-white dark:bg-slate-900 rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col"
+  >
+    <!-- Drag Handle (nur Mobile) -->
+    <div class="md:hidden flex justify-center pt-3 pb-0 flex-shrink-0" aria-hidden="true">
+      <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
+    </div>
+
+    <!-- Header: Sender + Schließen-Button -->
+    <div class="flex items-center justify-between px-5 pt-3 pb-3 border-b border-slate-100 dark:border-slate-800 flex-shrink-0">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 flex-shrink-0 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shadow-sm">
+          <img id="overlay-channel-logo" src="" alt="" width="32" height="32" class="w-8 h-8 object-contain" />
+        </div>
+        <span id="overlay-channel-name" class="text-sm font-bold text-slate-500 dark:text-slate-400 truncate"></span>
+      </div>
+      <button
+        id="overlay-close"
+        aria-label="Schließen"
+        class="ml-2 w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-400 dark:text-slate-500"
+      >
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M14 4L4 14M4 4l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scrollbarer Body -->
+    <div class="flex-1 overflow-y-auto">
+
+      <!-- Poster (standardmäßig versteckt) -->
+      <div id="overlay-poster-wrap" class="hidden overflow-hidden">
+        <img id="overlay-poster" src="" alt="" class="w-full h-52 sm:h-64 object-cover" loading="lazy" />
+      </div>
+
+      <!-- Hauptinhalt -->
+      <div class="px-5 pt-5 pb-8 space-y-4">
+
+        <!-- LIVE-Badge + Fortschrittsbalken -->
+        <div id="overlay-live-section" class="hidden space-y-2">
+          <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/50 px-2.5 py-1 rounded-full">
+            <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
+            Läuft gerade
+          </span>
+          <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+            <div id="overlay-progress" class="h-full bg-blue-500 rounded-full transition-[width] duration-300" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Programmtitel -->
+        <h2 id="overlay-title-el" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 leading-tight tracking-tight"></h2>
+
+        <!-- Uhrzeit + Kategorie -->
+        <div class="flex items-center gap-3 flex-wrap">
+          <div class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+            <span id="overlay-time" class="text-sm font-bold tabular-nums"></span>
+          </div>
+          <span id="overlay-category" class="hidden text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold uppercase tracking-wide"></span>
+        </div>
+
+        <!-- Beschreibung -->
+        <p id="overlay-description" class="hidden text-sm text-slate-600 dark:text-slate-400 leading-relaxed"></p>
+
+        <!-- Cast / Besetzung -->
+        <p id="overlay-cast" class="hidden text-xs text-slate-500 dark:text-slate-400"></p>
+
+        <!-- Trennlinie -->
+        <div class="h-px bg-slate-100 dark:bg-slate-800" aria-hidden="true"></div>
+
+        <!-- Aktions-Buttons -->
+        <div class="flex gap-3">
+          <a
+            id="overlay-watch"
+            href="#"
+            class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-2xl transition-colors text-sm shadow-sm"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <polygon points="5,3 19,12 5,21"/>
+            </svg>
+            Jetzt ansehen
+          </a>
+          <button
+            id="overlay-calendar"
+            class="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 text-slate-700 dark:text-slate-200 font-bold rounded-2xl transition-all text-sm"
+            aria-label="Zum Kalender hinzufügen"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            <span id="overlay-cal-label">Kalender</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Animations ───────────────────────────────────────────────────────── -->
+<style>
+  #program-overlay {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  #program-overlay.overlay-open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  #overlay-panel {
+    transform: translateY(100%);
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  @media (min-width: 768px) {
+    #overlay-panel {
+      transform: scale(0.93);
+      opacity: 0;
+      transition: transform 0.22s ease, opacity 0.22s ease;
+    }
+  }
+  #program-overlay.overlay-open #overlay-panel {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  @media (min-width: 768px) {
+    #program-overlay.overlay-open #overlay-panel {
+      transform: scale(1);
+    }
+  }
+</style>
+
+<!-- ─── Client-side Script ───────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /** channel_id → offizieller Live-Stream */
+  const STREAMS: Record<string, string> = {
+    'das-erste':   'https://www.ardmediathek.de/live/das-erste',
+    'zdf':         'https://www.zdf.de/live-tv',
+    'zdf-neo':     'https://www.zdf.de/live-tv',
+    'zdfinfo':     'https://www.zdf.de/live-tv',
+    'phoenix':     'https://www.ardmediathek.de/live/phoenix',
+    '3sat':        'https://www.3sat.de/live',
+    'arte':        'https://www.arte.tv/de/live',
+    'kika':        'https://www.kika.de/livestream',
+    'ard-alpha':   'https://www.ardmediathek.de/live/ard-alpha',
+    'one':         'https://www.ardmediathek.de/live/one',
+    'tagesschau24':'https://www.ardmediathek.de/live/tagesschau24',
+    'rtl':         'https://plus.rtl.de/live-tv/rtl',
+    'rtl2':        'https://plus.rtl.de/live-tv/rtl2',
+    'vox':         'https://plus.rtl.de/live-tv/vox',
+    'nitro':       'https://plus.rtl.de/live-tv/nitro',
+    'super-rtl':   'https://plus.rtl.de/live-tv/superrtl',
+    'n-tv':        'https://plus.rtl.de/live-tv/ntv',
+    'ntv':         'https://plus.rtl.de/live-tv/ntv',
+    'sat1':        'https://www.sat1.de/live',
+    'prosieben':   'https://www.prosieben.de/live',
+    'kabel-eins':  'https://www.kabeleins.de/live',
+    'sixx':        'https://www.sixx.de/live',
+    'welt':        'https://www.welt.de/tv-programm/live-stream/',
+    'sport1':      'https://www.sport1.de/liveticker/livestream',
+    'tele5':       'https://www.tele5.de/livetv',
+  };
+
+  let _prog: any = null;
+  const $ = (id: string) => document.getElementById(id);
+
+  function fmtTime(iso: string) {
+    return new Date(iso).toLocaleTimeString('de-DE', {
+      timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', hour12: false,
+    });
+  }
+
+  function isChrome() {
+    const ua = navigator.userAgent;
+    return /Chrome\//.test(ua) && !/Edg\/|OPR\/|SamsungBrowser/.test(ua);
+  }
+
+  function toICSDate(iso: string) {
+    return new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+  }
+
+  function escapeICS(s: string) {
+    return (s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n|\r\n/g, '\\n');
+  }
+
+  function foldLine(str: string) {
+    const result: string[] = [];
+    let cur = str;
+    while (cur.length > 75) { result.push(cur.slice(0, 75)); cur = ' ' + cur.slice(75); }
+    result.push(cur);
+    return result.join('\r\n');
+  }
+
+  function buildCalDesc(prog: any) {
+    const streamUrl = STREAMS[prog.channelId] ?? null;
+    const pageUrl   = `https://fernsehheute.de/${prog.channelId || ''}`;
+    const parts = [`📺 ${prog.channelName || ''} · ${fmtTime(prog.startTime)} – ${fmtTime(prog.endTime)}`];
+    if (prog.description) { parts.push(''); parts.push(prog.description); }
+    if (streamUrl) { parts.push(''); parts.push(`▶️ Live ansehen: ${streamUrl}`); }
+    parts.push(''); parts.push(`ℹ️ Mehr Infos: ${pageUrl}`);
+    parts.push(''); parts.push('📅 FernsehHeute.de – TV-Programm Deutschland');
+    return parts.join('\n');
+  }
+
+  function addToGoogleCalendar(prog: any) {
+    const streamUrl = STREAMS[prog.channelId] ?? null;
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: prog.title,
+      dates: `${toICSDate(prog.startTime)}/${toICSDate(prog.endTime)}`,
+      details: buildCalDesc(prog),
+      location: streamUrl || `https://fernsehheute.de/${prog.channelId || ''}`,
+      sf: 'true', output: 'xml',
+    });
+    window.open(`https://calendar.google.com/calendar/render?${params}`, '_blank', 'noopener,noreferrer');
+  }
+
+  function downloadICS(prog: any) {
+    const streamUrl = STREAMS[prog.channelId] ?? null;
+    const pageUrl   = `https://fernsehheute.de/${prog.channelId || ''}`;
+    const lines = [
+      'BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//FernsehHeute//DE', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      foldLine(`UID:${prog.id || Date.now()}@fernsehheute.de`),
+      foldLine(`DTSTAMP:${toICSDate(new Date().toISOString())}`),
+      foldLine(`DTSTART:${toICSDate(prog.startTime)}`),
+      foldLine(`DTEND:${toICSDate(prog.endTime)}`),
+      foldLine(`SUMMARY:${escapeICS(prog.title)}`),
+      foldLine(`DESCRIPTION:${escapeICS(buildCalDesc(prog))}`),
+      foldLine(`LOCATION:${escapeICS(streamUrl || pageUrl)}`),
+      foldLine(`URL:${pageUrl}`),
+      'END:VEVENT', 'END:VCALENDAR',
+    ];
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = (prog.title || 'sendung').replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_').toLowerCase() + '.ics';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+  }
+
+  function showCalFeedback() {
+    const label = $('overlay-cal-label');
+    const btn   = $('overlay-calendar');
+    if (!label || !btn) return;
+    label.textContent = '✓ Gespeichert!';
+    btn.classList.add('border-green-500', 'text-green-600', 'dark:border-green-400', 'dark:text-green-400');
+    setTimeout(() => {
+      label.textContent = 'Kalender';
+      btn.classList.remove('border-green-500', 'text-green-600', 'dark:border-green-400', 'dark:text-green-400');
+    }, 2200);
+  }
+
+  function openOverlay(data: any) {
+    _prog = data;
+    const hidden = (id: string, hide: boolean) => $(id)?.classList.toggle('hidden', hide);
+    const txt    = (id: string, val: string)  => { const el = $(id); if (el) el.textContent = val || ''; };
+
+    // Sender
+    const logoEl = $('overlay-channel-logo') as HTMLImageElement | null;
+    if (logoEl) { logoEl.src = data.channelLogo || ''; logoEl.alt = data.channelName || ''; }
+    txt('overlay-channel-name', data.channelName);
+
+    // Poster
+    const posterEl = $('overlay-poster') as HTMLImageElement | null;
+    if (data.poster_url && posterEl) { posterEl.src = data.poster_url; posterEl.alt = data.title || ''; }
+    hidden('overlay-poster-wrap', !data.poster_url);
+
+    // Live + Progress
+    const now = Date.now();
+    const s = new Date(data.startTime).getTime();
+    const e = new Date(data.endTime).getTime();
+    const isLive = s <= now && now < e;
+    hidden('overlay-live-section', !isLive);
+    if (isLive) {
+      const pct = Math.min(100, Math.max(0, Math.round(((now - s) / (e - s)) * 100)));
+      const bar = $('overlay-progress');
+      if (bar) bar.style.width = pct + '%';
+    }
+
+    // Text
+    txt('overlay-title-el', data.title);
+    txt('overlay-time', `${fmtTime(data.startTime)} – ${fmtTime(data.endTime)} Uhr`);
+    txt('overlay-category', data.category);
+    hidden('overlay-category', !data.category);
+    txt('overlay-description', data.description);
+    hidden('overlay-description', !data.description);
+
+    // Cast
+    const castArr = data.cast_json ?? [];
+    const actors = castArr.filter((c: any) => c.role === 'actor').slice(0, 5).map((c: any) => c.name);
+    const director = castArr.find((c: any) => c.role === 'director' || c.role === 'creator');
+    const castParts: string[] = [];
+    if (director) castParts.push(`Regie: ${director.name}`);
+    if (actors.length) castParts.push(`Mit: ${actors.join(', ')}`);
+    txt('overlay-cast', castParts.join(' · '));
+    hidden('overlay-cast', castParts.length === 0);
+
+    // Watch button
+    const watchEl = $('overlay-watch') as HTMLAnchorElement | null;
+    if (watchEl) {
+      const streamUrl = STREAMS[data.channelId] ?? null;
+      if (streamUrl) {
+        watchEl.href = streamUrl;
+        watchEl.setAttribute('target', '_blank');
+        watchEl.setAttribute('rel', 'noopener noreferrer');
+      } else {
+        watchEl.href = data.channelId ? `/${data.channelId}` : '#';
+        watchEl.removeAttribute('target');
+        watchEl.removeAttribute('rel');
+      }
+    }
+
+    // Open
+    const overlay = $('program-overlay');
+    if (overlay) { overlay.setAttribute('aria-hidden', 'false'); overlay.classList.add('overlay-open'); }
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeOverlay() {
+    const overlay = $('program-overlay');
+    if (overlay) { overlay.classList.remove('overlay-open'); overlay.setAttribute('aria-hidden', 'true'); }
+    document.body.style.overflow = '';
+    _prog = null;
+  }
+
+  // Event delegation: alle [data-program] öffnen das Overlay
+  document.addEventListener('click', ev => {
+    const trigger = (ev.target as Element).closest?.('[data-program]');
+    if (trigger) {
+      ev.preventDefault(); ev.stopPropagation();
+      try { openOverlay(JSON.parse((trigger as HTMLElement).dataset.program!)); } catch (err) { console.warn('[overlay]', err); }
+      return;
+    }
+    if (ev.target === $('overlay-backdrop')) closeOverlay();
+  });
+
+  document.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape') { closeOverlay(); return; }
+    if (ev.key === 'Enter' || ev.key === ' ') {
+      const trigger = (ev.target as Element).closest?.('[data-program]');
+      if (trigger) { ev.preventDefault(); try { openOverlay(JSON.parse((trigger as HTMLElement).dataset.program!)); } catch {} }
+    }
+  });
+
+  $('overlay-close')?.addEventListener('click', closeOverlay);
+  $('overlay-calendar')?.addEventListener('click', () => {
+    if (!_prog) return;
+    isChrome() ? addToGoogleCalendar(_prog) : downloadICS(_prog);
+    showCalFeedback();
+  });
+
+  // Für ChannelCard ORA-mode zugänglich machen
+  (window as any).__openProgramOverlay = openOverlay;
+})();
+</script>

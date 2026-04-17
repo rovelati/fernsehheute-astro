@@ -6,7 +6,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ChannelRow from '../components/ChannelRow.astro';
+import ChannelCard from '../components/ChannelCard.astro';
 import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTomorrowInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
 import type { Channel, Program } from '../types';
@@ -70,7 +70,7 @@ const description = `TV Programm morgen (${dateLabel}): alle Sendungen auf ARD, 
   description={description}
   canonicalUrl="https://fernsehheute.de/morgen"
 >
-  <Header today={getTomorrowInBerlin()} activeSection="/morgen" />
+  <Header />
 
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
 
@@ -92,7 +92,7 @@ const description = `TV Programm morgen (${dateLabel}): alle Sendungen auf ARD, 
         </p>
         <div>
           {channelsWithPrograms.map(channel => (
-            <ChannelRow channel={channel} slug={channel.slug} />
+            <ChannelCard channel={channel} programs={channel.programs} slug={channel.slug} mode="morgen" />
           ))}
         </div>
       </section>
