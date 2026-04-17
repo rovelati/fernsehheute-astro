@@ -62,13 +62,15 @@ try {
   console.error('[morgen.astro] fetch error:', err);
 }
 
-const description = `TV Programm morgen (${dateLabel}): alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern.`;
+const description = 'TV Programm morgen: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten.';
+const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morgen im tv, tv morgen abend, programm morgen abend';
 ---
 
 <BaseLayout
-  title={`TV Programm morgen — ${dateLabel} | FernsehHeute`}
+  title="TV Programm morgen – Alle Sender & Sendezeiten | FernsehHeute"
   description={description}
-  canonicalUrl="https://fernsehheute.de/morgen"
+  keywords={keywords}
+  canonicalUrl="https://fernsehheute.de/morgen/"
 >
   <Header />
 

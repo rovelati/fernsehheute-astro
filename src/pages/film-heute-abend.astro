@@ -54,13 +54,15 @@ const jsonLd = buildHubCategoryJsonLd({
   today,
 });
 
-const description = `Alle Spielfilme heute Abend im deutschen Fernsehen (${dateLabel}): Sendezeiten, Sender und Kurzbeschreibungen.`;
+const description = 'Alle Spielfilme heute Abend im deutschen Fernsehen: Sendezeiten, Sender und Kurzbeschreibungen. Kein Film verpassen – der komplette Überblick.';
+const keywords    = 'filme heute abend tv, kinofilme heute im tv, was läuft heute für filme im tv, spielfilme heute abend, film tv heute, fernsehfilm heute';
 ---
 
 <BaseLayout
-  title={`Filme heute Abend im TV — ${dateLabel} | FernsehHeute`}
+  title="Filme heute Abend im TV – Kinofilme & Sendezeiten | FernsehHeute"
   description={description}
-  canonicalUrl="https://fernsehheute.de/film-heute-abend"
+  keywords={keywords}
+  canonicalUrl="https://fernsehheute.de/film-heute-abend/"
   jsonLd={jsonLd}
 >
   <Header />

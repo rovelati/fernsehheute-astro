@@ -64,12 +64,15 @@ try {
 }
 
 const jsonLd = buildHubHomeJsonLd({ channels: channelsWithPrograms, today });
-const description = `TV Programm heute Abend (${dateLabel}): alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit Sendezeiten auf einen Blick.`;
+const description = 'TV Programm heute Abend: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten auf einen Blick.';
+const keywords    = 'tv programm heute abend, fernsehprogramm heute, was läuft heute im tv, tv heute abend, fernsehen heute, deutsches fernsehprogramm';
 ---
 
 <BaseLayout
-  title={`TV Programm heute Abend — ${dateLabel} | FernsehHeute`}
+  title="TV Programm heute Abend – Alle Sender & Sendezeiten | FernsehHeute"
   {description}
+  {keywords}
+  canonicalUrl="https://fernsehheute.de/"
   {jsonLd}
 >
   <Header />

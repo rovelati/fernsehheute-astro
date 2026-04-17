@@ -51,13 +51,15 @@ const jsonLd = buildHubCategoryJsonLd({
   today,
 });
 
-const description = `Alle Serien heute Abend im deutschen Fernsehen (${dateLabel}): Staffeln, Folgen, Sendezeiten und Sender.`;
+const description = 'Alle Serien heute Abend im deutschen Fernsehen: Staffeln, Folgen, Sendezeiten und Sender auf einen Blick. Den richtigen Abend nie wieder verpassen.';
+const keywords    = 'serien heute abend tv, was läuft heute für serien im tv, tv serien heute, serien im fernsehen heute abend, serie heute abend';
 ---
 
 <BaseLayout
-  title={`Serien heute Abend im TV — ${dateLabel} | FernsehHeute`}
+  title="Serien heute Abend im TV – Alle Sendungen & Zeiten | FernsehHeute"
   description={description}
-  canonicalUrl="https://fernsehheute.de/serien-heute-abend"
+  keywords={keywords}
+  canonicalUrl="https://fernsehheute.de/serien-heute-abend/"
   jsonLd={jsonLd}
 >
   <Header />

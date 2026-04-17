@@ -284,9 +284,9 @@ export function buildHubChannelJsonLd({
   today: string;
   siteUrl?: string;
 }): object[] {
-  const channelUrl = `${siteUrl}/${channel.id}`;
-  const pageTitle  = `${channel.name} heute Abend — TV Programm`;
-  const pageDesc   = `TV Programm ${channel.name}: alle Sendungen heute Abend. Aktuelle Sendezeiten und Programm.`;
+  const channelUrl = `${siteUrl}/${channel.id}/`;
+  const pageTitle  = `${channel.name} Programm heute – Sendungen & Sendezeiten`;
+  const pageDesc   = `Vollständiges ${channel.name} Programm heute: alle Sendungen, Filme und Serien mit genauen Sendezeiten. Kompletter Tages- und Abendplan.`;
 
   // Nur Prime Time in strukturierten Daten (18-21 UTC = 20-23 Berlin CEST)
   const primeTime = programs.filter(p => {
@@ -319,7 +319,7 @@ export function buildHubChannelJsonLd({
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     '@id': `${channelUrl}#list`,
-    name: `${pageTitle} — ${today}`,
+    name: pageTitle,
     url: channelUrl,
     numberOfItems: primeTime.length,
     itemListElement: primeTime.slice(0, 20).map((p, i) => ({
@@ -375,7 +375,7 @@ export function buildHubHomeJsonLd({
       '@context': 'https://schema.org',
       '@type': 'ItemList',
       '@id': `${siteUrl}/#list`,
-      name: `TV Programm heute — ${today}`,
+      name: 'TV Programm heute – Alle Sender & Sendezeiten',
       url: siteUrl,
       numberOfItems: channels.length,
       itemListElement: channels.slice(0, 15).map((ch, i) => ({
@@ -397,8 +397,8 @@ export function buildHubHomeJsonLd({
       '@context': 'https://schema.org',
       ...webPageEntity(
         siteUrl,
-        `TV Programm heute — ${today}`,
-        'Deutsches TV Programm: alle Sendungen heute auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren Sendern.',
+        'TV Programm heute – Alle Sender & Sendezeiten',
+        'Deutsches TV Programm heute: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten.',
       ),
     },
   ];
@@ -452,7 +452,7 @@ export function buildHubCategoryJsonLd({
       '@context': 'https://schema.org',
       '@type': 'ItemList',
       '@id': `${pageUrl}#list`,
-      name: `${categoryName} heute Abend im TV — ${today}`,
+      name: `${categoryName} heute Abend im TV`,
       url: pageUrl,
       numberOfItems: programs.length,
       itemListElement: itemListElements,
@@ -470,8 +470,8 @@ export function buildHubCategoryJsonLd({
       '@context': 'https://schema.org',
       ...webPageEntity(
         pageUrl,
-        `${categoryName} heute Abend im TV — ${today}`,
-        `Alle ${categoryName.toLowerCase()} heute Abend im deutschen Fernsehen.`,
+        `${categoryName} heute Abend im TV`,
+        `Alle ${categoryName.toLowerCase()} heute Abend im deutschen Fernsehen mit genauen Sendezeiten auf allen Sendern.`,
       ),
     },
   ];

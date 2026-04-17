@@ -56,13 +56,15 @@ const jsonLd = buildHubCategoryJsonLd({
   today,
 });
 
-const description = `Alle Sportübertragungen heute im deutschen Fernsehen (${dateLabel}): Fußball, Formel 1, Tennis und mehr.`;
+const description = 'Alle Sportübertragungen heute im deutschen Fernsehen: Fußball, Formel 1, Tennis und mehr mit genauen Sendezeiten und Sender-Übersicht.';
+const keywords    = 'sport heute im tv, fußball heute abend tv, sport übertragungen heute, sport im tv heute, live sport fernsehen heute';
 ---
 
 <BaseLayout
-  title={`Sport heute im TV — ${dateLabel} | FernsehHeute`}
+  title="Sport heute im TV – Live-Übertragungen & Sendezeiten | FernsehHeute"
   description={description}
-  canonicalUrl="https://fernsehheute.de/sport-heute-abend"
+  keywords={keywords}
+  canonicalUrl="https://fernsehheute.de/sport-heute-abend/"
   jsonLd={jsonLd}
 >
   <Header />

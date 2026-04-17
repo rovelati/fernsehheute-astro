@@ -105,10 +105,11 @@ const sectionPrimeTime  = programs.filter(p => { const m = toUTCMin(p.start_time
 const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_END);
 
 // ── SEO ───────────────────────────────────────────────────────────────────
-const pageTitle   = `${channel.name} Programm heute — ${dateLabel}`;
-const description = `TV Programm ${channel.name} heute (${dateLabel}): alle Sendungen, Filme und Serien mit genauen Sendezeiten. Vollständiger Tagesplan für ${channel.name}.`;
-const keywords    = `${channel.name.toLowerCase()} programm heute, ${channel.name.toLowerCase()} heute abend, was läuft heute auf ${channel.name.toLowerCase()}, ${channel.name.toLowerCase()} sendeplan`;
-const canonicalUrl = `https://fernsehheute.de/${slug}`;
+const n           = channel.name;
+const pageTitle   = `${n} Programm heute – Sendungen & Sendezeiten`;
+const description = `Vollständiges ${n} Programm heute: alle Sendungen, Filme und Serien mit genauen Sendezeiten. Was läuft heute im ${n}? Hier findest du den kompletten Tages- und Abendplan.`;
+const keywords    = `${n.toLowerCase()} programm heute, ${n.toLowerCase()} heute abend, was läuft heute auf ${n.toLowerCase()}, ${n.toLowerCase()} sendeplan, ${n.toLowerCase()} sendungen heute, ${n.toLowerCase()} fernsehprogramm`;
+const canonicalUrl = `https://fernsehheute.de/${slug}/`;
 const ogImage      = channel.logo?.startsWith('http') ? channel.logo : undefined;
 
 const jsonLd = buildHubChannelJsonLd({ channel, programs, today });
@@ -120,6 +121,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
 <BaseLayout
   title={`${pageTitle} | FernsehHeute`}
   {description}
+  {keywords}
   {canonicalUrl}
   {jsonLd}
   {ogImage}
