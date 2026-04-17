@@ -172,6 +172,81 @@ export async function fetchProgramsWithEnrichment(date: string, channelId?: stri
 }
 
 /**
+ * Fetch TMDB enrichment per una lista di program_id.
+ * Restituisce una Map: program_id → { poster_url?, synopsis?, cast_json?, release_year?, runtime_min? }
+ * Confidence minima 0.5. Viene usata in getStaticPaths() per arricchire le pagine canale.
+ */
+export interface ProgramEnrichment {
+  poster_url?: string | null;
+  synopsis?: string | null;
+  cast_json?: { name: string; role: string; character?: string }[] | null;
+  release_year?: number | null;
+  runtime_min?: number | null;
+}
+
+export async function fetchTmdbEnrichment(
+  programIds: (string | number)[]
+): Promise<Map<string, ProgramEnrichment>> {
+  if (programIds.length === 0) return new Map();
+  const supabase = getClient();
+  const ids = programIds.map(id => Number(id)).filter(n => !isNaN(n));
+  if (ids.length === 0) return new Map();
+
+  const PAGE = 1000;
+  const allRows: {
+    program_id: number;
+    enrichment_type: string;
+    image_url: string | null;
+    synopsis: string | null;
+    cast_json: unknown | null;
+    release_year: number | null;
+    runtime_min: number | null;
+    confidence: number | null;
+  }[] = [];
+
+  // Fetch in chunks to avoid URL length limits
+  const CHUNK = 500;
+  for (let i = 0; i < ids.length; i += CHUNK) {
+    const chunk = ids.slice(i, i + CHUNK);
+    let from = 0;
+    while (true) {
+      const { data, error } = await supabase
+        .from('content_enrichment_de')
+        .select('program_id, enrichment_type, image_url, synopsis, cast_json, release_year, runtime_min, confidence')
+        .in('program_id', chunk)
+        .eq('provider', 'tmdb')
+        .eq('verification_status', 'verified')
+        .gte('confidence', 0.5)
+        .order('confidence', { ascending: false })
+        .range(from, from + PAGE - 1);
+
+      if (error || !data || data.length === 0) break;
+      allRows.push(...(data as typeof allRows));
+      if (data.length < PAGE) break;
+      from += PAGE;
+    }
+  }
+
+  const result = new Map<string, ProgramEnrichment>();
+  for (const row of allRows) {
+    const pid = String(row.program_id);
+    if (!result.has(pid)) result.set(pid, {});
+    const entry = result.get(pid)!;
+    if (row.enrichment_type === 'tmdb_image' && row.image_url && !entry.poster_url) {
+      entry.poster_url = row.image_url;
+    }
+    if (row.enrichment_type === 'tmdb_metadata') {
+      if (row.synopsis && !entry.synopsis) entry.synopsis = row.synopsis;
+      if (row.cast_json && !entry.cast_json)
+        entry.cast_json = row.cast_json as ProgramEnrichment['cast_json'];
+      if (row.release_year && !entry.release_year) entry.release_year = row.release_year;
+      if (row.runtime_min && !entry.runtime_min) entry.runtime_min = row.runtime_min;
+    }
+  }
+  return result;
+}
+
+/**
  * Fetch film indicizzabili aggiornati nelle ultime N ore.
  * Usato da notify-indexing.js e generate-sitemap-film.js.
  */
