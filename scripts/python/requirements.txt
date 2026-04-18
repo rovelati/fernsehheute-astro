@@ -6,3 +6,5 @@ postgrest==2.28.3
 python-dotenv==1.2.2
 requests==2.33.1
 psycopg2-binary==2.9.11
+google-auth==2.39.0
+google-auth-httplib2==0.2.0

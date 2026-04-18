@@ -1,0 +1,579 @@
+---
+/**
+ * /admin-seo/ — SEO Cockpit
+ * Protetto da login client-side (bruno/baumicio).
+ * Legge i JSON statici da /seo-data/ generati da seo_notifier.py
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="SEO Cockpit — FernsehHeute"
+  description="Admin SEO Dashboard"
+  noindex={true}
+>
+  <!-- Login Screen -->
+  <div id="login-screen" class="min-h-screen bg-slate-900 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-slate-800 rounded-2xl shadow-2xl p-8 border border-slate-700">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600 mb-4">
+          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/>
+          </svg>
+        </div>
+        <h1 class="text-xl font-bold text-white">SEO Cockpit</h1>
+        <p class="text-slate-400 text-sm mt-1">FernsehHeute.de</p>
+      </div>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Benutzer</label>
+          <input
+            id="login-user"
+            type="text"
+            autocomplete="username"
+            class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            placeholder="username"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">Passwort</label>
+          <input
+            id="login-pass"
+            type="password"
+            autocomplete="current-password"
+            class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+            placeholder="••••••••"
+          />
+        </div>
+        <div id="login-error" class="hidden text-red-400 text-sm text-center bg-red-900/20 rounded-lg py-2">
+          Falsche Zugangsdaten
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg py-2.5 transition-colors mt-2"
+        >
+          Anmelden
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Dashboard (hidden until login) -->
+  <div id="admin-screen" class="hidden min-h-screen bg-slate-900 text-slate-100">
+
+    <!-- Top Bar -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/>
+            </svg>
+          </div>
+          <span class="font-bold text-white text-sm tracking-wide">SEO Cockpit</span>
+          <span class="text-slate-500 text-xs hidden sm:block">· FernsehHeute.de</span>
+        </div>
+        <div class="flex items-center gap-3">
+          <span id="data-generated-at" class="text-slate-500 text-xs hidden sm:block"></span>
+          <button id="logout-btn" class="text-xs text-slate-400 hover:text-white bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg transition-colors">
+            Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+      <!-- Status Banner (no data) -->
+      <div id="no-data-banner" class="hidden bg-amber-900/30 border border-amber-700/50 rounded-xl p-4 text-amber-300 text-sm flex items-center gap-2">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/>
+        </svg>
+        <span>In attesa del primo run di <code>seo_notifier.py</code> — i dati non sono ancora disponibili.</span>
+      </div>
+
+      <!-- KPI Cards -->
+      <section id="kpi-section" class="hidden">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+            <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Clicks</div>
+            <div id="kpi-clicks" class="text-2xl font-bold text-white">—</div>
+            <div id="kpi-clicks-delta" class="text-xs mt-1"></div>
+          </div>
+          <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+            <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Impressions</div>
+            <div id="kpi-impressions" class="text-2xl font-bold text-white">—</div>
+            <div id="kpi-impressions-delta" class="text-xs mt-1"></div>
+          </div>
+          <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+            <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">CTR Medio</div>
+            <div id="kpi-ctr" class="text-2xl font-bold text-white">—</div>
+            <div id="kpi-ctr-delta" class="text-xs mt-1"></div>
+          </div>
+          <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+            <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Posizione Media</div>
+            <div id="kpi-position" class="text-2xl font-bold text-white">—</div>
+            <div id="kpi-position-delta" class="text-xs mt-1"></div>
+          </div>
+        </div>
+        <!-- Period info -->
+        <div id="period-info" class="mt-2 text-xs text-slate-500 text-right"></div>
+      </section>
+
+      <!-- Indexing Status -->
+      <section id="indexing-section" class="hidden">
+        <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-widest mb-3">Stato Indicizzazione</h2>
+        <div class="bg-slate-800 rounded-xl border border-slate-700 p-4">
+          <div class="flex flex-wrap gap-4 mb-4">
+            <span id="idx-pass" class="flex items-center gap-1.5 text-sm text-emerald-400"></span>
+            <span id="idx-not-indexed" class="flex items-center gap-1.5 text-sm text-amber-400"></span>
+            <span id="idx-errors" class="flex items-center gap-1.5 text-sm text-red-400"></span>
+          </div>
+          <div id="indexing-table-container" class="overflow-x-auto">
+            <table class="w-full text-xs">
+              <thead>
+                <tr class="border-b border-slate-700 text-slate-400">
+                  <th class="text-left py-2 pr-4 font-medium">URL</th>
+                  <th class="text-left py-2 pr-4 font-medium">Verdict</th>
+                  <th class="text-left py-2 pr-4 font-medium">Coverage</th>
+                  <th class="text-left py-2 pr-4 font-medium">Ultimo Crawl</th>
+                  <th class="text-left py-2 font-medium">Azioni</th>
+                </tr>
+              </thead>
+              <tbody id="indexing-table-body" class="divide-y divide-slate-700/50"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Top Pages -->
+      <section id="pages-section" class="hidden">
+        <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-widest mb-3">Pagine (per Clicks, 14 giorni)</h2>
+        <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-slate-700 text-slate-400">
+                <th class="text-left px-4 py-3 font-medium">URL</th>
+                <th class="text-right px-3 py-3 font-medium">Clicks</th>
+                <th class="text-right px-3 py-3 font-medium">Impressions</th>
+                <th class="text-right px-3 py-3 font-medium">CTR</th>
+                <th class="text-right px-3 py-3 font-medium">Posizione</th>
+                <th class="text-right px-3 py-3 font-medium">Δ Clicks</th>
+                <th class="text-center px-3 py-3 font-medium">Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="pages-table-body" class="divide-y divide-slate-700/50"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Top Queries -->
+      <section id="queries-section" class="hidden">
+        <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-widest mb-3">Top Queries (20 query)</h2>
+        <div class="bg-slate-800 rounded-xl border border-slate-700 overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead>
+              <tr class="border-b border-slate-700 text-slate-400">
+                <th class="text-left px-4 py-3 font-medium">Query</th>
+                <th class="text-right px-3 py-3 font-medium">Clicks</th>
+                <th class="text-right px-3 py-3 font-medium">Impressions</th>
+                <th class="text-right px-3 py-3 font-medium">CTR</th>
+                <th class="text-right px-3 py-3 font-medium">Posizione</th>
+              </tr>
+            </thead>
+            <tbody id="queries-table-body" class="divide-y divide-slate-700/50"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Recommendations -->
+      <section id="recommendations-section" class="hidden">
+        <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-widest mb-3">Raccomandazioni SEO</h2>
+        <div id="recommendations-list" class="space-y-2"></div>
+      </section>
+
+    </main>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+(function () {
+  'use strict';
+
+  // ── Auth ───────────────────────────────────────────────────────────────────
+  var SEO_USER = 'bruno';
+  var SEO_PASS = 'baumicio';
+  var AUTH_KEY = 'seo_auth';
+
+  function isAuthenticated() {
+    return sessionStorage.getItem(AUTH_KEY) === '1';
+  }
+
+  function showAdmin() {
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('admin-screen').classList.remove('hidden');
+    loadData();
+  }
+
+  function showLogin() {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('admin-screen').classList.add('hidden');
+  }
+
+  // Init: check session
+  if (isAuthenticated()) {
+    showAdmin();
+  }
+
+  // Login form
+  document.getElementById('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var user = document.getElementById('login-user').value.trim();
+    var pass = document.getElementById('login-pass').value;
+    if (user === SEO_USER && pass === SEO_PASS) {
+      sessionStorage.setItem(AUTH_KEY, '1');
+      document.getElementById('login-error').classList.add('hidden');
+      showAdmin();
+    } else {
+      document.getElementById('login-error').classList.remove('hidden');
+    }
+  });
+
+  // Logout
+  document.getElementById('logout-btn').addEventListener('click', function () {
+    sessionStorage.removeItem(AUTH_KEY);
+    showLogin();
+  });
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  function fmtNum(n) {
+    if (n == null) return '—';
+    return Number(n).toLocaleString('de-DE');
+  }
+
+  function fmtCtr(n) {
+    if (n == null) return '—';
+    return (Number(n) * 100).toFixed(2) + '%';
+  }
+
+  function fmtPos(n) {
+    if (!n || n === 0) return '—';
+    return Number(n).toFixed(1);
+  }
+
+  function fmtDelta(d, invertColor) {
+    if (d == null) return '<span class="text-slate-500">—</span>';
+    var positive = d > 0;
+    var arrow = positive ? '▲' : '▼';
+    // For position: lower is better (invert)
+    var goodColor = invertColor ? (positive ? 'text-red-400' : 'text-emerald-400') : (positive ? 'text-emerald-400' : 'text-red-400');
+    return '<span class="' + goodColor + '">' + arrow + ' ' + Math.abs(d).toFixed(1) + '%</span>';
+  }
+
+  function fmtPosDelta(d) {
+    if (d == null) return '<span class="text-slate-500">—</span>';
+    var better = d < 0;
+    var arrow = d < 0 ? '▲' : '▼';
+    var color = better ? 'text-emerald-400' : 'text-red-400';
+    return '<span class="' + color + '">' + arrow + ' ' + Math.abs(d).toFixed(2) + '</span>';
+  }
+
+  function kpiDeltaHtml(d, invertColor) {
+    if (d == null) return '';
+    var positive = d > 0;
+    var colorClass = invertColor
+      ? (positive ? 'text-red-400' : 'text-emerald-400')
+      : (positive ? 'text-emerald-400' : 'text-red-400');
+    return '<span class="' + colorClass + '">' + (positive ? '+' : '') + d.toFixed(1) + '%</span> vs. Vorperiode';
+  }
+
+  function gscLink(url) {
+    var base = 'https://search.google.com/search-console/inspect';
+    var res = encodeURIComponent('https://fernsehheute.de/');
+    return base + '?resource_id=' + res + '&url=' + encodeURIComponent(url);
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    } catch (e) { return iso.slice(0, 10); }
+  }
+
+  function show(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('hidden');
+  }
+
+  // ── Data Loading ───────────────────────────────────────────────────────────
+  var perfData = null;
+  var inspData = null;
+
+  function loadData() {
+    var noBanner = document.getElementById('no-data-banner');
+    var loaded = 0;
+    var total = 2;
+
+    function onLoaded() {
+      loaded++;
+      if (loaded >= total) {
+        if (!perfData && !inspData) {
+          noBanner.classList.remove('hidden');
+        } else {
+          renderAll();
+        }
+      }
+    }
+
+    fetch('/seo-data/search-performance-report.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { perfData = d; onLoaded(); })
+      .catch(function () { onLoaded(); });
+
+    fetch('/seo-data/url-inspection-report.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { inspData = d; onLoaded(); })
+      .catch(function () { onLoaded(); });
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
+  function renderAll() {
+    if (perfData) {
+      renderKpis(perfData);
+      renderPages(perfData);
+      renderQueries(perfData);
+    }
+    if (inspData) {
+      renderIndexing(inspData);
+    }
+    if (perfData || inspData) {
+      renderRecommendations(perfData, inspData);
+    }
+
+    // Generated at
+    var ga = (perfData && perfData.generatedAt) || (inspData && inspData.generatedAt);
+    if (ga) {
+      var el = document.getElementById('data-generated-at');
+      if (el) {
+        try {
+          el.textContent = 'Daten vom ' + new Date(ga).toLocaleString('de-DE');
+        } catch (e) { el.textContent = ga; }
+      }
+    }
+  }
+
+  // KPIs
+  function renderKpis(d) {
+    var s = (d.summary || {});
+    var sc = s.siteCurrent || {};
+    var sp = s.sitePrevious || {};
+    var delta = s.headDelta || {};
+
+    document.getElementById('kpi-clicks').textContent = fmtNum(sc.clicks);
+    document.getElementById('kpi-impressions').textContent = fmtNum(sc.impressions);
+    document.getElementById('kpi-ctr').textContent = fmtCtr(sc.ctr);
+    document.getElementById('kpi-position').textContent = fmtPos(sc.position);
+
+    document.getElementById('kpi-clicks-delta').innerHTML = kpiDeltaHtml(delta.clicks, false);
+    document.getElementById('kpi-impressions-delta').innerHTML = kpiDeltaHtml(delta.impressions, false);
+    document.getElementById('kpi-ctr-delta').innerHTML = kpiDeltaHtml(delta.ctr, false);
+    document.getElementById('kpi-position-delta').innerHTML = '';
+
+    var p = d.period || {};
+    var cur = p.current || {};
+    var prev = p.previous || {};
+    var pInfo = document.getElementById('period-info');
+    if (pInfo && cur.startDate && cur.endDate) {
+      pInfo.textContent = 'Zeitraum: ' + cur.startDate + ' – ' + cur.endDate
+        + ' | Vorperiode: ' + (prev.startDate || '') + ' – ' + (prev.endDate || '');
+    }
+
+    show('kpi-section');
+  }
+
+  // Pages
+  function renderPages(d) {
+    var targets = d.targets || [];
+    var tbody = document.getElementById('pages-table-body');
+    if (!tbody || !targets.length) return;
+    var html = '';
+    targets.forEach(function (row) {
+      var url = row.url || '';
+      var cur = row.current || {};
+      var delta = row.delta || {};
+      var path = url.replace('https://fernsehheute.de', '') || '/';
+      html += '<tr class="hover:bg-slate-700/30 transition-colors">'
+        + '<td class="px-4 py-2.5 font-mono text-blue-300 whitespace-nowrap">' + escHtml(path) + '</td>'
+        + '<td class="px-3 py-2.5 text-right tabular-nums">' + fmtNum(cur.clicks) + '</td>'
+        + '<td class="px-3 py-2.5 text-right tabular-nums text-slate-300">' + fmtNum(cur.impressions) + '</td>'
+        + '<td class="px-3 py-2.5 text-right tabular-nums text-slate-300">' + fmtCtr(cur.ctr) + '</td>'
+        + '<td class="px-3 py-2.5 text-right tabular-nums text-slate-300">' + fmtPos(cur.position) + '</td>'
+        + '<td class="px-3 py-2.5 text-right">' + fmtDelta(delta.clicks, false) + '</td>'
+        + '<td class="px-3 py-2.5 text-center whitespace-nowrap">'
+        + '<a href="' + escHtml(gscLink(url)) + '" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-slate-400 hover:text-blue-400 transition-colors text-[10px] mr-1" title="GSC Inspektion">'
+        + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/></svg>'
+        + ' GSC</a>'
+        + '<a href="' + escHtml(gscLink(url)) + '" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-slate-400 hover:text-emerald-400 transition-colors text-[10px]" title="Indexierung anfordern">'
+        + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>'
+        + ' Req.</a>'
+        + '</td>'
+        + '</tr>';
+    });
+    tbody.innerHTML = html;
+    show('pages-section');
+  }
+
+  // Queries
+  function renderQueries(d) {
+    var queries = d.topQueries || [];
+    var tbody = document.getElementById('queries-table-body');
+    if (!tbody || !queries.length) return;
+    var html = '';
+    queries.forEach(function (row) {
+      html += '<tr class="hover:bg-slate-700/30 transition-colors">'
+        + '<td class="px-4 py-2.5 text-slate-200">' + escHtml(row.query || '') + '</td>'
+        + '<td class="px-3 py-2.5 text-right tabular-nums">' + fmtNum(row.clicks) + '</td>'
+        + '<td class="px-3 py-2.5 text-right tabular-nums text-slate-300">' + fmtNum(row.impressions) + '</td>'
+        + '<td class="px-3 py-2.5 text-right tabular-nums text-slate-300">' + fmtCtr(row.ctr) + '</td>'
+        + '<td class="px-3 py-2.5 text-right tabular-nums text-slate-300">' + fmtPos(row.position) + '</td>'
+        + '</tr>';
+    });
+    tbody.innerHTML = html;
+    show('queries-section');
+  }
+
+  // Indexing
+  function renderIndexing(d) {
+    var results = d.results || [];
+    var summary = d.summary || {};
+    var passCount = summary.pass || 0;
+    var errorCount = summary.errors || 0;
+    var notIndexed = (summary.total || 0) - passCount - errorCount;
+
+    document.getElementById('idx-pass').innerHTML =
+      '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+      + passCount + ' indicizzate';
+    document.getElementById('idx-not-indexed').innerHTML =
+      '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>'
+      + notIndexed + ' non indicizzate';
+    document.getElementById('idx-errors').innerHTML =
+      '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+      + errorCount + ' errori';
+
+    var tbody = document.getElementById('indexing-table-body');
+    if (!tbody) return;
+    var html = '';
+    results.forEach(function (r) {
+      var verdict = r.verdict || (r.status === 'error' ? 'ERROR' : 'UNKNOWN');
+      var verdictColor = verdict === 'PASS' ? 'text-emerald-400' : verdict === 'ERROR' ? 'text-red-400' : 'text-amber-400';
+      var url = r.url || '';
+      var path = url.replace('https://fernsehheute.de', '') || '/';
+      html += '<tr class="hover:bg-slate-700/30 transition-colors">'
+        + '<td class="px-0 py-2.5 pr-4 font-mono text-blue-300 whitespace-nowrap text-[10px]">' + escHtml(path) + '</td>'
+        + '<td class="px-0 py-2.5 pr-4 font-semibold ' + verdictColor + ' whitespace-nowrap">' + escHtml(verdict) + '</td>'
+        + '<td class="px-0 py-2.5 pr-4 text-slate-400 whitespace-nowrap">' + escHtml(r.coverageState || '—') + '</td>'
+        + '<td class="px-0 py-2.5 pr-4 text-slate-400 whitespace-nowrap">' + fmtDate(r.lastCrawlTime) + '</td>'
+        + '<td class="px-0 py-2.5 whitespace-nowrap">'
+        + '<a href="' + escHtml(gscLink(url)) + '" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-slate-400 hover:text-blue-400 transition-colors text-[10px] mr-1">'
+        + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/></svg>'
+        + 'GSC</a>'
+        + (verdict !== 'PASS' ? '<a href="' + escHtml(gscLink(url)) + '" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-slate-400 hover:text-emerald-400 transition-colors text-[10px]">'
+        + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>'
+        + 'Req.</a>' : '')
+        + '</td>'
+        + '</tr>';
+    });
+    tbody.innerHTML = html;
+    show('indexing-section');
+  }
+
+  // Recommendations
+  function renderRecommendations(perf, insp) {
+    var recs = [];
+
+    // From performance data
+    if (perf && perf.targets) {
+      perf.targets.forEach(function (t) {
+        var cur = t.current || {};
+        var path = (t.url || '').replace('https://fernsehheute.de', '') || '/';
+
+        if (cur.position > 20 && cur.impressions > 0) {
+          recs.push({
+            type: 'warning',
+            text: 'Optimiere Inhalt und Meta-Tags für <strong>' + escHtml(path) + '</strong> — Position ' + fmtPos(cur.position) + ' bei ' + fmtNum(cur.impressions) + ' Impressionen. Ziel: Top 10.',
+          });
+        }
+        if (cur.ctr < 0.02 && cur.impressions > 50) {
+          recs.push({
+            type: 'info',
+            text: 'CTR verbessern für <strong>' + escHtml(path) + '</strong> (' + fmtCtr(cur.ctr) + ' bei ' + fmtNum(cur.impressions) + ' Impressionen) — Meta Title/Description überarbeiten.',
+          });
+        }
+        if (cur.impressions > 10 && cur.clicks === 0) {
+          recs.push({
+            type: 'info',
+            text: 'Kein Click trotz ' + fmtNum(cur.impressions) + ' Impressionen für <strong>' + escHtml(path) + '</strong> — A/B-Test für Titel und Meta-Description erwägen.',
+          });
+        }
+      });
+    }
+
+    // From inspection data
+    if (insp && insp.results) {
+      insp.results.forEach(function (r) {
+        if (r.status === 'ok' && r.verdict !== 'PASS') {
+          var path = (r.url || '').replace('https://fernsehheute.de', '') || '/';
+          recs.push({
+            type: 'error',
+            text: 'Indexierung anfordern für <strong>' + escHtml(path) + '</strong> (Verdict: ' + escHtml(r.verdict || 'UNKNOWN') + ') — '
+              + '<a href="' + escHtml(gscLink(r.url)) + '" target="_blank" rel="noopener" class="underline hover:text-white">In GSC prüfen</a>.',
+          });
+        }
+      });
+    }
+
+    // General
+    recs.push({
+      type: 'info',
+      text: 'Überprüfe die Sitemap-Abdeckung: <a href="https://fernsehheute.de/sitemap-index.xml" target="_blank" rel="noopener" class="underline hover:text-white">sitemap-index.xml</a> sollte alle Sender- und Kategorieseiten enthalten.',
+    });
+
+    if (!recs.length) {
+      recs.push({ type: 'success', text: 'Keine kritischen SEO-Probleme gefunden. Weiter so!' });
+    }
+
+    var container = document.getElementById('recommendations-list');
+    if (!container) return;
+    var html = '';
+    recs.slice(0, 12).forEach(function (rec) {
+      var bg = rec.type === 'error' ? 'bg-red-900/20 border-red-700/40 text-red-300'
+        : rec.type === 'warning' ? 'bg-amber-900/20 border-amber-700/40 text-amber-300'
+        : rec.type === 'success' ? 'bg-emerald-900/20 border-emerald-700/40 text-emerald-300'
+        : 'bg-slate-800 border-slate-700 text-slate-300';
+      var icon = rec.type === 'error'
+        ? '<path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+        : rec.type === 'warning'
+        ? '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/>'
+        : rec.type === 'success'
+        ? '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+        : '<path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>';
+      html += '<div class="flex items-start gap-3 rounded-xl border p-3 text-sm ' + bg + '">'
+        + '<svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">' + icon + '</svg>'
+        + '<span>' + rec.text + '</span>'
+        + '</div>';
+    });
+    container.innerHTML = html;
+    show('recommendations-section');
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+})();
+</script>
+</BaseLayout>

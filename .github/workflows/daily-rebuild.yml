@@ -74,7 +74,58 @@ jobs:
         continue-on-error: true   # Non blocca se Wikipedia è irraggiungibile
 
   # ──────────────────────────────────────────────────────────
-  # 2) Cloudflare Pages rebuild
+  # 2) SEO Notifier (IndexNow + Google Indexing API + WebSub + GSC reports)
+  # ──────────────────────────────────────────────────────────
+  seo-notifier:
+    name: SEO Notifier
+    runs-on: ubuntu-latest
+    needs: tmdb-enrichment
+    if: |
+      always() &&
+      (github.event_name == 'schedule' || inputs.run_tmdb == true) &&
+      needs.tmdb-enrichment.result != 'cancelled'
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: scripts/python/requirements.txt
+
+      - name: Install dependencies
+        working-directory: scripts/python
+        run: pip install -r requirements.txt
+
+      - name: Run SEO notifier
+        working-directory: scripts/python
+        env:
+          GOOGLE_INDEXING_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_INDEXING_SERVICE_ACCOUNT_JSON }}
+          GOOGLE_INDEXING_ENABLED: '1'
+          GOOGLE_URL_INSPECTION_ENABLED: '1'
+          GOOGLE_SEARCH_ANALYTICS_ENABLED: '1'
+          INDEXNOW_ENABLED: '1'
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          WEBSUB_ENABLED: '1'
+          PUBLIC_DIR: ${{ github.workspace }}/astro-fernsehheute/public
+          SITE_URL: 'https://fernsehheute.de'
+        run: python3 seo_notifier.py
+        continue-on-error: true
+
+      - name: Commit SEO reports
+        working-directory: ${{ github.workspace }}/astro-fernsehheute
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add public/seo-data/ || true
+          git diff --staged --quiet || git commit -m "chore: update SEO reports [skip ci]"
+          git push || true
+
+  # ──────────────────────────────────────────────────────────
+  # 3) Cloudflare Pages rebuild
   # ──────────────────────────────────────────────────────────
   cloudflare-rebuild:
     name: Rebuild Cloudflare Pages
