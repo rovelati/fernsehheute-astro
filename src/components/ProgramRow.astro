@@ -22,10 +22,8 @@ const { program, channelId, channelLogo, channelName } = Astro.props;
 
 const startLabel = formatTime(program.start_time);
 const endLabel   = formatTime(program.end_time);
-
-// Prüfen ob gerade live
-const now = Date.now();
-const isLive = new Date(program.start_time).getTime() <= now && now < new Date(program.end_time).getTime();
+// isLive is intentionally NOT computed server-side (SSG build time would freeze it).
+// The global live-updater script in BaseLayout handles this client-side every 60s.
 
 // Kategorie-Badge-Farben (deutsche Kategorien)
 const CATEGORY_COLORS: Record<string, string> = {
@@ -98,12 +96,7 @@ const overlayData = JSON.stringify({
   data-program={overlayData}
   role="button"
   tabindex="0"
-  class:list={[
-    'grid grid-cols-[56px_1fr] sm:grid-cols-[56px_1fr_56px] gap-3 px-4 py-3 cursor-pointer',
-    'hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset',
-    isLive && 'bg-blue-50/50 dark:bg-blue-900/10',
-  ]}
+  class="grid grid-cols-[56px_1fr] sm:grid-cols-[56px_1fr_56px] gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
   aria-label={`${program.title} — ${startLabel}`}
 >
   <!-- Uhrzeit -->
@@ -114,15 +107,13 @@ const overlayData = JSON.stringify({
 
   <!-- Programminhalt -->
   <div class="min-w-0">
-    <!-- Live-Badge -->
-    {isLive && (
-      <div class="mb-0.5">
-        <span class="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 px-1.5 py-0.5 rounded-full">
-          <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
-          Läuft
-        </span>
-      </div>
-    )}
+    <!-- Live-Badge: always rendered, shown/hidden by live-updater JS -->
+    <div class="live-badge mb-0.5" style="display:none">
+      <span class="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/40 px-1.5 py-0.5 rounded-full">
+        <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
+        Läuft
+      </span>
+    </div>
 
     <!-- Titel -->
     <p class="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-snug">

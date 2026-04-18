@@ -64,6 +64,65 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
       } catch (e) {}
     })();
   </script>
+
+  <!-- Live updater: date display + "Läuft" badges (runs client-side, updates every 60s) -->
+  <script is:inline>
+    (function () {
+      var DATE_FMT = new Intl.DateTimeFormat('de-DE', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        timeZone: 'Europe/Berlin',
+      });
+
+      function update() {
+        var now = Date.now();
+
+        // ── Date display ─────────────────────────────────────────────────────
+        var todayStr = DATE_FMT.format(new Date(now));
+        var dateEls = document.querySelectorAll('[data-live-date]');
+        for (var i = 0; i < dateEls.length; i++) {
+          dateEls[i].textContent = todayStr;
+        }
+        var tomorrowDate = new Date(now + 86400000);
+        var tomorrowStr = DATE_FMT.format(tomorrowDate);
+        var dateTomEls = document.querySelectorAll('[data-live-date-tomorrow]');
+        for (var i = 0; i < dateTomEls.length; i++) {
+          dateTomEls[i].textContent = tomorrowStr;
+        }
+
+        // ── Live badges on ProgramRow ─────────────────────────────────────────
+        var rows = document.querySelectorAll('[data-program]');
+        for (var j = 0; j < rows.length; j++) {
+          var row = rows[j];
+          try {
+            var d = JSON.parse(row.getAttribute('data-program'));
+            var start = new Date(d.startTime).getTime();
+            var end   = new Date(d.endTime).getTime();
+            var live  = start <= now && now < end;
+
+            // Badge element
+            var badge = row.querySelector('.live-badge');
+            if (badge) {
+              badge.style.display = live ? '' : 'none';
+            }
+
+            // Row background highlight
+            if (live) {
+              row.classList.add('bg-blue-50/50', 'dark:bg-blue-900/10');
+            } else {
+              row.classList.remove('bg-blue-50/50', 'dark:bg-blue-900/10');
+            }
+          } catch (e) {}
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', update);
+      } else {
+        update();
+      }
+      setInterval(update, 60000);
+    })();
+  </script>
 </head>
 <body class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen antialiased">
   <slot />

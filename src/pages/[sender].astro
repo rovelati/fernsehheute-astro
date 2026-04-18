@@ -156,7 +156,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
           <span class="text-blue-600 dark:text-blue-400">{channel.name}</span> Programm heute
         </h1>
-        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">{dateLabel}</p>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1"><span data-live-date>{dateLabel}</span></p>
       </div>
     </div>
 
