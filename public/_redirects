@@ -1,0 +1,6 @@
+# ---------------------------------------------------------------------------
+# 410 Gone — programm detail pages were removed permanently.
+# Tells Google to de-index these URLs immediately.
+# ---------------------------------------------------------------------------
+/programm/*    410
+/programm      410
