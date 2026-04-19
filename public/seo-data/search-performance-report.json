@@ -1,0 +1,835 @@
+{
+  "ok": true,
+  "generatedAt": "2026-04-19T05:50:52.412064+00:00",
+  "siteUrl": "https://fernsehheute.de/",
+  "source": "Google Search Console Search Analytics API",
+  "notes": {
+    "description": "Realer Such-Traffic der verfolgten Seiten in der Search Console.",
+    "windowDays": 14,
+    "delayDays": 2
+  },
+  "period": {
+    "current": {
+      "startDate": "2026-04-04",
+      "endDate": "2026-04-17"
+    },
+    "previous": {
+      "startDate": "2026-03-21",
+      "endDate": "2026-04-03"
+    }
+  },
+  "summary": {
+    "siteCurrent": {
+      "clicks": 0.0,
+      "impressions": 0.0,
+      "ctr": 0.0,
+      "position": 0.0
+    },
+    "sitePrevious": {
+      "clicks": 0.0,
+      "impressions": 0.0,
+      "ctr": 0.0,
+      "position": 0.0
+    },
+    "headCurrent": {
+      "clicks": 0.0,
+      "impressions": 658.0,
+      "ctr": 0.0,
+      "position": 41.12
+    },
+    "headPrevious": {
+      "clicks": 3.0,
+      "impressions": 804.0,
+      "ctr": 0.0037,
+      "position": 58.25
+    },
+    "headDelta": {
+      "clicks": -100.0,
+      "impressions": -18.16,
+      "ctr": -100.0,
+      "position": -17.13
+    }
+  },
+  "topQueries": [
+    {
+      "query": "\"your premier style source! fashion first offers exclusive previews of upcoming collections\"",
+      "clicks": 0.0,
+      "impressions": 7.0,
+      "ctr": 0.0,
+      "position": 5.857142857142857
+    },
+    {
+      "query": "aktuell fernsehen",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 28.0
+    },
+    {
+      "query": "aktuell im tv",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 87.0
+    },
+    {
+      "query": "aktuelle stunde münster",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 22.0
+    },
+    {
+      "query": "aktuelle tv programm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 45.0
+    },
+    {
+      "query": "aktuelles fernsehprogramm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 80.0
+    },
+    {
+      "query": "aktuelles fernsehprogramm heute abend",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 98.0
+    },
+    {
+      "query": "aktuelles fernsehprogramm jetzt",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 70.0
+    },
+    {
+      "query": "aktuelles fernsehprogramm von heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 75.0
+    },
+    {
+      "query": "alle programme heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 24.0
+    },
+    {
+      "query": "alle sender programm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 47.0
+    },
+    {
+      "query": "alle tv programme heute",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 42.5
+    },
+    {
+      "query": "alle tv sender",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 60.0
+    },
+    {
+      "query": "anixe",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 61.5
+    },
+    {
+      "query": "arte fernsehprogramm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 17.0
+    },
+    {
+      "query": "arte heute tv programm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 19.0
+    },
+    {
+      "query": "arte programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 97.0
+    },
+    {
+      "query": "arte programm heute abend",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 26.0
+    },
+    {
+      "query": "auf welchem sender",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 29.0
+    },
+    {
+      "query": "axn white",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 30.0
+    }
+  ],
+  "targets": [
+    {
+      "slug": "home",
+      "url": "https://fernsehheute.de/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 658.0,
+        "ctr": 0.0,
+        "position": 41.11702127659574
+      },
+      "previous": {
+        "clicks": 3.0,
+        "impressions": 804.0,
+        "ctr": 0.0037313432835820895,
+        "position": 58.245024875621894
+      },
+      "delta": {
+        "clicks": -100.0,
+        "impressions": -18.16,
+        "ctr": -100.0,
+        "position": -17.13
+      }
+    },
+    {
+      "slug": "morgen",
+      "url": "https://fernsehheute.de/morgen/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "film-heute-abend",
+      "url": "https://fernsehheute.de/film-heute-abend/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "serien-heute-abend",
+      "url": "https://fernsehheute.de/serien-heute-abend/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "sport-heute-abend",
+      "url": "https://fernsehheute.de/sport-heute-abend/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "zdf",
+      "url": "https://fernsehheute.de/zdf/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "rtl",
+      "url": "https://fernsehheute.de/rtl/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "das-erste",
+      "url": "https://fernsehheute.de/das-erste/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "sat1",
+      "url": "https://fernsehheute.de/sat1/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "prosieben",
+      "url": "https://fernsehheute.de/prosieben/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "vox",
+      "url": "https://fernsehheute.de/vox/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "rtl2",
+      "url": "https://fernsehheute.de/rtl2/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "kabel-eins",
+      "url": "https://fernsehheute.de/kabel-eins/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "sixx",
+      "url": "https://fernsehheute.de/sixx/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "super-rtl",
+      "url": "https://fernsehheute.de/super-rtl/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "nitro",
+      "url": "https://fernsehheute.de/nitro/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "tele5",
+      "url": "https://fernsehheute.de/tele5/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "zdf-neo",
+      "url": "https://fernsehheute.de/zdf-neo/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "zdfinfo",
+      "url": "https://fernsehheute.de/zdfinfo/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "3sat",
+      "url": "https://fernsehheute.de/3sat/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "arte",
+      "url": "https://fernsehheute.de/arte/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "phoenix",
+      "url": "https://fernsehheute.de/phoenix/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "one",
+      "url": "https://fernsehheute.de/one/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "sport1",
+      "url": "https://fernsehheute.de/sport1/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "dmax",
+      "url": "https://fernsehheute.de/dmax/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "n-tv",
+      "url": "https://fernsehheute.de/n-tv/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "welt",
+      "url": "https://fernsehheute.de/welt/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "tagesschau24",
+      "url": "https://fernsehheute.de/tagesschau24/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    },
+    {
+      "slug": "kika",
+      "url": "https://fernsehheute.de/kika/",
+      "current": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "previous": {
+        "clicks": 0.0,
+        "impressions": 0.0,
+        "ctr": 0.0,
+        "position": 0.0
+      },
+      "delta": {
+        "clicks": null,
+        "impressions": null,
+        "ctr": null,
+        "position": null
+      }
+    }
+  ]
+}

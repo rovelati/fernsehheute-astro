@@ -112,13 +112,15 @@ jobs:
           INDEXNOW_ENABLED: '1'
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
           WEBSUB_ENABLED: '1'
-          PUBLIC_DIR: ${{ github.workspace }}/astro-fernsehheute/public
+          # PUBLIC_DIR punta alla public/ dell'Astro project, che è nella root del repo
+          PUBLIC_DIR: ${{ github.workspace }}/public
           SITE_URL: 'https://fernsehheute.de'
         run: python3 seo_notifier.py
         continue-on-error: true
 
       - name: Commit SEO reports
-        working-directory: ${{ github.workspace }}/astro-fernsehheute
+        # working-directory = root del repo (l'Astro project è nella root, non in una subdirectory)
+        working-directory: ${{ github.workspace }}
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
@@ -132,7 +134,9 @@ jobs:
   cloudflare-rebuild:
     name: Rebuild Cloudflare Pages
     runs-on: ubuntu-latest
-    needs: tmdb-enrichment
+    # Dipende da seo-notifier (non solo tmdb-enrichment) così CF Pages
+    # parte dopo che i report SEO sono stati committati nel repo.
+    needs: [tmdb-enrichment, seo-notifier]
     if: |
       always() &&
       (github.event_name == 'schedule' || inputs.trigger_cf == true) &&
