@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-20T06:12:14.536182+00:00",
+  "generatedAt": "2026-04-21T05:50:24.324188+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-05",
-      "endDate": "2026-04-18"
+      "startDate": "2026-04-06",
+      "endDate": "2026-04-19"
     },
     "previous": {
-      "startDate": "2026-03-22",
-      "endDate": "2026-04-04"
+      "startDate": "2026-03-23",
+      "endDate": "2026-04-05"
     }
   },
   "summary": {
@@ -33,21 +33,21 @@
     },
     "headCurrent": {
       "clicks": 1.0,
-      "impressions": 668.0,
-      "ctr": 0.0015,
-      "position": 41.68
+      "impressions": 631.0,
+      "ctr": 0.0016,
+      "position": 39.92
     },
     "headPrevious": {
       "clicks": 3.0,
-      "impressions": 849.0,
-      "ctr": 0.0035,
-      "position": 57.11
+      "impressions": 880.0,
+      "ctr": 0.0034,
+      "position": 57.62
     },
     "headDelta": {
       "clicks": -66.67,
-      "impressions": -21.32,
-      "ctr": -57.14,
-      "position": -15.43
+      "impressions": -28.3,
+      "ctr": -52.94,
+      "position": -17.7
     }
   },
   "topQueries": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 1.0,
-        "impressions": 668.0,
-        "ctr": 0.0014970059880239522,
-        "position": 41.6811377245509
+        "impressions": 631.0,
+        "ctr": 0.001584786053882726,
+        "position": 39.92393026941363
       },
       "previous": {
         "clicks": 3.0,
-        "impressions": 849.0,
-        "ctr": 0.0035335689045936395,
-        "position": 57.10600706713781
+        "impressions": 880.0,
+        "ctr": 0.003409090909090909,
+        "position": 57.622727272727275
       },
       "delta": {
         "clicks": -66.67,
-        "impressions": -21.32,
-        "ctr": -57.63,
-        "position": -15.42
+        "impressions": -28.3,
+        "ctr": -53.51,
+        "position": -17.7
       }
     },
     {
