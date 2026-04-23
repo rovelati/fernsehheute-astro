@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-22T05:49:10.677794+00:00",
+  "generatedAt": "2026-04-23T05:53:33.937276+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-07",
-      "endDate": "2026-04-20"
+      "startDate": "2026-04-08",
+      "endDate": "2026-04-21"
     },
     "previous": {
-      "startDate": "2026-03-24",
-      "endDate": "2026-04-06"
+      "startDate": "2026-03-25",
+      "endDate": "2026-04-07"
     }
   },
   "summary": {
@@ -33,21 +33,21 @@
     },
     "headCurrent": {
       "clicks": 1.0,
-      "impressions": 853.0,
-      "ctr": 0.0012,
-      "position": 49.5
+      "impressions": 1001.0,
+      "ctr": 0.001,
+      "position": 53.8
     },
     "headPrevious": {
       "clicks": 3.0,
-      "impressions": 897.0,
-      "ctr": 0.0033,
-      "position": 57.74
+      "impressions": 931.0,
+      "ctr": 0.0032,
+      "position": 57.73
     },
     "headDelta": {
       "clicks": -66.67,
-      "impressions": -4.91,
-      "ctr": -63.64,
-      "position": -8.24
+      "impressions": 7.52,
+      "ctr": -68.75,
+      "position": -3.93
     }
   },
   "topQueries": [
@@ -82,9 +82,9 @@
     {
       "query": "20.15 heute",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 3.0,
       "ctr": 0.0,
-      "position": 91.0
+      "position": 77.33333333333333
     },
     {
       "query": "20.15 heute tv",
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 1.0,
-        "impressions": 853.0,
-        "ctr": 0.0011723329425556857,
-        "position": 49.49589683470106
+        "impressions": 1001.0,
+        "ctr": 0.000999000999000999,
+        "position": 53.80419580419581
       },
       "previous": {
         "clicks": 3.0,
-        "impressions": 897.0,
-        "ctr": 0.0033444816053511705,
-        "position": 57.743589743589745
+        "impressions": 931.0,
+        "ctr": 0.00322234156820623,
+        "position": 57.73147153598281
       },
       "delta": {
         "clicks": -66.67,
-        "impressions": -4.91,
-        "ctr": -64.95,
-        "position": -8.25
+        "impressions": 7.52,
+        "ctr": -69.0,
+        "position": -3.93
       }
     },
     {
