@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-23T05:53:33.937276+00:00",
+  "generatedAt": "2026-04-24T06:05:41.291245+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-08",
-      "endDate": "2026-04-21"
+      "startDate": "2026-04-09",
+      "endDate": "2026-04-22"
     },
     "previous": {
-      "startDate": "2026-03-25",
-      "endDate": "2026-04-07"
+      "startDate": "2026-03-26",
+      "endDate": "2026-04-08"
     }
   },
   "summary": {
@@ -33,21 +33,21 @@
     },
     "headCurrent": {
       "clicks": 1.0,
-      "impressions": 1001.0,
-      "ctr": 0.001,
-      "position": 53.8
+      "impressions": 930.0,
+      "ctr": 0.0011,
+      "position": 55.31
     },
     "headPrevious": {
       "clicks": 3.0,
-      "impressions": 931.0,
-      "ctr": 0.0032,
-      "position": 57.73
+      "impressions": 956.0,
+      "ctr": 0.0031,
+      "position": 55.83
     },
     "headDelta": {
       "clicks": -66.67,
-      "impressions": 7.52,
-      "ctr": -68.75,
-      "position": -3.93
+      "impressions": -2.72,
+      "ctr": -64.52,
+      "position": -0.52
     }
   },
   "topQueries": [
@@ -99,20 +99,6 @@
       "impressions": 2.0,
       "ctr": 0.0,
       "position": 79.0
-    },
-    {
-      "query": "aktuell fernsehen",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 28.0
-    },
-    {
-      "query": "aktuell im tv",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 87.0
     },
     {
       "query": "aktuelle stunde münster",
@@ -190,6 +176,20 @@
       "impressions": 2.0,
       "ctr": 0.0,
       "position": 61.5
+    },
+    {
+      "query": "ard abendprogramm heute",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 75.0
+    },
+    {
+      "query": "ard de programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 68.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 1.0,
-        "impressions": 1001.0,
-        "ctr": 0.000999000999000999,
-        "position": 53.80419580419581
+        "impressions": 930.0,
+        "ctr": 0.001075268817204301,
+        "position": 55.30860215053764
       },
       "previous": {
         "clicks": 3.0,
-        "impressions": 931.0,
-        "ctr": 0.00322234156820623,
-        "position": 57.73147153598281
+        "impressions": 956.0,
+        "ctr": 0.0031380753138075313,
+        "position": 55.8326359832636
       },
       "delta": {
         "clicks": -66.67,
-        "impressions": 7.52,
-        "ctr": -69.0,
-        "position": -3.93
+        "impressions": -2.72,
+        "ctr": -65.73,
+        "position": -0.52
       }
     },
     {
