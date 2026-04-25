@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-24T06:05:41.291245+00:00",
+  "generatedAt": "2026-04-25T05:36:57.783113+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-09",
-      "endDate": "2026-04-22"
+      "startDate": "2026-04-10",
+      "endDate": "2026-04-23"
     },
     "previous": {
-      "startDate": "2026-03-26",
-      "endDate": "2026-04-08"
+      "startDate": "2026-03-27",
+      "endDate": "2026-04-09"
     }
   },
   "summary": {
@@ -33,30 +33,30 @@
     },
     "headCurrent": {
       "clicks": 1.0,
-      "impressions": 930.0,
-      "ctr": 0.0011,
-      "position": 55.31
+      "impressions": 1839.0,
+      "ctr": 0.0005,
+      "position": 62.49
     },
     "headPrevious": {
       "clicks": 3.0,
-      "impressions": 956.0,
-      "ctr": 0.0031,
-      "position": 55.83
+      "impressions": 933.0,
+      "ctr": 0.0032,
+      "position": 54.33
     },
     "headDelta": {
       "clicks": -66.67,
-      "impressions": -2.72,
-      "ctr": -64.52,
-      "position": -0.52
+      "impressions": 97.11,
+      "ctr": -84.38,
+      "position": 8.16
     }
   },
   "topQueries": [
     {
       "query": "tv programm jetzt",
       "clicks": 1.0,
-      "impressions": 2.0,
-      "ctr": 0.5,
-      "position": 107.0
+      "impressions": 3.0,
+      "ctr": 0.3333333333333333,
+      "position": 99.33333333333333
     },
     {
       "query": "\"your premier style source! fashion first offers exclusive previews of upcoming collections\"",
@@ -73,11 +73,46 @@
       "position": 53.5
     },
     {
+      "query": "1 programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 63.0
+    },
+    {
       "query": "1.tv programm heute",
       "clicks": 0.0,
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 51.0
+    },
+    {
+      "query": "14 tage tv programm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 93.0
+    },
+    {
+      "query": "2 programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 65.0
+    },
+    {
+      "query": "20 15 uhr programm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 68.0
+    },
+    {
+      "query": "20.15 fernsehen heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 97.0
     },
     {
       "query": "20.15 heute",
@@ -94,6 +129,48 @@
       "position": 100.0
     },
     {
+      "query": "20.15 programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 74.0
+    },
+    {
+      "query": "20.15 uhr heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 69.0
+    },
+    {
+      "query": "abend programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 79.0
+    },
+    {
+      "query": "abendprogramm 20.15",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 69.0
+    },
+    {
+      "query": "abendprogramm fernsehen heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 68.0
+    },
+    {
+      "query": "abendprogramm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 65.0
+    },
+    {
       "query": "abendprogramm heute ard",
       "clicks": 0.0,
       "impressions": 2.0,
@@ -101,95 +178,18 @@
       "position": 79.0
     },
     {
+      "query": "abendprogramm rtl2 heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 75.0
+    },
+    {
       "query": "aktuelle stunde münster",
       "clicks": 0.0,
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 22.0
-    },
-    {
-      "query": "aktuelle tv programm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 45.0
-    },
-    {
-      "query": "aktuelles fernsehprogramm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 80.0
-    },
-    {
-      "query": "aktuelles fernsehprogramm heute abend",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 98.0
-    },
-    {
-      "query": "aktuelles fernsehprogramm jetzt",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 70.0
-    },
-    {
-      "query": "aktuelles fernsehprogramm von heute",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 75.0
-    },
-    {
-      "query": "alle fernsehprogramme",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 98.0
-    },
-    {
-      "query": "alle sender programm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 47.0
-    },
-    {
-      "query": "alle tv programme",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 70.0
-    },
-    {
-      "query": "alle tv programme heute",
-      "clicks": 0.0,
-      "impressions": 6.0,
-      "ctr": 0.0,
-      "position": 69.0
-    },
-    {
-      "query": "anixe",
-      "clicks": 0.0,
-      "impressions": 2.0,
-      "ctr": 0.0,
-      "position": 61.5
-    },
-    {
-      "query": "ard abendprogramm heute",
-      "clicks": 0.0,
-      "impressions": 2.0,
-      "ctr": 0.0,
-      "position": 75.0
-    },
-    {
-      "query": "ard de programm heute",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 68.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 1.0,
-        "impressions": 930.0,
-        "ctr": 0.001075268817204301,
-        "position": 55.30860215053764
+        "impressions": 1839.0,
+        "ctr": 0.000543773790103317,
+        "position": 62.486677542142466
       },
       "previous": {
         "clicks": 3.0,
-        "impressions": 956.0,
-        "ctr": 0.0031380753138075313,
-        "position": 55.8326359832636
+        "impressions": 933.0,
+        "ctr": 0.003215434083601286,
+        "position": 54.32904608788853
       },
       "delta": {
         "clicks": -66.67,
-        "impressions": -2.72,
-        "ctr": -65.73,
-        "position": -0.52
+        "impressions": 97.11,
+        "ctr": -83.09,
+        "position": 8.16
       }
     },
     {
