@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-25T05:36:57.783113+00:00",
+  "generatedAt": "2026-04-26T06:06:16.913298+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-10",
-      "endDate": "2026-04-23"
+      "startDate": "2026-04-11",
+      "endDate": "2026-04-24"
     },
     "previous": {
-      "startDate": "2026-03-27",
-      "endDate": "2026-04-09"
+      "startDate": "2026-03-28",
+      "endDate": "2026-04-10"
     }
   },
   "summary": {
@@ -33,21 +33,21 @@
     },
     "headCurrent": {
       "clicks": 1.0,
-      "impressions": 1839.0,
-      "ctr": 0.0005,
-      "position": 62.49
+      "impressions": 1785.0,
+      "ctr": 0.0006,
+      "position": 63.37
     },
     "headPrevious": {
-      "clicks": 3.0,
-      "impressions": 933.0,
-      "ctr": 0.0032,
-      "position": 54.33
+      "clicks": 2.0,
+      "impressions": 921.0,
+      "ctr": 0.0022,
+      "position": 51.85
     },
     "headDelta": {
-      "clicks": -66.67,
-      "impressions": 97.11,
-      "ctr": -84.38,
-      "position": 8.16
+      "clicks": -50.0,
+      "impressions": 93.81,
+      "ctr": -72.73,
+      "position": 11.52
     }
   },
   "topQueries": [
@@ -185,11 +185,11 @@
       "position": 75.0
     },
     {
-      "query": "aktuelle stunde münster",
+      "query": "aktuelles fernsehprogramm",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 2.0,
       "ctr": 0.0,
-      "position": 22.0
+      "position": 81.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 1.0,
-        "impressions": 1839.0,
-        "ctr": 0.000543773790103317,
-        "position": 62.486677542142466
+        "impressions": 1785.0,
+        "ctr": 0.0005602240896358543,
+        "position": 63.37366946778712
       },
       "previous": {
-        "clicks": 3.0,
-        "impressions": 933.0,
-        "ctr": 0.003215434083601286,
-        "position": 54.32904608788853
+        "clicks": 2.0,
+        "impressions": 921.0,
+        "ctr": 0.002171552660152009,
+        "position": 51.85016286644951
       },
       "delta": {
-        "clicks": -66.67,
-        "impressions": 97.11,
-        "ctr": -83.09,
-        "position": 8.16
+        "clicks": -50.0,
+        "impressions": 93.81,
+        "ctr": -74.2,
+        "position": 11.52
       }
     },
     {
