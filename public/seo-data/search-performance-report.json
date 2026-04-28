@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-27T06:25:36.141018+00:00",
+  "generatedAt": "2026-04-28T06:29:38.114999+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-12",
-      "endDate": "2026-04-25"
+      "startDate": "2026-04-13",
+      "endDate": "2026-04-26"
     },
     "previous": {
-      "startDate": "2026-03-29",
-      "endDate": "2026-04-11"
+      "startDate": "2026-03-30",
+      "endDate": "2026-04-12"
     }
   },
   "summary": {
@@ -32,31 +32,52 @@
       "position": 0.0
     },
     "headCurrent": {
-      "clicks": 1.0,
-      "impressions": 2986.0,
-      "ctr": 0.0003,
-      "position": 64.71
+      "clicks": 4.0,
+      "impressions": 3504.0,
+      "ctr": 0.0011,
+      "position": 65.72
     },
     "headPrevious": {
-      "clicks": 2.0,
-      "impressions": 861.0,
-      "ctr": 0.0023,
-      "position": 50.31
+      "clicks": 1.0,
+      "impressions": 825.0,
+      "ctr": 0.0012,
+      "position": 48.79
     },
     "headDelta": {
-      "clicks": -50.0,
-      "impressions": 246.81,
-      "ctr": -86.96,
-      "position": 14.4
+      "clicks": 300.0,
+      "impressions": 324.73,
+      "ctr": -8.33,
+      "position": 16.93
     }
   },
   "topQueries": [
     {
+      "query": "fernsehprogramm jetzt alle sender",
+      "clicks": 1.0,
+      "impressions": 13.0,
+      "ctr": 0.07692307692307693,
+      "position": 76.53846153846153
+    },
+    {
+      "query": "tv heute",
+      "clicks": 1.0,
+      "impressions": 14.0,
+      "ctr": 0.07142857142857142,
+      "position": 85.07142857142857
+    },
+    {
       "query": "tv programm jetzt",
       "clicks": 1.0,
-      "impressions": 3.0,
-      "ctr": 0.3333333333333333,
-      "position": 99.33333333333333
+      "impressions": 5.0,
+      "ctr": 0.2,
+      "position": 81.2
+    },
+    {
+      "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 3.0
     },
     {
       "query": "\"your premier style source! fashion first offers exclusive previews of upcoming collections\"",
@@ -150,6 +171,13 @@
       "position": 65.0
     },
     {
+      "query": "20 15 tv heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 71.0
+    },
+    {
       "query": "20 15 uhr programm",
       "clicks": 0.0,
       "impressions": 1.0,
@@ -162,34 +190,6 @@
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 63.0
-    },
-    {
-      "query": "20 uhr 15 tv programm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 70.0
-    },
-    {
-      "query": "20.15 fernsehen heute",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 97.0
-    },
-    {
-      "query": "20.15 heute",
-      "clicks": 0.0,
-      "impressions": 3.0,
-      "ctr": 0.0,
-      "position": 77.33333333333333
-    },
-    {
-      "query": "20.15 heute tv",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 100.0
     }
   ],
   "targets": [
@@ -197,22 +197,22 @@
       "slug": "home",
       "url": "https://fernsehheute.de/",
       "current": {
-        "clicks": 1.0,
-        "impressions": 2986.0,
-        "ctr": 0.0003348961821835231,
-        "position": 64.71165438713999
+        "clicks": 4.0,
+        "impressions": 3504.0,
+        "ctr": 0.001141552511415525,
+        "position": 65.7208904109589
       },
       "previous": {
-        "clicks": 2.0,
-        "impressions": 861.0,
-        "ctr": 0.0023228803716608595,
-        "position": 50.3054587688734
+        "clicks": 1.0,
+        "impressions": 825.0,
+        "ctr": 0.0012121212121212121,
+        "position": 48.79272727272727
       },
       "delta": {
-        "clicks": -50.0,
-        "impressions": 246.81,
-        "ctr": -85.58,
-        "position": 14.41
+        "clicks": 300.0,
+        "impressions": 324.73,
+        "ctr": -5.82,
+        "position": 16.93
       }
     },
     {
