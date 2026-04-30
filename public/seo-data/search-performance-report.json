@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-29T06:23:09.544181+00:00",
+  "generatedAt": "2026-04-30T06:27:33.440981+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-14",
-      "endDate": "2026-04-27"
+      "startDate": "2026-04-15",
+      "endDate": "2026-04-28"
     },
     "previous": {
-      "startDate": "2026-03-31",
-      "endDate": "2026-04-13"
+      "startDate": "2026-04-01",
+      "endDate": "2026-04-14"
     }
   },
   "summary": {
@@ -33,44 +33,44 @@
     },
     "headCurrent": {
       "clicks": 4.0,
-      "impressions": 3659.0,
+      "impressions": 3788.0,
       "ctr": 0.0011,
-      "position": 66.3
+      "position": 67.06
     },
     "headPrevious": {
-      "clicks": 1.0,
-      "impressions": 722.0,
-      "ctr": 0.0014,
-      "position": 48.44
+      "clicks": 0.0,
+      "impressions": 630.0,
+      "ctr": 0.0,
+      "position": 46.09
     },
     "headDelta": {
-      "clicks": 300.0,
-      "impressions": 406.79,
-      "ctr": -21.43,
-      "position": 17.86
+      "clicks": 100.0,
+      "impressions": 501.27,
+      "ctr": 100.0,
+      "position": 20.97
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm jetzt alle sender",
       "clicks": 1.0,
-      "impressions": 10.0,
-      "ctr": 0.1,
-      "position": 92.6
+      "impressions": 12.0,
+      "ctr": 0.08333333333333333,
+      "position": 94.33333333333333
     },
     {
       "query": "tv heute",
       "clicks": 1.0,
-      "impressions": 14.0,
-      "ctr": 0.07142857142857142,
-      "position": 85.07142857142857
+      "impressions": 17.0,
+      "ctr": 0.058823529411764705,
+      "position": 85.11764705882354
     },
     {
       "query": "tv programm jetzt",
       "clicks": 1.0,
-      "impressions": 5.0,
-      "ctr": 0.2,
-      "position": 81.2
+      "impressions": 7.0,
+      "ctr": 0.14285714285714285,
+      "position": 83.71428571428571
     },
     {
       "query": "\"chic daily brings you the latest fashion trends, beauty tips, and celebrity looks\"",
@@ -82,9 +82,16 @@
     {
       "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
+    },
+    {
+      "query": "\"trace style through time! fashion evolution explores iconic eras\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 4.0
     },
     {
       "query": "\"your premier style source! fashion first offers exclusive previews of upcoming collections\"",
@@ -92,6 +99,13 @@
       "impressions": 8.0,
       "ctr": 0.0,
       "position": 5.875
+    },
+    {
+      "query": "\"your ultimate weekly fashion recap! this week in style covers all the must-see luxury shows\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 3.0
     },
     {
       "query": "+2 programm",
@@ -176,20 +190,6 @@
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 65.0
-    },
-    {
-      "query": "2 fernsehprogramm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 67.0
-    },
-    {
-      "query": "2 programm heute",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 65.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 4.0,
-        "impressions": 3659.0,
-        "ctr": 0.0010931948619841486,
-        "position": 66.30117518447663
+        "impressions": 3788.0,
+        "ctr": 0.0010559662090813093,
+        "position": 67.06362196409715
       },
       "previous": {
-        "clicks": 1.0,
-        "impressions": 722.0,
-        "ctr": 0.0013850415512465374,
-        "position": 48.4404432132964
+        "clicks": 0.0,
+        "impressions": 630.0,
+        "ctr": 0.0,
+        "position": 46.08571428571429
       },
       "delta": {
-        "clicks": 300.0,
-        "impressions": 406.79,
-        "ctr": -21.07,
-        "position": 17.86
+        "clicks": 100.0,
+        "impressions": 501.27,
+        "ctr": 100.0,
+        "position": 20.98
       }
     },
     {
