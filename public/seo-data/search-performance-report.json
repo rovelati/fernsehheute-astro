@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-04-30T06:27:33.440981+00:00",
+  "generatedAt": "2026-05-01T06:37:04.220132+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-15",
-      "endDate": "2026-04-28"
+      "startDate": "2026-04-16",
+      "endDate": "2026-04-29"
     },
     "previous": {
-      "startDate": "2026-04-01",
-      "endDate": "2026-04-14"
+      "startDate": "2026-04-02",
+      "endDate": "2026-04-15"
     }
   },
   "summary": {
@@ -33,44 +33,51 @@
     },
     "headCurrent": {
       "clicks": 4.0,
-      "impressions": 3788.0,
-      "ctr": 0.0011,
-      "position": 67.06
+      "impressions": 3890.0,
+      "ctr": 0.001,
+      "position": 67.51
     },
     "headPrevious": {
       "clicks": 0.0,
-      "impressions": 630.0,
+      "impressions": 598.0,
       "ctr": 0.0,
-      "position": 46.09
+      "position": 45.8
     },
     "headDelta": {
       "clicks": 100.0,
-      "impressions": 501.27,
+      "impressions": 550.5,
       "ctr": 100.0,
-      "position": 20.97
+      "position": 21.71
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm jetzt alle sender",
       "clicks": 1.0,
-      "impressions": 12.0,
-      "ctr": 0.08333333333333333,
-      "position": 94.33333333333333
+      "impressions": 9.0,
+      "ctr": 0.1111111111111111,
+      "position": 97.0
     },
     {
       "query": "tv heute",
       "clicks": 1.0,
-      "impressions": 17.0,
-      "ctr": 0.058823529411764705,
-      "position": 85.11764705882354
+      "impressions": 19.0,
+      "ctr": 0.05263157894736842,
+      "position": 85.73684210526316
     },
     {
       "query": "tv programm jetzt",
       "clicks": 1.0,
       "impressions": 7.0,
       "ctr": 0.14285714285714285,
-      "position": 83.71428571428571
+      "position": 82.28571428571429
+    },
+    {
+      "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 4.0
     },
     {
       "query": "\"chic daily brings you the latest fashion trends, beauty tips, and celebrity looks\"",
@@ -80,16 +87,51 @@
       "position": 4.0
     },
     {
-      "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
+      "query": "\"decode every trend! fashion code reveals the hidden rules of style\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 5.0
+    },
+    {
+      "query": "\"dial into ultimate style! glamour line features trending looks\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 5.0
+    },
+    {
+      "query": "\"dive into iconic celebrity fashion! style icons explores the signature looks\"",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 4.0
+    },
+    {
+      "query": "\"editor's pick showcases exclusive trends, coveted items, and expert advice straight from the forefront of style and culture\"",
       "clicks": 0.0,
       "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
-      "query": "\"trace style through time! fashion evolution explores iconic eras\"",
+      "query": "\"get the ultimate insider's guide! editor's pick showcases exclusive trends\"",
       "clicks": 0.0,
       "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 3.0
+    },
+    {
+      "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
+      "clicks": 0.0,
+      "impressions": 4.0,
+      "ctr": 0.0,
+      "position": 3.0
+    },
+    {
+      "query": "\"trace style through time! fashion evolution explores iconic eras\"",
+      "clicks": 0.0,
+      "impressions": 5.0,
       "ctr": 0.0,
       "position": 4.0
     },
@@ -103,7 +145,7 @@
     {
       "query": "\"your ultimate weekly fashion recap! this week in style covers all the must-see luxury shows\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -148,48 +190,6 @@
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 64.0
-    },
-    {
-      "query": "1-2-3 tv programm heute",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 55.0
-    },
-    {
-      "query": "1.programm heute 20.15",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 71.0
-    },
-    {
-      "query": "1.tv programm heute",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 51.0
-    },
-    {
-      "query": "123 tv programm heute",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 34.0
-    },
-    {
-      "query": "14 tage tv programm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 93.0
-    },
-    {
-      "query": "15.00 uhr",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 65.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 4.0,
-        "impressions": 3788.0,
-        "ctr": 0.0010559662090813093,
-        "position": 67.06362196409715
+        "impressions": 3890.0,
+        "ctr": 0.0010282776349614395,
+        "position": 67.5120822622108
       },
       "previous": {
         "clicks": 0.0,
-        "impressions": 630.0,
+        "impressions": 598.0,
         "ctr": 0.0,
-        "position": 46.08571428571429
+        "position": 45.802675585284284
       },
       "delta": {
         "clicks": 100.0,
-        "impressions": 501.27,
+        "impressions": 550.5,
         "ctr": 100.0,
-        "position": 20.98
+        "position": 21.71
       }
     },
     {
