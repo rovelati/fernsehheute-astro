@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-02T06:04:41.771144+00:00",
+  "generatedAt": "2026-05-03T06:25:13.952013+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-17",
-      "endDate": "2026-04-30"
+      "startDate": "2026-04-18",
+      "endDate": "2026-05-01"
     },
     "previous": {
-      "startDate": "2026-04-03",
-      "endDate": "2026-04-16"
+      "startDate": "2026-04-04",
+      "endDate": "2026-04-17"
     }
   },
   "summary": {
@@ -33,89 +33,110 @@
     },
     "headCurrent": {
       "clicks": 4.0,
-      "impressions": 3893.0,
+      "impressions": 3911.0,
       "ctr": 0.001,
-      "position": 68.51
+      "position": 69.59
     },
     "headPrevious": {
       "clicks": 0.0,
-      "impressions": 650.0,
+      "impressions": 658.0,
       "ctr": 0.0,
-      "position": 42.61
+      "position": 41.12
     },
     "headDelta": {
       "clicks": 100.0,
-      "impressions": 498.92,
+      "impressions": 494.38,
       "ctr": 100.0,
-      "position": 25.9
+      "position": 28.47
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm jetzt alle sender",
       "clicks": 1.0,
-      "impressions": 10.0,
-      "ctr": 0.1,
-      "position": 97.1
+      "impressions": 9.0,
+      "ctr": 0.1111111111111111,
+      "position": 97.66666666666667
     },
     {
       "query": "tv heute",
       "clicks": 1.0,
-      "impressions": 20.0,
-      "ctr": 0.05,
-      "position": 85.7
+      "impressions": 21.0,
+      "ctr": 0.047619047619047616,
+      "position": 88.71428571428571
     },
     {
       "query": "tv programm jetzt",
       "clicks": 1.0,
-      "impressions": 7.0,
-      "ctr": 0.14285714285714285,
-      "position": 82.28571428571429
+      "impressions": 8.0,
+      "ctr": 0.125,
+      "position": 81.75
     },
     {
       "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 6.0,
       "ctr": 0.0,
-      "position": 3.5
+      "position": 3.1666666666666665
     },
     {
       "query": "\"catch luxury's daily pulse! trending today highlights the most talked-about fashion moments\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 6.0
     },
     {
+      "query": "\"celebrate the style shapers! trendsetters showcases the elite designers and celebrity icons\"",
+      "clicks": 0.0,
+      "impressions": 3.0,
+      "ctr": 0.0,
+      "position": 4.0
+    },
+    {
       "query": "\"chic daily brings you the latest fashion trends, beauty tips, and celebrity looks\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 4.0
     },
     {
       "query": "\"decode every trend! fashion code reveals the hidden rules of style\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 5.0
     },
     {
       "query": "\"dial into ultimate style! glamour line features trending looks\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 4.0,
       "ctr": 0.0,
       "position": 5.0
     },
     {
       "query": "\"dive into iconic celebrity fashion! style icons explores the signature looks\"",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 6.0,
       "ctr": 0.0,
       "position": 4.0
     },
     {
+      "query": "\"dive into the lives of the rich and famous! a-listers takes you behind the velvet ropes\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 3.0
+    },
+    {
       "query": "\"editor's pick showcases exclusive trends, coveted items, and expert advice straight from the forefront of style and culture\"",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 3.0
+    },
+    {
+      "query": "\"editor's pick showcases exclusive trends, coveted items, and expert advice\"",
       "clicks": 0.0,
       "impressions": 2.0,
       "ctr": 0.0,
@@ -131,16 +152,23 @@
     {
       "query": "\"get the ultimate insider's guide! editor's pick showcases exclusive trends\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 4.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"identifies emerging styles from runways, analyzes celebrity influences, and predicts tomorrow's must-have looks\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
+    },
+    {
+      "query": "\"most liked showcases the most talked-about haute couture\"",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 4.0
     },
     {
       "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
@@ -150,46 +178,18 @@
       "position": 3.0
     },
     {
-      "query": "\"trace style through time! fashion evolution explores iconic eras\"",
+      "query": "\"see fashion, uncensored! fashion unfiltered delivers honest takes on trends\"",
       "clicks": 0.0,
-      "impressions": 8.0,
+      "impressions": 1.0,
       "ctr": 0.0,
       "position": 4.0
     },
     {
-      "query": "\"your premier style source! fashion first offers exclusive previews of upcoming collections\"",
-      "clicks": 0.0,
-      "impressions": 8.0,
-      "ctr": 0.0,
-      "position": 5.875
-    },
-    {
-      "query": "\"your ultimate weekly fashion recap! this week in style covers all the must-see luxury shows\"",
-      "clicks": 0.0,
-      "impressions": 4.0,
-      "ctr": 0.0,
-      "position": 3.0
-    },
-    {
-      "query": "+2 programm",
-      "clicks": 0.0,
-      "impressions": 2.0,
-      "ctr": 0.0,
-      "position": 53.5
-    },
-    {
-      "query": "1 2 3 tv programm heute",
+      "query": "\"style icons explores the signature looks, luxury brand collaborations\"",
       "clicks": 0.0,
       "impressions": 1.0,
       "ctr": 0.0,
-      "position": 89.0
-    },
-    {
-      "query": "1 fernsehprogramm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 67.0
+      "position": 4.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 4.0,
-        "impressions": 3893.0,
-        "ctr": 0.0010274852298998202,
-        "position": 68.50680708964809
+        "impressions": 3911.0,
+        "ctr": 0.0010227563283047815,
+        "position": 69.58603937611863
       },
       "previous": {
         "clicks": 0.0,
-        "impressions": 650.0,
+        "impressions": 658.0,
         "ctr": 0.0,
-        "position": 42.60769230769231
+        "position": 41.11702127659574
       },
       "delta": {
         "clicks": 100.0,
-        "impressions": 498.92,
+        "impressions": 494.38,
         "ctr": 100.0,
-        "position": 25.9
+        "position": 28.47
       }
     },
     {
