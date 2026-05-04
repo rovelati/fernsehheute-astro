@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-03T06:25:13.952013+00:00",
+  "generatedAt": "2026-05-04T06:35:49.657087+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-18",
-      "endDate": "2026-05-01"
+      "startDate": "2026-04-19",
+      "endDate": "2026-05-02"
     },
     "previous": {
-      "startDate": "2026-04-04",
-      "endDate": "2026-04-17"
+      "startDate": "2026-04-05",
+      "endDate": "2026-04-18"
     }
   },
   "summary": {
@@ -32,22 +32,22 @@
       "position": 0.0
     },
     "headCurrent": {
-      "clicks": 4.0,
-      "impressions": 3911.0,
-      "ctr": 0.001,
-      "position": 69.59
+      "clicks": 3.0,
+      "impressions": 3896.0,
+      "ctr": 0.0008,
+      "position": 70.02
     },
     "headPrevious": {
-      "clicks": 0.0,
-      "impressions": 658.0,
-      "ctr": 0.0,
-      "position": 41.12
+      "clicks": 1.0,
+      "impressions": 668.0,
+      "ctr": 0.0015,
+      "position": 41.68
     },
     "headDelta": {
-      "clicks": 100.0,
-      "impressions": 494.38,
-      "ctr": 100.0,
-      "position": 28.47
+      "clicks": 200.0,
+      "impressions": 483.23,
+      "ctr": -46.67,
+      "position": 28.34
     }
   },
   "topQueries": [
@@ -56,28 +56,21 @@
       "clicks": 1.0,
       "impressions": 9.0,
       "ctr": 0.1111111111111111,
-      "position": 97.66666666666667
+      "position": 96.88888888888889
     },
     {
       "query": "tv heute",
       "clicks": 1.0,
-      "impressions": 21.0,
-      "ctr": 0.047619047619047616,
-      "position": 88.71428571428571
-    },
-    {
-      "query": "tv programm jetzt",
-      "clicks": 1.0,
-      "impressions": 8.0,
-      "ctr": 0.125,
-      "position": 81.75
+      "impressions": 23.0,
+      "ctr": 0.043478260869565216,
+      "position": 87.34782608695652
     },
     {
       "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
       "clicks": 0.0,
-      "impressions": 6.0,
+      "impressions": 7.0,
       "ctr": 0.0,
-      "position": 3.1666666666666665
+      "position": 3.142857142857143
     },
     {
       "query": "\"catch luxury's daily pulse! trending today highlights the most talked-about fashion moments\"",
@@ -89,9 +82,16 @@
     {
       "query": "\"celebrate the style shapers! trendsetters showcases the elite designers and celebrity icons\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 4.0,
       "ctr": 0.0,
       "position": 4.0
+    },
+    {
+      "query": "\"celebrate the style shapers! trendsetters showcases the elite designers\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 3.0
     },
     {
       "query": "\"chic daily brings you the latest fashion trends, beauty tips, and celebrity looks\"",
@@ -103,21 +103,21 @@
     {
       "query": "\"decode every trend! fashion code reveals the hidden rules of style\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 5.0,
       "ctr": 0.0,
       "position": 5.0
     },
     {
       "query": "\"dial into ultimate style! glamour line features trending looks\"",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 5.0,
       "ctr": 0.0,
       "position": 5.0
     },
     {
       "query": "\"dive into iconic celebrity fashion! style icons explores the signature looks\"",
       "clicks": 0.0,
-      "impressions": 6.0,
+      "impressions": 7.0,
       "ctr": 0.0,
       "position": 4.0
     },
@@ -138,7 +138,7 @@
     {
       "query": "\"editor's pick showcases exclusive trends, coveted items, and expert advice\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -150,25 +150,39 @@
       "position": 5.0
     },
     {
+      "query": "\"fashion stars profiles the legendary figures and rising talents dominating runways and red carpets\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 5.0
+    },
+    {
       "query": "\"get the ultimate insider's guide! editor's pick showcases exclusive trends\"",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 6.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"identifies emerging styles from runways, analyzes celebrity influences, and predicts tomorrow's must-have looks\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"most liked showcases the most talked-about haute couture\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 4.0,
       "ctr": 0.0,
       "position": 4.0
+    },
+    {
+      "query": "\"profiles the legendary figures and rising talents dominating runways and red carpets\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 3.0
     },
     {
       "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
@@ -176,20 +190,6 @@
       "impressions": 5.0,
       "ctr": 0.0,
       "position": 3.0
-    },
-    {
-      "query": "\"see fashion, uncensored! fashion unfiltered delivers honest takes on trends\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 4.0
-    },
-    {
-      "query": "\"style icons explores the signature looks, luxury brand collaborations\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 4.0
     }
   ],
   "targets": [
@@ -197,22 +197,22 @@
       "slug": "home",
       "url": "https://fernsehheute.de/",
       "current": {
-        "clicks": 4.0,
-        "impressions": 3911.0,
-        "ctr": 0.0010227563283047815,
-        "position": 69.58603937611863
+        "clicks": 3.0,
+        "impressions": 3896.0,
+        "ctr": 0.0007700205338809035,
+        "position": 70.01719712525667
       },
       "previous": {
-        "clicks": 0.0,
-        "impressions": 658.0,
-        "ctr": 0.0,
-        "position": 41.11702127659574
+        "clicks": 1.0,
+        "impressions": 668.0,
+        "ctr": 0.0014970059880239522,
+        "position": 41.6811377245509
       },
       "delta": {
-        "clicks": 100.0,
-        "impressions": 494.38,
-        "ctr": 100.0,
-        "position": 28.47
+        "clicks": 200.0,
+        "impressions": 483.23,
+        "ctr": -48.56,
+        "position": 28.34
       }
     },
     {
