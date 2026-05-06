@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-05T06:14:00.511173+00:00",
+  "generatedAt": "2026-05-06T06:28:25.347719+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-20",
-      "endDate": "2026-05-03"
+      "startDate": "2026-04-21",
+      "endDate": "2026-05-04"
     },
     "previous": {
-      "startDate": "2026-04-06",
-      "endDate": "2026-04-19"
+      "startDate": "2026-04-07",
+      "endDate": "2026-04-20"
     }
   },
   "summary": {
@@ -33,44 +33,44 @@
     },
     "headCurrent": {
       "clicks": 3.0,
-      "impressions": 3817.0,
+      "impressions": 3690.0,
       "ctr": 0.0008,
-      "position": 69.79
+      "position": 69.73
     },
     "headPrevious": {
       "clicks": 1.0,
-      "impressions": 710.0,
-      "ctr": 0.0014,
-      "position": 44.48
+      "impressions": 853.0,
+      "ctr": 0.0012,
+      "position": 49.5
     },
     "headDelta": {
       "clicks": 200.0,
-      "impressions": 437.61,
-      "ctr": -42.86,
-      "position": 25.31
+      "impressions": 332.59,
+      "ctr": -33.33,
+      "position": 20.23
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm jetzt alle sender",
       "clicks": 1.0,
-      "impressions": 8.0,
-      "ctr": 0.125,
-      "position": 96.75
+      "impressions": 11.0,
+      "ctr": 0.09090909090909091,
+      "position": 98.27272727272727
     },
     {
       "query": "tv heute",
       "clicks": 1.0,
-      "impressions": 23.0,
-      "ctr": 0.043478260869565216,
-      "position": 87.34782608695652
+      "impressions": 22.0,
+      "ctr": 0.045454545454545456,
+      "position": 86.68181818181819
     },
     {
       "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
       "clicks": 0.0,
-      "impressions": 7.0,
+      "impressions": 8.0,
       "ctr": 0.0,
-      "position": 3.142857142857143
+      "position": 3.125
     },
     {
       "query": "\"catch luxury's daily pulse! trending today highlights the most talked-about fashion moments\"",
@@ -82,9 +82,9 @@
     {
       "query": "\"celebrate the style shapers! trendsetters showcases the elite designers and celebrity icons\"",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 5.0,
       "ctr": 0.0,
-      "position": 4.0
+      "position": 3.8
     },
     {
       "query": "\"celebrate the style shapers! trendsetters showcases the elite designers\"",
@@ -103,14 +103,14 @@
     {
       "query": "\"decode every trend! fashion code reveals the hidden rules of style\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 6.0,
       "ctr": 0.0,
       "position": 5.0
     },
     {
       "query": "\"dial into ultimate style! glamour line features trending looks\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 6.0,
       "ctr": 0.0,
       "position": 5.0
     },
@@ -124,7 +124,7 @@
     {
       "query": "\"dive into the lives of the rich and famous! a-listers takes you behind the velvet ropes\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -145,7 +145,7 @@
     {
       "query": "\"fashion code reveals the hidden rules of style\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 5.0
     },
@@ -166,7 +166,7 @@
     {
       "query": "\"identifies emerging styles from runways, analyzes celebrity influences, and predicts tomorrow's must-have looks\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 5.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -180,7 +180,7 @@
     {
       "query": "\"profiles the legendary figures and rising talents dominating runways and red carpets\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 3.0,
-        "impressions": 3817.0,
-        "ctr": 0.0007859575582918522,
-        "position": 69.79250720461096
+        "impressions": 3690.0,
+        "ctr": 0.0008130081300813008,
+        "position": 69.73333333333333
       },
       "previous": {
         "clicks": 1.0,
-        "impressions": 710.0,
-        "ctr": 0.0014084507042253522,
-        "position": 44.48028169014084
+        "impressions": 853.0,
+        "ctr": 0.0011723329425556857,
+        "position": 49.49589683470106
       },
       "delta": {
         "clicks": 200.0,
-        "impressions": 437.61,
-        "ctr": -44.2,
-        "position": 25.31
+        "impressions": 332.59,
+        "ctr": -30.65,
+        "position": 20.24
       }
     },
     {
