@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-06T06:26:40.031764+00:00",
+  "generatedAt": "2026-05-07T06:31:54.650913+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console URL Inspection API",
   "summary": {
@@ -22,7 +22,7 @@
       "googleCanonical": "https://fernsehheute.de/",
       "userCanonical": "https://fernsehheute.de/",
       "crawledAs": "MOBILE",
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=DE_gR7_EXVU29htZjoVRVg&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=hsWz5uoURpdjo9YIWWItoA&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": "PASS"
     },
@@ -38,7 +38,7 @@
       "googleCanonical": "https://fernsehheute.de/morgen/",
       "userCanonical": "https://fernsehheute.de/morgen/",
       "crawledAs": "MOBILE",
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=5nsfsgjB_M4hpUd3qfQVaQ&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=fCA53cuUWjvs6bScwMd9YA&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -54,7 +54,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=ewCI4Hk976lyjL7qjapZzQ&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=HXtIALpdtYFL5I59lZF-TQ&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -70,7 +70,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=h4kGNkYMVlu9jefo8swLvQ&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=-tNnOr561QDKDvdleEWD4A&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -86,7 +86,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=8ev72RREHTwQbV9csM_-9w&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=amlGJ9jeC05nmnTXQ-oP_g&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -102,7 +102,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=UFSuXz3I8QQIg1zsVz4dbQ&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=a0hlSlvLy7LCjR2UoyjZOA&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -110,15 +110,15 @@
       "url": "https://fernsehheute.de/rtl/",
       "status": "ok",
       "verdict": "NEUTRAL",
-      "coverageState": "URL ist Google nicht bekannt",
-      "indexingState": "INDEXING_STATE_UNSPECIFIED",
-      "lastCrawlTime": null,
-      "pageFetchState": "PAGE_FETCH_STATE_UNSPECIFIED",
-      "robotsTxtState": "ROBOTS_TXT_STATE_UNSPECIFIED",
-      "googleCanonical": null,
-      "userCanonical": null,
-      "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=Sz7KVDiu4CL8rxCvlWPkcg&utm_medium=link&utm_source=api",
+      "coverageState": "Gecrawlt – zurzeit nicht indexiert",
+      "indexingState": "INDEXING_ALLOWED",
+      "lastCrawlTime": "2026-05-07T03:10:53Z",
+      "pageFetchState": "SUCCESSFUL",
+      "robotsTxtState": "ALLOWED",
+      "googleCanonical": "https://fernsehheute.de/rtl/",
+      "userCanonical": "https://fernsehheute.de/rtl/",
+      "crawledAs": "MOBILE",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=rP3EYD_xQjG9cKZ0y3Tdsw&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -134,7 +134,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=OyWflG9h9EBRTeaYlEXtkA&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=nivSI86bjqaXCpmxQrlxlw&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -150,7 +150,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=04SlAm15NxU7N2j_5EzN2w&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=1UsRAAbDpG8lL84m_p92DA&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -166,7 +166,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=yksdSYeAqVd0vr9vrqlRuQ&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=_FrIR1s6hiD3sxR5GvsY1Q&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -182,7 +182,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=YWTUDvF2m2KxhIOBLZPs3w&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=g4fPn1scxUBVMlrPKPO9PA&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -198,7 +198,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=rCTQmCYsOLcv-9a1raTFjg&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=Qlhwcn4KHI1YgPFTm3ckuQ&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -214,7 +214,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=LTaBfQJE8GRths9rQKkAKw&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=8d1iI31c6pxzRJ4U-WR9_A&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -230,7 +230,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=CqX-v1L4Zn7979ofqRZVKA&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=ViQ-tSwTRS2rPz-h3VwSGg&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     },
@@ -246,7 +246,7 @@
       "googleCanonical": null,
       "userCanonical": null,
       "crawledAs": null,
-      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=-gvS6pRrEtNHSaHJauX92Q&utm_medium=link&utm_source=api",
+      "inspectionResultLink": "https://search.google.com/search-console/inspect?resource_id=https://fernsehheute.de/&id=NPs_GEloGDhvMSER7CIy-g&utm_medium=link&utm_source=api",
       "mobileUsabilityVerdict": "VERDICT_UNSPECIFIED",
       "richResultsVerdict": null
     }
