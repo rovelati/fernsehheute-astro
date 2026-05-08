@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-07T06:33:40.290079+00:00",
+  "generatedAt": "2026-05-08T05:49:15.311146+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-22",
-      "endDate": "2026-05-05"
+      "startDate": "2026-04-23",
+      "endDate": "2026-05-06"
     },
     "previous": {
-      "startDate": "2026-04-08",
-      "endDate": "2026-04-21"
+      "startDate": "2026-04-09",
+      "endDate": "2026-04-22"
     }
   },
   "summary": {
@@ -32,38 +32,45 @@
       "position": 0.0
     },
     "headCurrent": {
-      "clicks": 3.0,
-      "impressions": 3575.0,
-      "ctr": 0.0008,
-      "position": 69.66
+      "clicks": 4.0,
+      "impressions": 2841.0,
+      "ctr": 0.0014,
+      "position": 70.4
     },
     "headPrevious": {
       "clicks": 1.0,
-      "impressions": 1001.0,
-      "ctr": 0.001,
-      "position": 53.8
+      "impressions": 1885.0,
+      "ctr": 0.0005,
+      "position": 62.15
     },
     "headDelta": {
-      "clicks": 200.0,
-      "impressions": 257.14,
-      "ctr": -20.0,
-      "position": 15.86
+      "clicks": 300.0,
+      "impressions": 50.72,
+      "ctr": 180.0,
+      "position": 8.25
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm jetzt alle sender",
       "clicks": 1.0,
-      "impressions": 12.0,
-      "ctr": 0.08333333333333333,
-      "position": 100.91666666666667
+      "impressions": 14.0,
+      "ctr": 0.07142857142857142,
+      "position": 98.35714285714286
     },
     {
       "query": "tv heute",
       "clicks": 1.0,
-      "impressions": 22.0,
-      "ctr": 0.045454545454545456,
-      "position": 84.95454545454545
+      "impressions": 24.0,
+      "ctr": 0.041666666666666664,
+      "position": 84.125
+    },
+    {
+      "query": "tv programm heute abend",
+      "clicks": 1.0,
+      "impressions": 8.0,
+      "ctr": 0.125,
+      "position": 81.25
     },
     {
       "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
@@ -183,13 +190,6 @@
       "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
-    },
-    {
-      "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
-      "clicks": 0.0,
-      "impressions": 5.0,
-      "ctr": 0.0,
-      "position": 3.0
     }
   ],
   "targets": [
@@ -197,22 +197,22 @@
       "slug": "home",
       "url": "https://fernsehheute.de/",
       "current": {
-        "clicks": 3.0,
-        "impressions": 3575.0,
-        "ctr": 0.0008391608391608392,
-        "position": 69.6620979020979
+        "clicks": 4.0,
+        "impressions": 2841.0,
+        "ctr": 0.0014079549454417458,
+        "position": 70.4047870468145
       },
       "previous": {
         "clicks": 1.0,
-        "impressions": 1001.0,
-        "ctr": 0.000999000999000999,
-        "position": 53.80419580419581
+        "impressions": 1885.0,
+        "ctr": 0.0005305039787798408,
+        "position": 62.15225464190981
       },
       "delta": {
-        "clicks": 200.0,
-        "impressions": 257.14,
-        "ctr": -16.0,
-        "position": 15.86
+        "clicks": 300.0,
+        "impressions": 50.72,
+        "ctr": 165.4,
+        "position": 8.25
       }
     },
     {
