@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-09T06:13:41.990502+00:00",
+  "generatedAt": "2026-05-10T06:32:39.891143+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-24",
-      "endDate": "2026-05-07"
+      "startDate": "2026-04-25",
+      "endDate": "2026-05-08"
     },
     "previous": {
-      "startDate": "2026-04-10",
-      "endDate": "2026-04-23"
+      "startDate": "2026-04-11",
+      "endDate": "2026-04-24"
     }
   },
   "summary": {
@@ -32,38 +32,31 @@
       "position": 0.0
     },
     "headCurrent": {
-      "clicks": 4.0,
-      "impressions": 2078.0,
-      "ctr": 0.0019,
-      "position": 73.47
+      "clicks": 3.0,
+      "impressions": 1854.0,
+      "ctr": 0.0016,
+      "position": 73.4
     },
     "headPrevious": {
-      "clicks": 1.0,
-      "impressions": 3067.0,
-      "ctr": 0.0003,
-      "position": 63.98
+      "clicks": 2.0,
+      "impressions": 3237.0,
+      "ctr": 0.0006,
+      "position": 65.19
     },
     "headDelta": {
-      "clicks": 300.0,
-      "impressions": -32.25,
-      "ctr": 533.33,
-      "position": 9.49
+      "clicks": 50.0,
+      "impressions": -42.72,
+      "ctr": 166.67,
+      "position": 8.21
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm jetzt alle sender",
       "clicks": 1.0,
-      "impressions": 15.0,
-      "ctr": 0.06666666666666667,
-      "position": 98.4
-    },
-    {
-      "query": "tv heute",
-      "clicks": 1.0,
-      "impressions": 29.0,
-      "ctr": 0.034482758620689655,
-      "position": 83.41379310344827
+      "impressions": 14.0,
+      "ctr": 0.07142857142857142,
+      "position": 98.42857142857143
     },
     {
       "query": "tv programm heute abend",
@@ -190,6 +183,13 @@
       "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
+    },
+    {
+      "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
+      "clicks": 0.0,
+      "impressions": 5.0,
+      "ctr": 0.0,
+      "position": 3.0
     }
   ],
   "targets": [
@@ -197,22 +197,22 @@
       "slug": "home",
       "url": "https://fernsehheute.de/",
       "current": {
-        "clicks": 4.0,
-        "impressions": 2078.0,
-        "ctr": 0.0019249278152069298,
-        "position": 73.46727622714148
+        "clicks": 3.0,
+        "impressions": 1854.0,
+        "ctr": 0.0016181229773462784,
+        "position": 73.40129449838187
       },
       "previous": {
-        "clicks": 1.0,
-        "impressions": 3067.0,
-        "ctr": 0.00032605151613955004,
-        "position": 63.982393218128465
+        "clicks": 2.0,
+        "impressions": 3237.0,
+        "ctr": 0.0006178560395427865,
+        "position": 65.19060858819896
       },
       "delta": {
-        "clicks": 300.0,
-        "impressions": -32.25,
-        "ctr": 490.38,
-        "position": 9.48
+        "clicks": 50.0,
+        "impressions": -42.72,
+        "ctr": 161.89,
+        "position": 8.21
       }
     },
     {
