@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-10T06:32:39.891143+00:00",
+  "generatedAt": "2026-05-11T07:04:14.503183+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-25",
-      "endDate": "2026-05-08"
+      "startDate": "2026-04-26",
+      "endDate": "2026-05-09"
     },
     "previous": {
-      "startDate": "2026-04-11",
-      "endDate": "2026-04-24"
+      "startDate": "2026-04-12",
+      "endDate": "2026-04-25"
     }
   },
   "summary": {
@@ -33,37 +33,30 @@
     },
     "headCurrent": {
       "clicks": 3.0,
-      "impressions": 1854.0,
-      "ctr": 0.0016,
-      "position": 73.4
+      "impressions": 1775.0,
+      "ctr": 0.0017,
+      "position": 74.15
     },
     "headPrevious": {
-      "clicks": 2.0,
-      "impressions": 3237.0,
-      "ctr": 0.0006,
-      "position": 65.19
+      "clicks": 4.0,
+      "impressions": 3534.0,
+      "ctr": 0.0011,
+      "position": 65.53
     },
     "headDelta": {
-      "clicks": 50.0,
-      "impressions": -42.72,
-      "ctr": 166.67,
-      "position": 8.21
+      "clicks": -25.0,
+      "impressions": -49.77,
+      "ctr": 54.55,
+      "position": 8.62
     }
   },
   "topQueries": [
     {
-      "query": "fernsehprogramm jetzt alle sender",
-      "clicks": 1.0,
-      "impressions": 14.0,
-      "ctr": 0.07142857142857142,
-      "position": 98.42857142857143
-    },
-    {
       "query": "tv programm heute abend",
       "clicks": 1.0,
-      "impressions": 11.0,
-      "ctr": 0.09090909090909091,
-      "position": 83.9090909090909
+      "impressions": 8.0,
+      "ctr": 0.125,
+      "position": 84.5
     },
     {
       "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
@@ -187,9 +180,16 @@
     {
       "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 4.0,
       "ctr": 0.0,
       "position": 3.0
+    },
+    {
+      "query": "\"see fashion, uncensored! fashion unfiltered delivers honest takes on trends\"",
+      "clicks": 0.0,
+      "impressions": 3.0,
+      "ctr": 0.0,
+      "position": 4.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 3.0,
-        "impressions": 1854.0,
-        "ctr": 0.0016181229773462784,
-        "position": 73.40129449838187
+        "impressions": 1775.0,
+        "ctr": 0.0016901408450704226,
+        "position": 74.1538028169014
       },
       "previous": {
-        "clicks": 2.0,
-        "impressions": 3237.0,
-        "ctr": 0.0006178560395427865,
-        "position": 65.19060858819896
+        "clicks": 4.0,
+        "impressions": 3534.0,
+        "ctr": 0.0011318619128466328,
+        "position": 65.53310696095076
       },
       "delta": {
-        "clicks": 50.0,
-        "impressions": -42.72,
-        "ctr": 161.89,
-        "position": 8.21
+        "clicks": -25.0,
+        "impressions": -49.77,
+        "ctr": 49.32,
+        "position": 8.62
       }
     },
     {
