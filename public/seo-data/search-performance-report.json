@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-11T07:04:14.503183+00:00",
+  "generatedAt": "2026-05-12T06:34:52.004492+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-26",
-      "endDate": "2026-05-09"
+      "startDate": "2026-04-27",
+      "endDate": "2026-05-10"
     },
     "previous": {
-      "startDate": "2026-04-12",
-      "endDate": "2026-04-25"
+      "startDate": "2026-04-13",
+      "endDate": "2026-04-26"
     }
   },
   "summary": {
@@ -33,21 +33,21 @@
     },
     "headCurrent": {
       "clicks": 3.0,
-      "impressions": 1775.0,
+      "impressions": 1723.0,
       "ctr": 0.0017,
-      "position": 74.15
+      "position": 73.85
     },
     "headPrevious": {
       "clicks": 4.0,
-      "impressions": 3534.0,
+      "impressions": 3684.0,
       "ctr": 0.0011,
-      "position": 65.53
+      "position": 66.21
     },
     "headDelta": {
       "clicks": -25.0,
-      "impressions": -49.77,
+      "impressions": -53.23,
       "ctr": 54.55,
-      "position": 8.62
+      "position": 7.64
     }
   },
   "topQueries": [
@@ -89,7 +89,7 @@
     {
       "query": "\"chic daily brings you the latest fashion trends, beauty tips, and celebrity looks\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 4.0
     },
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 3.0,
-        "impressions": 1775.0,
-        "ctr": 0.0016901408450704226,
-        "position": 74.1538028169014
+        "impressions": 1723.0,
+        "ctr": 0.0017411491584445734,
+        "position": 73.85084155542658
       },
       "previous": {
         "clicks": 4.0,
-        "impressions": 3534.0,
-        "ctr": 0.0011318619128466328,
-        "position": 65.53310696095076
+        "impressions": 3684.0,
+        "ctr": 0.0010857763300760044,
+        "position": 66.20765472312704
       },
       "delta": {
         "clicks": -25.0,
-        "impressions": -49.77,
-        "ctr": 49.32,
-        "position": 8.62
+        "impressions": -53.23,
+        "ctr": 60.36,
+        "position": 7.64
       }
     },
     {
