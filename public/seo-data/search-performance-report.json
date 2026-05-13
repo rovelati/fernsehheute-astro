@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-12T06:34:52.004492+00:00",
+  "generatedAt": "2026-05-13T06:48:19.176103+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-27",
-      "endDate": "2026-05-10"
+      "startDate": "2026-04-28",
+      "endDate": "2026-05-11"
     },
     "previous": {
-      "startDate": "2026-04-13",
-      "endDate": "2026-04-26"
+      "startDate": "2026-04-14",
+      "endDate": "2026-04-27"
     }
   },
   "summary": {
@@ -33,21 +33,21 @@
     },
     "headCurrent": {
       "clicks": 3.0,
-      "impressions": 1723.0,
-      "ctr": 0.0017,
-      "position": 73.85
+      "impressions": 1562.0,
+      "ctr": 0.0019,
+      "position": 73.62
     },
     "headPrevious": {
       "clicks": 4.0,
-      "impressions": 3684.0,
-      "ctr": 0.0011,
-      "position": 66.21
+      "impressions": 3820.0,
+      "ctr": 0.001,
+      "position": 66.71
     },
     "headDelta": {
       "clicks": -25.0,
-      "impressions": -53.23,
-      "ctr": 54.55,
-      "position": 7.64
+      "impressions": -59.11,
+      "ctr": 90.0,
+      "position": 6.91
     }
   },
   "topQueries": [
@@ -180,7 +180,7 @@
     {
       "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 3.0,
-        "impressions": 1723.0,
-        "ctr": 0.0017411491584445734,
-        "position": 73.85084155542658
+        "impressions": 1562.0,
+        "ctr": 0.0019206145966709346,
+        "position": 73.6235595390525
       },
       "previous": {
         "clicks": 4.0,
-        "impressions": 3684.0,
-        "ctr": 0.0010857763300760044,
-        "position": 66.20765472312704
+        "impressions": 3820.0,
+        "ctr": 0.0010471204188481676,
+        "position": 66.71230366492146
       },
       "delta": {
         "clicks": -25.0,
-        "impressions": -53.23,
-        "ctr": 60.36,
-        "position": 7.64
+        "impressions": -59.11,
+        "ctr": 83.42,
+        "position": 6.91
       }
     },
     {
