@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-14T06:47:04.743004+00:00",
+  "generatedAt": "2026-05-15T06:55:58.330150+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-29",
-      "endDate": "2026-05-12"
+      "startDate": "2026-04-30",
+      "endDate": "2026-05-13"
     },
     "previous": {
-      "startDate": "2026-04-15",
-      "endDate": "2026-04-28"
+      "startDate": "2026-04-16",
+      "endDate": "2026-04-29"
     }
   },
   "summary": {
@@ -33,42 +33,42 @@
     },
     "headCurrent": {
       "clicks": 4.0,
-      "impressions": 1614.0,
-      "ctr": 0.0025,
-      "position": 72.85
+      "impressions": 1740.0,
+      "ctr": 0.0023,
+      "position": 72.24
     },
     "headPrevious": {
       "clicks": 4.0,
-      "impressions": 3931.0,
+      "impressions": 3988.0,
       "ctr": 0.001,
-      "position": 67.4
+      "position": 67.6
     },
     "headDelta": {
       "clicks": 0.0,
-      "impressions": -58.94,
-      "ctr": 150.0,
-      "position": 5.45
+      "impressions": -56.37,
+      "ctr": 130.0,
+      "position": 4.64
     }
   },
   "topQueries": [
     {
       "query": "tv programm heute abend",
       "clicks": 1.0,
-      "impressions": 9.0,
-      "ctr": 0.1111111111111111,
-      "position": 85.77777777777777
+      "impressions": 11.0,
+      "ctr": 0.09090909090909091,
+      "position": 84.45454545454545
     },
     {
       "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
       "clicks": 0.0,
-      "impressions": 7.0,
+      "impressions": 6.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"catch luxury's daily pulse! trending today highlights the most talked-about fashion moments\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 1.0,
       "ctr": 0.0,
       "position": 6.0
     },
@@ -89,7 +89,7 @@
     {
       "query": "\"chic daily brings you the latest fashion trends, beauty tips, and celebrity looks\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 1.0,
       "ctr": 0.0,
       "position": 4.0
     },
@@ -103,14 +103,14 @@
     {
       "query": "\"dial into ultimate style! glamour line features trending looks\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 5.0
     },
     {
       "query": "\"dive into iconic celebrity fashion! style icons explores the signature looks\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 4.0
     },
@@ -131,7 +131,7 @@
     {
       "query": "\"fashion code reveals the hidden rules of style\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 1.0,
       "ctr": 0.0,
       "position": 5.0
     },
@@ -145,14 +145,14 @@
     {
       "query": "\"get the ultimate insider's guide! editor's pick showcases exclusive trends\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"identifies emerging styles from runways, analyzes celebrity influences, and predicts tomorrow's must-have looks\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 4.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -171,13 +171,6 @@
       "position": 3.0
     },
     {
-      "query": "\"relive the ultimate glamour! the highlight reel brings you the most unforgettable moments\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 3.0
-    },
-    {
       "query": "\"see fashion, uncensored! fashion unfiltered delivers honest takes on trends\"",
       "clicks": 0.0,
       "impressions": 3.0,
@@ -190,6 +183,13 @@
       "impressions": 3.0,
       "ctr": 0.0,
       "position": 4.0
+    },
+    {
+      "query": "\"trace style through time! fashion evolution explores iconic eras\"",
+      "clicks": 0.0,
+      "impressions": 7.0,
+      "ctr": 0.0,
+      "position": 4.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 4.0,
-        "impressions": 1614.0,
-        "ctr": 0.0024783147459727386,
-        "position": 72.84758364312268
+        "impressions": 1740.0,
+        "ctr": 0.0022988505747126436,
+        "position": 72.24425287356321
       },
       "previous": {
         "clicks": 4.0,
-        "impressions": 3931.0,
-        "ctr": 0.0010175527855507504,
-        "position": 67.4006614093106
+        "impressions": 3988.0,
+        "ctr": 0.0010030090270812437,
+        "position": 67.59904714142428
       },
       "delta": {
         "clicks": 0.0,
-        "impressions": -58.94,
-        "ctr": 143.56,
-        "position": 5.45
+        "impressions": -56.37,
+        "ctr": 129.2,
+        "position": 4.65
       }
     },
     {
