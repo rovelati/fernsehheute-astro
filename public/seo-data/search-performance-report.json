@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-15T06:55:58.330150+00:00",
+  "generatedAt": "2026-05-16T06:22:21.737111+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-04-30",
-      "endDate": "2026-05-13"
+      "startDate": "2026-05-01",
+      "endDate": "2026-05-14"
     },
     "previous": {
-      "startDate": "2026-04-16",
-      "endDate": "2026-04-29"
+      "startDate": "2026-04-17",
+      "endDate": "2026-04-30"
     }
   },
   "summary": {
@@ -32,45 +32,45 @@
       "position": 0.0
     },
     "headCurrent": {
-      "clicks": 4.0,
-      "impressions": 1740.0,
-      "ctr": 0.0023,
-      "position": 72.24
+      "clicks": 5.0,
+      "impressions": 1741.0,
+      "ctr": 0.0029,
+      "position": 72.34
     },
     "headPrevious": {
       "clicks": 4.0,
-      "impressions": 3988.0,
+      "impressions": 3963.0,
       "ctr": 0.001,
-      "position": 67.6
+      "position": 68.55
     },
     "headDelta": {
-      "clicks": 0.0,
-      "impressions": -56.37,
-      "ctr": 130.0,
-      "position": 4.64
+      "clicks": 25.0,
+      "impressions": -56.07,
+      "ctr": 190.0,
+      "position": 3.79
     }
   },
   "topQueries": [
     {
+      "query": "fernsehprogramm heute abend",
+      "clicks": 1.0,
+      "impressions": 38.0,
+      "ctr": 0.02631578947368421,
+      "position": 82.36842105263158
+    },
+    {
       "query": "tv programm heute abend",
       "clicks": 1.0,
-      "impressions": 11.0,
-      "ctr": 0.09090909090909091,
-      "position": 84.45454545454545
+      "impressions": 10.0,
+      "ctr": 0.1,
+      "position": 83.9
     },
     {
       "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
       "clicks": 0.0,
-      "impressions": 6.0,
+      "impressions": 5.0,
       "ctr": 0.0,
       "position": 3.0
-    },
-    {
-      "query": "\"catch luxury's daily pulse! trending today highlights the most talked-about fashion moments\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 6.0
     },
     {
       "query": "\"celebrate the style shapers! trendsetters showcases the elite designers and celebrity icons\"",
@@ -85,13 +85,6 @@
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 3.0
-    },
-    {
-      "query": "\"chic daily brings you the latest fashion trends, beauty tips, and celebrity looks\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 4.0
     },
     {
       "query": "\"decode every trend! fashion code reveals the hidden rules of style\"",
@@ -110,7 +103,7 @@
     {
       "query": "\"dive into iconic celebrity fashion! style icons explores the signature looks\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 4.0
     },
@@ -124,7 +117,7 @@
     {
       "query": "\"editor's pick showcases exclusive trends, coveted items, and expert advice\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -187,7 +180,14 @@
     {
       "query": "\"trace style through time! fashion evolution explores iconic eras\"",
       "clicks": 0.0,
-      "impressions": 7.0,
+      "impressions": 4.0,
+      "ctr": 0.0,
+      "position": 4.0
+    },
+    {
+      "query": "\"your guide to luxury's best! most liked showcases the most talked-about haute couture\"",
+      "clicks": 0.0,
+      "impressions": 1.0,
       "ctr": 0.0,
       "position": 4.0
     }
@@ -197,22 +197,22 @@
       "slug": "home",
       "url": "https://fernsehheute.de/",
       "current": {
-        "clicks": 4.0,
-        "impressions": 1740.0,
-        "ctr": 0.0022988505747126436,
-        "position": 72.24425287356321
+        "clicks": 5.0,
+        "impressions": 1741.0,
+        "ctr": 0.002871912693854107,
+        "position": 72.34175761056864
       },
       "previous": {
         "clicks": 4.0,
-        "impressions": 3988.0,
-        "ctr": 0.0010030090270812437,
-        "position": 67.59904714142428
+        "impressions": 3963.0,
+        "ctr": 0.0010093363613424174,
+        "position": 68.55059298511229
       },
       "delta": {
-        "clicks": 0.0,
-        "impressions": -56.37,
-        "ctr": 129.2,
-        "position": 4.65
+        "clicks": 25.0,
+        "impressions": -56.07,
+        "ctr": 184.53,
+        "position": 3.79
       }
     },
     {
