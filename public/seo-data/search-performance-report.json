@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-16T06:22:21.737111+00:00",
+  "generatedAt": "2026-05-17T06:46:35.469599+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-05-01",
-      "endDate": "2026-05-14"
+      "startDate": "2026-05-02",
+      "endDate": "2026-05-15"
     },
     "previous": {
-      "startDate": "2026-04-17",
-      "endDate": "2026-04-30"
+      "startDate": "2026-04-18",
+      "endDate": "2026-05-01"
     }
   },
   "summary": {
@@ -33,51 +33,51 @@
     },
     "headCurrent": {
       "clicks": 5.0,
-      "impressions": 1741.0,
-      "ctr": 0.0029,
-      "position": 72.34
+      "impressions": 1819.0,
+      "ctr": 0.0027,
+      "position": 71.8
     },
     "headPrevious": {
       "clicks": 4.0,
-      "impressions": 3963.0,
+      "impressions": 3911.0,
       "ctr": 0.001,
-      "position": 68.55
+      "position": 69.59
     },
     "headDelta": {
       "clicks": 25.0,
-      "impressions": -56.07,
-      "ctr": 190.0,
-      "position": 3.79
+      "impressions": -53.49,
+      "ctr": 170.0,
+      "position": 2.21
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm heute abend",
       "clicks": 1.0,
-      "impressions": 38.0,
-      "ctr": 0.02631578947368421,
-      "position": 82.36842105263158
+      "impressions": 40.0,
+      "ctr": 0.025,
+      "position": 81.25
     },
     {
       "query": "tv programm heute abend",
       "clicks": 1.0,
-      "impressions": 10.0,
-      "ctr": 0.1,
-      "position": 83.9
+      "impressions": 12.0,
+      "ctr": 0.08333333333333333,
+      "position": 83.25
     },
     {
       "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"celebrate the style shapers! trendsetters showcases the elite designers and celebrity icons\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 2.0,
       "ctr": 0.0,
-      "position": 3.8
+      "position": 3.5
     },
     {
       "query": "\"celebrate the style shapers! trendsetters showcases the elite designers\"",
@@ -89,35 +89,35 @@
     {
       "query": "\"decode every trend! fashion code reveals the hidden rules of style\"",
       "clicks": 0.0,
-      "impressions": 5.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 5.0
     },
     {
       "query": "\"dial into ultimate style! glamour line features trending looks\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 5.0
     },
     {
       "query": "\"dive into iconic celebrity fashion! style icons explores the signature looks\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 1.0,
       "ctr": 0.0,
       "position": 4.0
     },
     {
       "query": "\"dive into the lives of the rich and famous! a-listers takes you behind the velvet ropes\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 1.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"editor's pick showcases exclusive trends, coveted items, and expert advice\"",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 1.0,
       "ctr": 0.0,
       "position": 3.0
     },
@@ -138,21 +138,21 @@
     {
       "query": "\"get the ultimate insider's guide! editor's pick showcases exclusive trends\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"identifies emerging styles from runways, analyzes celebrity influences, and predicts tomorrow's must-have looks\"",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 3.0
     },
     {
       "query": "\"most liked showcases the most talked-about haute couture\"",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 4.0
     },
@@ -166,30 +166,30 @@
     {
       "query": "\"see fashion, uncensored! fashion unfiltered delivers honest takes on trends\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 4.0
     },
     {
       "query": "\"style icons explores the signature looks, luxury brand collaborations\"",
       "clicks": 0.0,
-      "impressions": 3.0,
+      "impressions": 2.0,
       "ctr": 0.0,
       "position": 4.0
     },
     {
       "query": "\"trace style through time! fashion evolution explores iconic eras\"",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 3.0,
       "ctr": 0.0,
       "position": 4.0
     },
     {
-      "query": "\"your guide to luxury's best! most liked showcases the most talked-about haute couture\"",
+      "query": "\"your premier style source! fashion first offers exclusive previews of upcoming collections\"",
       "clicks": 0.0,
-      "impressions": 1.0,
+      "impressions": 2.0,
       "ctr": 0.0,
-      "position": 4.0
+      "position": 7.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 5.0,
-        "impressions": 1741.0,
-        "ctr": 0.002871912693854107,
-        "position": 72.34175761056864
+        "impressions": 1819.0,
+        "ctr": 0.002748763056624519,
+        "position": 71.80153930731171
       },
       "previous": {
         "clicks": 4.0,
-        "impressions": 3963.0,
-        "ctr": 0.0010093363613424174,
-        "position": 68.55059298511229
+        "impressions": 3911.0,
+        "ctr": 0.0010227563283047815,
+        "position": 69.58603937611863
       },
       "delta": {
         "clicks": 25.0,
-        "impressions": -56.07,
-        "ctr": 184.53,
-        "position": 3.79
+        "impressions": -53.49,
+        "ctr": 168.76,
+        "position": 2.22
       }
     },
     {
