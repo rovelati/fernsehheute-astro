@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-18T07:20:28.382744+00:00",
+  "generatedAt": "2026-05-19T07:15:24.859432+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-05-03",
-      "endDate": "2026-05-16"
+      "startDate": "2026-05-04",
+      "endDate": "2026-05-17"
     },
     "previous": {
-      "startDate": "2026-04-19",
-      "endDate": "2026-05-02"
+      "startDate": "2026-04-20",
+      "endDate": "2026-05-03"
     }
   },
   "summary": {
@@ -33,21 +33,21 @@
     },
     "headCurrent": {
       "clicks": 5.0,
-      "impressions": 1931.0,
+      "impressions": 1892.0,
       "ctr": 0.0026,
-      "position": 71.08
+      "position": 70.92
     },
     "headPrevious": {
       "clicks": 3.0,
-      "impressions": 3896.0,
+      "impressions": 3856.0,
       "ctr": 0.0008,
-      "position": 70.02
+      "position": 69.89
     },
     "headDelta": {
       "clicks": 66.67,
-      "impressions": -50.44,
+      "impressions": -50.93,
       "ctr": 225.0,
-      "position": 1.06
+      "position": 1.03
     }
   },
   "topQueries": [
@@ -61,93 +61,9 @@
     {
       "query": "tv programm heute abend",
       "clicks": 1.0,
-      "impressions": 13.0,
-      "ctr": 0.07692307692307693,
-      "position": 81.53846153846153
-    },
-    {
-      "query": "\"a-listers takes you behind the velvet ropes for exclusive access to celebrity lifestyles\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 3.0
-    },
-    {
-      "query": "\"celebrate the style shapers! trendsetters showcases the elite designers and celebrity icons\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 3.0
-    },
-    {
-      "query": "\"decode every trend! fashion code reveals the hidden rules of style\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 5.0
-    },
-    {
-      "query": "\"dial into ultimate style! glamour line features trending looks\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 5.0
-    },
-    {
-      "query": "\"dive into the lives of the rich and famous! a-listers takes you behind the velvet ropes\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 3.0
-    },
-    {
-      "query": "\"fashion code reveals the hidden rules of style\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 5.0
-    },
-    {
-      "query": "\"identifies emerging styles from runways, analyzes celebrity influences, and predicts tomorrow's must-have looks\"",
-      "clicks": 0.0,
-      "impressions": 2.0,
-      "ctr": 0.0,
-      "position": 3.0
-    },
-    {
-      "query": "\"profiles the legendary figures and rising talents dominating runways and red carpets\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 3.0
-    },
-    {
-      "query": "\"style icons explores the signature looks, luxury brand collaborations\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 4.0
-    },
-    {
-      "query": "\"trace style through time! fashion evolution explores iconic eras\"",
-      "clicks": 0.0,
-      "impressions": 2.0,
-      "ctr": 0.0,
-      "position": 4.0
-    },
-    {
-      "query": "\"your premier style source! fashion first offers exclusive previews of upcoming collections\"",
-      "clicks": 0.0,
-      "impressions": 2.0,
-      "ctr": 0.0,
-      "position": 7.0
-    },
-    {
-      "query": "\"your ultimate weekly fashion recap! this week in style covers all the must-see luxury shows\"",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 3.0
+      "impressions": 12.0,
+      "ctr": 0.08333333333333333,
+      "position": 82.33333333333333
     },
     {
       "query": "+2 programm",
@@ -190,6 +106,90 @@
       "impressions": 2.0,
       "ctr": 0.0,
       "position": 70.0
+    },
+    {
+      "query": "20.15 tv heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 58.0
+    },
+    {
+      "query": "abend fernsehprogramm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 76.0
+    },
+    {
+      "query": "abend fernsehprogramm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 96.0
+    },
+    {
+      "query": "abend programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 67.0
+    },
+    {
+      "query": "abendprogramm fernsehen heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 74.0
+    },
+    {
+      "query": "abendprogramm heute",
+      "clicks": 0.0,
+      "impressions": 13.0,
+      "ctr": 0.0,
+      "position": 74.46153846153847
+    },
+    {
+      "query": "abendprogramm sixx",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 63.0
+    },
+    {
+      "query": "aktuell fernsehen",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 69.0
+    },
+    {
+      "query": "aktuell fernsehprogramm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 70.0
+    },
+    {
+      "query": "aktuelle tv programm",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 71.0
+    },
+    {
+      "query": "aktuelles fernsehprogramm",
+      "clicks": 0.0,
+      "impressions": 21.0,
+      "ctr": 0.0,
+      "position": 75.85714285714286
+    },
+    {
+      "query": "aktuelles fernsehprogramm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 61.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 5.0,
-        "impressions": 1931.0,
-        "ctr": 0.002589331952356292,
-        "position": 71.08493008803728
+        "impressions": 1892.0,
+        "ctr": 0.002642706131078224,
+        "position": 70.92283298097252
       },
       "previous": {
         "clicks": 3.0,
-        "impressions": 3896.0,
-        "ctr": 0.0007700205338809035,
-        "position": 70.01719712525667
+        "impressions": 3856.0,
+        "ctr": 0.0007780082987551867,
+        "position": 69.88511410788382
       },
       "delta": {
         "clicks": 66.67,
-        "impressions": -50.44,
-        "ctr": 236.27,
-        "position": 1.07
+        "impressions": -50.93,
+        "ctr": 239.68,
+        "position": 1.04
       }
     },
     {
