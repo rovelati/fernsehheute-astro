@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-19T07:15:24.859432+00:00",
+  "generatedAt": "2026-05-20T07:10:30.024953+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-05-04",
-      "endDate": "2026-05-17"
+      "startDate": "2026-05-05",
+      "endDate": "2026-05-18"
     },
     "previous": {
-      "startDate": "2026-04-20",
-      "endDate": "2026-05-03"
+      "startDate": "2026-04-21",
+      "endDate": "2026-05-04"
     }
   },
   "summary": {
@@ -33,30 +33,30 @@
     },
     "headCurrent": {
       "clicks": 5.0,
-      "impressions": 1892.0,
+      "impressions": 1900.0,
       "ctr": 0.0026,
-      "position": 70.92
+      "position": 70.48
     },
     "headPrevious": {
       "clicks": 3.0,
-      "impressions": 3856.0,
+      "impressions": 3760.0,
       "ctr": 0.0008,
-      "position": 69.89
+      "position": 69.9
     },
     "headDelta": {
       "clicks": 66.67,
-      "impressions": -50.93,
+      "impressions": -49.47,
       "ctr": 225.0,
-      "position": 1.03
+      "position": 0.58
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm heute abend",
       "clicks": 1.0,
-      "impressions": 41.0,
-      "ctr": 0.024390243902439025,
-      "position": 80.26829268292683
+      "impressions": 40.0,
+      "ctr": 0.025,
+      "position": 80.075
     },
     {
       "query": "tv programm heute abend",
@@ -92,6 +92,13 @@
       "impressions": 2.0,
       "ctr": 0.0,
       "position": 41.5
+    },
+    {
+      "query": "123 tv programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 37.0
     },
     {
       "query": "15.00 uhr",
@@ -145,9 +152,9 @@
     {
       "query": "abendprogramm heute",
       "clicks": 0.0,
-      "impressions": 13.0,
+      "impressions": 12.0,
       "ctr": 0.0,
-      "position": 74.46153846153847
+      "position": 75.08333333333333
     },
     {
       "query": "abendprogramm sixx",
@@ -155,13 +162,6 @@
       "impressions": 2.0,
       "ctr": 0.0,
       "position": 63.0
-    },
-    {
-      "query": "aktuell fernsehen",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 69.0
     },
     {
       "query": "aktuell fernsehprogramm",
@@ -173,16 +173,16 @@
     {
       "query": "aktuelle tv programm",
       "clicks": 0.0,
-      "impressions": 2.0,
+      "impressions": 3.0,
       "ctr": 0.0,
-      "position": 71.0
+      "position": 69.33333333333333
     },
     {
       "query": "aktuelles fernsehprogramm",
       "clicks": 0.0,
-      "impressions": 21.0,
+      "impressions": 19.0,
       "ctr": 0.0,
-      "position": 75.85714285714286
+      "position": 75.36842105263158
     },
     {
       "query": "aktuelles fernsehprogramm heute",
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 5.0,
-        "impressions": 1892.0,
-        "ctr": 0.002642706131078224,
-        "position": 70.92283298097252
+        "impressions": 1900.0,
+        "ctr": 0.002631578947368421,
+        "position": 70.47526315789473
       },
       "previous": {
         "clicks": 3.0,
-        "impressions": 3856.0,
-        "ctr": 0.0007780082987551867,
-        "position": 69.88511410788382
+        "impressions": 3760.0,
+        "ctr": 0.0007978723404255319,
+        "position": 69.90186170212766
       },
       "delta": {
         "clicks": 66.67,
-        "impressions": -50.93,
-        "ctr": 239.68,
-        "position": 1.04
+        "impressions": -49.47,
+        "ctr": 229.82,
+        "position": 0.57
       }
     },
     {
