@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-24T06:52:20.011838+00:00",
+  "generatedAt": "2026-05-25T08:07:24.844039+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-05-09",
-      "endDate": "2026-05-22"
+      "startDate": "2026-05-10",
+      "endDate": "2026-05-23"
     },
     "previous": {
-      "startDate": "2026-04-25",
-      "endDate": "2026-05-08"
+      "startDate": "2026-04-26",
+      "endDate": "2026-05-09"
     }
   },
   "summary": {
@@ -32,31 +32,31 @@
       "position": 0.0
     },
     "headCurrent": {
-      "clicks": 4.0,
-      "impressions": 1832.0,
-      "ctr": 0.0022,
-      "position": 66.62
+      "clicks": 2.0,
+      "impressions": 2731.0,
+      "ctr": 0.0007,
+      "position": 64.22
     },
     "headPrevious": {
       "clicks": 3.0,
-      "impressions": 1997.0,
-      "ctr": 0.0015,
-      "position": 73.3
+      "impressions": 1775.0,
+      "ctr": 0.0017,
+      "position": 74.15
     },
     "headDelta": {
-      "clicks": 33.33,
-      "impressions": -8.26,
-      "ctr": 46.67,
-      "position": -6.68
+      "clicks": -33.33,
+      "impressions": 53.86,
+      "ctr": -58.82,
+      "position": -9.93
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm heute abend",
       "clicks": 1.0,
-      "impressions": 19.0,
-      "ctr": 0.05263157894736842,
-      "position": 68.3157894736842
+      "impressions": 20.0,
+      "ctr": 0.05,
+      "position": 65.6
     },
     {
       "query": "+2 programm",
@@ -66,11 +66,25 @@
       "position": 59.0
     },
     {
+      "query": "1 2 3 tv programm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 40.0
+    },
+    {
       "query": "1 2 oder 3 heute",
       "clicks": 0.0,
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 68.0
+    },
+    {
+      "query": "123 tv programm",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 60.5
     },
     {
       "query": "123 tv programm heute",
@@ -80,11 +94,25 @@
       "position": 37.0
     },
     {
+      "query": "14 tage fernsehprogramm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 38.0
+    },
+    {
       "query": "15.00 uhr",
       "clicks": 0.0,
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 61.0
+    },
+    {
+      "query": "20 15 tv programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 50.0
     },
     {
       "query": "20.15 heute",
@@ -94,11 +122,25 @@
       "position": 70.0
     },
     {
+      "query": "20.15 programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 69.0
+    },
+    {
       "query": "20.15 tv heute",
       "clicks": 0.0,
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 58.0
+    },
+    {
+      "query": "20.15 uhr im tv",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 67.0
     },
     {
       "query": "20.15 uhr tv",
@@ -110,9 +152,16 @@
     {
       "query": "3 programm heute",
       "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 56.0
+    },
+    {
+      "query": "3 programme heute abend",
+      "clicks": 0.0,
       "impressions": 1.0,
       "ctr": 0.0,
-      "position": 55.0
+      "position": 17.0
     },
     {
       "query": "3sat fernsehprogramm heute",
@@ -122,11 +171,11 @@
       "position": 50.0
     },
     {
-      "query": "abend fernsehprogramm heute",
+      "query": "4 wochen tv programm",
       "clicks": 0.0,
       "impressions": 1.0,
       "ctr": 0.0,
-      "position": 96.0
+      "position": 44.0
     },
     {
       "query": "abendprogramm ard",
@@ -136,60 +185,11 @@
       "position": 66.0
     },
     {
-      "query": "abendprogramm heute",
-      "clicks": 0.0,
-      "impressions": 6.0,
-      "ctr": 0.0,
-      "position": 71.83333333333333
-    },
-    {
-      "query": "abendprogramm im tv",
+      "query": "abendprogramm ard und zdf",
       "clicks": 0.0,
       "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 63.0
-    },
-    {
-      "query": "abendprogramm sixx",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 61.0
-    },
-    {
-      "query": "aktuell fernsehen",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 63.0
-    },
-    {
-      "query": "aktuelle fernsehprogramm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 56.0
-    },
-    {
-      "query": "aktuelle tv programm",
-      "clicks": 0.0,
-      "impressions": 4.0,
       "ctr": 0.0,
       "position": 70.0
-    },
-    {
-      "query": "aktuelles fernsehprogramm",
-      "clicks": 0.0,
-      "impressions": 16.0,
-      "ctr": 0.0,
-      "position": 70.9375
-    },
-    {
-      "query": "aktuelles fernsehprogramm heute",
-      "clicks": 0.0,
-      "impressions": 3.0,
-      "ctr": 0.0,
-      "position": 63.333333333333336
     }
   ],
   "targets": [
@@ -197,22 +197,22 @@
       "slug": "home",
       "url": "https://fernsehheute.de/",
       "current": {
-        "clicks": 4.0,
-        "impressions": 1832.0,
-        "ctr": 0.002183406113537118,
-        "position": 66.62445414847161
+        "clicks": 2.0,
+        "impressions": 2731.0,
+        "ctr": 0.0007323324789454412,
+        "position": 64.21823507872574
       },
       "previous": {
         "clicks": 3.0,
-        "impressions": 1997.0,
-        "ctr": 0.0015022533800701052,
-        "position": 73.3014521782674
+        "impressions": 1775.0,
+        "ctr": 0.0016901408450704226,
+        "position": 74.1538028169014
       },
       "delta": {
-        "clicks": 33.33,
-        "impressions": -8.26,
-        "ctr": 45.34,
-        "position": -6.68
+        "clicks": -33.33,
+        "impressions": 53.86,
+        "ctr": -56.67,
+        "position": -9.94
       }
     },
     {
