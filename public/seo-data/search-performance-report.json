@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-27T07:50:26.532389+00:00",
+  "generatedAt": "2026-05-28T07:10:08.253819+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-05-12",
-      "endDate": "2026-05-25"
+      "startDate": "2026-05-13",
+      "endDate": "2026-05-26"
     },
     "previous": {
-      "startDate": "2026-04-28",
-      "endDate": "2026-05-11"
+      "startDate": "2026-04-29",
+      "endDate": "2026-05-12"
     }
   },
   "summary": {
@@ -33,37 +33,30 @@
     },
     "headCurrent": {
       "clicks": 1.0,
-      "impressions": 3408.0,
+      "impressions": 3184.0,
       "ctr": 0.0003,
-      "position": 62.43
+      "position": 62.08
     },
     "headPrevious": {
       "clicks": 4.0,
-      "impressions": 1757.0,
-      "ctr": 0.0023,
-      "position": 73.13
+      "impressions": 1838.0,
+      "ctr": 0.0022,
+      "position": 72.18
     },
     "headDelta": {
       "clicks": -75.0,
-      "impressions": 93.97,
-      "ctr": -86.96,
-      "position": -10.7
+      "impressions": 73.23,
+      "ctr": -86.36,
+      "position": -10.1
     }
   },
   "topQueries": [
     {
       "query": "fernsehprogramm heute abend",
       "clicks": 1.0,
-      "impressions": 25.0,
-      "ctr": 0.04,
-      "position": 66.08
-    },
-    {
-      "query": "+2 programm",
-      "clicks": 0.0,
-      "impressions": 1.0,
-      "ctr": 0.0,
-      "position": 59.0
+      "impressions": 17.0,
+      "ctr": 0.058823529411764705,
+      "position": 66.70588235294117
     },
     {
       "query": "1 2 3 tv programm",
@@ -131,9 +124,9 @@
     {
       "query": "20.15 heute",
       "clicks": 0.0,
-      "impressions": 4.0,
+      "impressions": 2.0,
       "ctr": 0.0,
-      "position": 75.0
+      "position": 80.0
     },
     {
       "query": "20.15 programm heute",
@@ -190,6 +183,13 @@
       "impressions": 1.0,
       "ctr": 0.0,
       "position": 50.0
+    },
+    {
+      "query": "4 wochen tv programm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 44.0
     }
   ],
   "targets": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 1.0,
-        "impressions": 3408.0,
-        "ctr": 0.00029342723004694836,
-        "position": 62.42693661971831
+        "impressions": 3184.0,
+        "ctr": 0.000314070351758794,
+        "position": 62.078831658291456
       },
       "previous": {
         "clicks": 4.0,
-        "impressions": 1757.0,
-        "ctr": 0.0022766078542970974,
-        "position": 73.13090495162209
+        "impressions": 1838.0,
+        "ctr": 0.002176278563656148,
+        "position": 72.18063112078346
       },
       "delta": {
         "clicks": -75.0,
-        "impressions": 93.97,
-        "ctr": -87.11,
-        "position": -10.7
+        "impressions": 73.23,
+        "ctr": -85.57,
+        "position": -10.1
       }
     },
     {
