@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-05-29T07:10:35.518659+00:00",
+  "generatedAt": "2026-05-30T06:38:13.236290+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-05-14",
-      "endDate": "2026-05-27"
+      "startDate": "2026-05-15",
+      "endDate": "2026-05-28"
     },
     "previous": {
-      "startDate": "2026-04-30",
-      "endDate": "2026-05-13"
+      "startDate": "2026-05-01",
+      "endDate": "2026-05-14"
     }
   },
   "summary": {
@@ -33,21 +33,21 @@
     },
     "headCurrent": {
       "clicks": 0.0,
-      "impressions": 4379.0,
+      "impressions": 4321.0,
       "ctr": 0.0,
-      "position": 61.69
+      "position": 61.61
     },
     "headPrevious": {
       "clicks": 5.0,
-      "impressions": 1811.0,
+      "impressions": 1799.0,
       "ctr": 0.0028,
-      "position": 72.29
+      "position": 72.18
     },
     "headDelta": {
       "clicks": -100.0,
-      "impressions": 141.8,
+      "impressions": 140.19,
       "ctr": -100.0,
-      "position": -10.6
+      "position": -10.57
     }
   },
   "topQueries": [
@@ -198,21 +198,21 @@
       "url": "https://fernsehheute.de/",
       "current": {
         "clicks": 0.0,
-        "impressions": 4379.0,
+        "impressions": 4321.0,
         "ctr": 0.0,
-        "position": 61.68600137017584
+        "position": 61.611895394584586
       },
       "previous": {
         "clicks": 5.0,
-        "impressions": 1811.0,
-        "ctr": 0.0027609055770292656,
-        "position": 72.28934290447266
+        "impressions": 1799.0,
+        "ctr": 0.0027793218454697055,
+        "position": 72.17620900500278
       },
       "delta": {
         "clicks": -100.0,
-        "impressions": 141.8,
+        "impressions": 140.19,
         "ctr": -100.0,
-        "position": -10.6
+        "position": -10.56
       }
     },
     {
