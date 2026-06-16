@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-06-15T09:44:30.766493+00:00",
+  "generatedAt": "2026-06-16T09:09:37.960534+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -10,12 +10,12 @@
   },
   "period": {
     "current": {
-      "startDate": "2026-05-31",
-      "endDate": "2026-06-13"
+      "startDate": "2026-06-01",
+      "endDate": "2026-06-14"
     },
     "previous": {
-      "startDate": "2026-05-17",
-      "endDate": "2026-05-30"
+      "startDate": "2026-05-18",
+      "endDate": "2026-05-31"
     }
   },
   "summary": {
