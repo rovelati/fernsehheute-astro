@@ -99,9 +99,7 @@ jobs:
           git push || true
 
   # ──────────────────────────────────────────────────────────
-  # 3) Cloudflare Pages rebuild
-  # Nota: il build CF fallisce finché SUPABASE_URL non punta a un API raggiungibile.
-  # Il trigger resta per quando l'env CF sarà aggiornato (PostgREST Contabo o nuovo progetto).
+  # 3) Build Astro su Contabo + deploy Cloudflare Pages (wrangler)
   # ──────────────────────────────────────────────────────────
   cloudflare-rebuild:
     name: Rebuild Cloudflare Pages
@@ -113,21 +111,20 @@ jobs:
       needs.tmdb-enrichment.result != 'cancelled'
 
     steps:
-      - name: Trigger CF Pages deploy hook
+      - name: Build + deploy on Contabo VPS
         env:
-          CF_DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK_URL }}
+          CONTABO_SSH_KEY: ${{ secrets.CONTABO_SSH_KEY }}
+          CONTABO_HOST: ${{ secrets.CONTABO_HOST }}
         run: |
-          if [ -z "$CF_DEPLOY_HOOK" ]; then
-            echo "⚠️  CLOUDFLARE_DEPLOY_HOOK_URL non impostata — skip"
-            exit 0
-          fi
-          echo "🚀 Triggering Cloudflare Pages rebuild..."
-          RESPONSE=$(curl -s -o /tmp/cf_response.json -w "%{http_code}" \
-            -X POST "$CF_DEPLOY_HOOK")
-          echo "HTTP Status: $RESPONSE"
-          cat /tmp/cf_response.json
-          if [[ "$RESPONSE" != "200" && "$RESPONSE" != "201" ]]; then
-            echo "❌ Deploy hook failed with status $RESPONSE"
+          set -euo pipefail
+          if [ -z "${CONTABO_SSH_KEY:-}" ] || [ -z "${CONTABO_HOST:-}" ]; then
+            echo "::error::Missing CONTABO_SSH_KEY or CONTABO_HOST secrets"
             exit 1
           fi
-          echo "✅ Cloudflare Pages rebuild triggered"
+          mkdir -p ~/.ssh
+          printf '%s\n' "$CONTABO_SSH_KEY" > ~/.ssh/contabo_key
+          chmod 600 ~/.ssh/contabo_key
+          ssh-keyscan -H "$CONTABO_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh -i ~/.ssh/contabo_key -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
+            "root@${CONTABO_HOST}" \
+            '/var/www/fernsehheute.de/astro/scripts/rebuild-and-deploy-vps.sh'
