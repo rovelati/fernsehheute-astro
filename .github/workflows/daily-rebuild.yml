@@ -1,16 +1,15 @@
 name: Daily EPG + TMDB + CF Pages Rebuild
 
-# Esegue ogni giorno alle 05:30 Berlin (03:30 UTC in estate, 04:30 in inverno)
-# L'EPG importer gira sul server alle ~04:00, quindi alle 05:30 i dati sono già aggiornati
+# EPG + TMDB girano su Contabo (Postgres locale) alle 04:00 / 04:45 Europe/Berlin.
+# Questo workflow: riesegue TMDB via SSH (idempotente) + SEO notifier + trigger CF Pages.
 on:
   schedule:
-    - cron: '32 3 * * *'   # 03:32 UTC ≈ 05:32 CEST (estate)
+    - cron: '32 3 * * *'   # 03:32 UTC ≈ 05:32 CEST
 
-  # Trigger manuale dalla UI di GitHub Actions
   workflow_dispatch:
     inputs:
       run_tmdb:
-        description: 'Esegui TMDB enrichment'
+        description: 'Esegui TMDB enrichment su Contabo'
         type: boolean
         default: true
       trigger_cf:
@@ -20,7 +19,7 @@ on:
 
 jobs:
   # ──────────────────────────────────────────────────────────
-  # 1) Enrichment TMDB
+  # 1) Enrichment TMDB (su Contabo — Supabase DE non esiste più)
   # ──────────────────────────────────────────────────────────
   tmdb-enrichment:
     name: TMDB Enrichment
@@ -28,53 +27,26 @@ jobs:
     if: ${{ github.event_name == 'schedule' || inputs.run_tmdb == true }}
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-          cache-dependency-path: scripts/python/requirements.txt
-
-      - name: Install dependencies
-        working-directory: scripts/python
-        run: pip install -r requirements.txt
-
-      - name: Run TMDB enrichment
-        working-directory: scripts/python
+      - name: Run TMDB enrichment on Contabo VPS
         env:
-          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          SUPABASE_PROGRAMS_TABLE:    programs_de
-          SUPABASE_ENRICHMENT_TABLE:  content_enrichment_de
-          TMDB_API_KEY:         ${{ secrets.TMDB_API_KEY }}
-          TMDB_LANGUAGE:        de
-          TMDB_MAX_PROGRAMS:    300
-          TMDB_LOOKBACK_DAYS:   1
-          TMDB_LOOKAHEAD_DAYS:  8
-          TMDB_MIN_CONFIDENCE:  '0.50'
-          TMDB_UPDATE_POSTER_URL: '1'
-        run: python3 tmdb_enrichment_importer.py
-
-      - name: Run Wikipedia/content enrichment
-        working-directory: scripts/python
-        env:
-          SUPABASE_URL:         ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-          SUPABASE_PROGRAMS_TABLE:    programs_de
-          SUPABASE_ENRICHMENT_TABLE:  content_enrichment_de
-          ENRICH_LOOKBACK_DAYS: 1
-          ENRICH_LOOKAHEAD_DAYS: 8
-          ENRICH_MAX_PROGRAMS:  200
-          ENRICH_MIN_CONFIDENCE: '0.55'
-          ENRICH_WIKIPEDIA_LANG: de
-        run: python3 content_enrichment_importer.py
-        continue-on-error: true   # Non blocca se Wikipedia è irraggiungibile
+          CONTABO_SSH_KEY: ${{ secrets.CONTABO_SSH_KEY }}
+          CONTABO_HOST: ${{ secrets.CONTABO_HOST }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CONTABO_SSH_KEY:-}" ] || [ -z "${CONTABO_HOST:-}" ]; then
+            echo "::error::Missing CONTABO_SSH_KEY or CONTABO_HOST secrets"
+            exit 1
+          fi
+          mkdir -p ~/.ssh
+          printf '%s\n' "$CONTABO_SSH_KEY" > ~/.ssh/contabo_key
+          chmod 600 ~/.ssh/contabo_key
+          ssh-keyscan -H "$CONTABO_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+          ssh -i ~/.ssh/contabo_key -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
+            "root@${CONTABO_HOST}" \
+            '/root/epg_importers/fernsehheute/scripts/run_tmdb.sh'
 
   # ──────────────────────────────────────────────────────────
-  # 2) SEO Notifier (IndexNow + Google Indexing API + WebSub + GSC reports)
+  # 2) SEO Notifier
   # ──────────────────────────────────────────────────────────
   seo-notifier:
     name: SEO Notifier
@@ -112,14 +84,12 @@ jobs:
           INDEXNOW_ENABLED: '1'
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
           WEBSUB_ENABLED: '1'
-          # PUBLIC_DIR punta alla public/ dell'Astro project, che è nella root del repo
           PUBLIC_DIR: ${{ github.workspace }}/public
           SITE_URL: 'https://fernsehheute.de'
         run: python3 seo_notifier.py
         continue-on-error: true
 
       - name: Commit SEO reports
-        # working-directory = root del repo (l'Astro project è nella root, non in una subdirectory)
         working-directory: ${{ github.workspace }}
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -130,12 +100,12 @@ jobs:
 
   # ──────────────────────────────────────────────────────────
   # 3) Cloudflare Pages rebuild
+  # Nota: il build CF fallisce finché SUPABASE_URL non punta a un API raggiungibile.
+  # Il trigger resta per quando l'env CF sarà aggiornato (PostgREST Contabo o nuovo progetto).
   # ──────────────────────────────────────────────────────────
   cloudflare-rebuild:
     name: Rebuild Cloudflare Pages
     runs-on: ubuntu-latest
-    # Dipende da seo-notifier (non solo tmdb-enrichment) così CF Pages
-    # parte dopo che i report SEO sono stati committati nel repo.
     needs: [tmdb-enrichment, seo-notifier]
     if: |
       always() &&
