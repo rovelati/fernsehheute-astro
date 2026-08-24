@@ -24,6 +24,8 @@ jobs:
   tmdb-enrichment:
     name: TMDB Enrichment
     runs-on: ubuntu-latest
+    # TMDB gira già su Contabo: un fallimento SSH non deve far fallire il workflow né mandare mail GitHub.
+    continue-on-error: true
     if: ${{ github.event_name == 'schedule' || inputs.run_tmdb == true }}
 
     steps:
@@ -34,8 +36,8 @@ jobs:
         run: |
           set -euo pipefail
           if [ -z "${CONTABO_SSH_KEY:-}" ] || [ -z "${CONTABO_HOST:-}" ]; then
-            echo "::error::Missing CONTABO_SSH_KEY or CONTABO_HOST secrets"
-            exit 1
+            echo "::warning::Missing CONTABO_SSH_KEY or CONTABO_HOST secrets — skip TMDB (già schedulato su Contabo)"
+            exit 0
           fi
           mkdir -p ~/.ssh
           printf '%s\n' "$CONTABO_SSH_KEY" > ~/.ssh/contabo_key
