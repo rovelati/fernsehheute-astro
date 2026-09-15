@@ -67,6 +67,7 @@ export CLOUDFLARE_EMAIL="$CF_API_EMAIL"
 log "Deploying to Cloudflare Pages project=$CF_PROJECT ..."
 npx --yes wrangler@4 pages deploy dist \
   --project-name="$CF_PROJECT" \
+  --branch=main \
   --commit-dirty=true \
   2>&1 | tee -a "$LOG"
 
