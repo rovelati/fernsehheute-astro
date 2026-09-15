@@ -80,24 +80,41 @@ function mapChannel(raw: RawChannel): Channel {
 }
 
 export async function fetchChannels(): Promise<Channel[]> {
-  if (pgPool) {
-    const rows = await pgQuery<RawChannel>(
-      `SELECT id, channel_id, name, logo_url, channel_number, category, stream_url, website_url
-       FROM channels_de
-       ORDER BY channel_number ASC NULLS LAST
-       LIMIT 500`,
-    );
-    return rows.map(mapChannel);
+  try {
+    if (pgPool) {
+      const rows = await pgQuery<RawChannel>(
+        `SELECT id, channel_id, name, logo_url, channel_number, category, stream_url, website_url
+         FROM channels_de
+         ORDER BY channel_number ASC NULLS LAST
+         LIMIT 500`,
+      );
+      if (rows && rows.length > 0) return rows.map(mapChannel);
+    }
+
+    const { data, error } = await getSupabase()
+      .from('channels_de')
+      .select('id, channel_id, name, logo_url, channel_number, category, stream_url, website_url')
+      .order('channel_number', { ascending: true, nullsFirst: false })
+      .limit(500);
+
+    if (error) throw error;
+    if (data && data.length > 0) return ((data as RawChannel[]) ?? []).map(mapChannel);
+  } catch (err) {
+    console.warn('[epg.ts] fetchChannels failed, using HUB_CHANNELS fallback:', err instanceof Error ? err.message : err);
   }
 
-  const { data, error } = await getSupabase()
-    .from('channels_de')
-    .select('id, channel_id, name, logo_url, channel_number, category, stream_url, website_url')
-    .order('channel_number', { ascending: true, nullsFirst: false })
-    .limit(500);
-
-  if (error) throw error;
-  return ((data as RawChannel[]) ?? []).map(mapChannel);
+  // Fallback garantito sui canali principali tedeschi
+  const { HUB_CHANNELS } = await import('../utils/hubChannels');
+  return HUB_CHANNELS.map((ch, idx) => ({
+    id: ch.id,
+    name: ch.name,
+    number: idx + 1,
+    logo: getChannelLogo(ch.id, null, ch.name),
+    type: 'Generalista',
+    programs: [],
+    visible: true,
+    position: idx + 1,
+  }));
 }
 
 // ---------------------------------------------------------------------------
@@ -158,49 +175,54 @@ function mapProgram(raw: RawProgram): Program {
 }
 
 export async function fetchProgramsForDate(date: string, channelId?: string): Promise<Program[]> {
-  if (pgPool) {
-    const rows = channelId
-      ? await pgQuery<Record<string, unknown>>(
-          `SELECT id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url
-           FROM programs_de
-           WHERE date = $1::date AND channel_id = $2
-           ORDER BY start_time ASC`,
-          [date, channelId],
-        )
-      : await pgQuery<Record<string, unknown>>(
-          `SELECT id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url
-           FROM programs_de
-           WHERE date = $1::date
-           ORDER BY start_time ASC`,
-          [date],
-        );
-    return rows.map((row) => mapProgram(normalizeProgram(row)));
+  try {
+    if (pgPool) {
+      const rows = channelId
+        ? await pgQuery<Record<string, unknown>>(
+            `SELECT id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url
+             FROM programs_de
+             WHERE date = $1::date AND channel_id = $2
+             ORDER BY start_time ASC`,
+            [date, channelId],
+          )
+        : await pgQuery<Record<string, unknown>>(
+            `SELECT id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url
+             FROM programs_de
+             WHERE date = $1::date
+             ORDER BY start_time ASC`,
+            [date],
+          );
+      return rows.map((row) => mapProgram(normalizeProgram(row)));
+    }
+
+    const supabase = getSupabase();
+    const PAGE = 1000;
+    const all: RawProgram[] = [];
+    let from = 0;
+
+    while (true) {
+      let q = supabase
+        .from('programs_de')
+        .select('id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url')
+        .eq('date', date)
+        .order('start_time', { ascending: true })
+        .range(from, from + PAGE - 1);
+
+      if (channelId) q = q.eq('channel_id', channelId);
+
+      const { data, error } = await q;
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      all.push(...(data as RawProgram[]));
+      if (data.length < PAGE) break;
+      from += PAGE;
+    }
+
+    return all.map(mapProgram);
+  } catch (err) {
+    console.warn('[epg.ts] fetchProgramsForDate failed:', err instanceof Error ? err.message : err);
+    return [];
   }
-
-  const supabase = getSupabase();
-  const PAGE = 1000;
-  const all: RawProgram[] = [];
-  let from = 0;
-
-  while (true) {
-    let q = supabase
-      .from('programs_de')
-      .select('id, channel_id, title, slug, description, start_time, end_time, date, genre, poster_url')
-      .eq('date', date)
-      .order('start_time', { ascending: true })
-      .range(from, from + PAGE - 1);
-
-    if (channelId) q = q.eq('channel_id', channelId);
-
-    const { data, error } = await q;
-    if (error) throw error;
-    if (!data || data.length === 0) break;
-    all.push(...(data as RawProgram[]));
-    if (data.length < PAGE) break;
-    from += PAGE;
-  }
-
-  return all.map(mapProgram);
 }
 
 export async function fetchProgramsWithEnrichment(date: string, channelId?: string): Promise<Program[]> {

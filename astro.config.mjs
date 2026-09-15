@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   site: 'https://fernsehheute.de',
   output: 'static',
+  trailingSlash: 'always',
   vite: {
     plugins: [tailwindcss()],
   },

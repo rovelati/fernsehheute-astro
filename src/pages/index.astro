@@ -9,7 +9,7 @@ import Footer from '../components/Footer.astro';
 import ChannelCard from '../components/ChannelCard.astro';
 import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
-import { buildHubHomeJsonLd } from '../utils/jsonld';
+import { buildHubHomeJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import type { Channel, Program } from '../types';
 
 const normCid = (cid: string): string =>
@@ -63,13 +63,36 @@ try {
   console.error('[index] fetch error:', fetchError);
 }
 
-const jsonLd = buildHubHomeJsonLd({ channels: channelsWithPrograms, today });
-const description = 'TV Programm heute Abend: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten auf einen Blick.';
-const keywords    = 'tv programm heute abend, fernsehprogramm heute, was läuft heute im tv, tv heute abend, fernsehen heute, deutsches fernsehprogramm';
+const FAQS = [
+  {
+    question: 'Was läuft heute um 20:15 Uhr im Fernsehen?',
+    answer: 'Auf FernsehHeute findest du das komplette Hauptabendprogramm für heute ab 20:15 Uhr auf allen großen deutschen Sendern wie Das Erste (ARD), ZDF, RTL, SAT.1, ProSieben, VOX, Kabel Eins und vielen Sparten- und Regionalsendern.',
+  },
+  {
+    question: 'Welche Sender sind im TV Programm heute enthalten?',
+    answer: 'FernsehHeute bietet den vollständigen Sendeplan für über 40 frei empfangbare deutsche TV-Sender, darunter öffentlich-rechtliche Kanäle (ARD, ZDF, 3sat, Arte, WDR, NDR, BR, SWR, MDR, HR, RBB) sowie alle großen Privatsender.',
+  },
+  {
+    question: 'Wo finde ich Filme und Serien für heute Abend?',
+    answer: 'Über unsere Direktlinks im Menü erreichst du mit einem Klick alle Spielfilme (Filme heute Abend), Serien (Serien heute Abend) und Sportübertragungen sortiert nach Sendezeit.',
+  },
+  {
+    question: 'Wie aktuell sind die Sendezeiten auf FernsehHeute?',
+    answer: 'Unsere Programmdaten werden mehrmals täglich aktualisiert, sodass auch kurzfristige Programmänderungen und Sondersendungen schnell berücksichtigt werden.',
+  },
+];
+
+const homeSchemas = buildHubHomeJsonLd({ channels: channelsWithPrograms, today });
+const faqSchema   = buildFaqJsonLd(FAQS);
+const jsonLd      = [...homeSchemas, faqSchema];
+
+const pageTitle   = 'TV Programm heute Abend – Was läuft heute im TV & 20:15 Uhr | FernsehHeute';
+const description = 'Das aktuelle TV Programm heute Abend: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr auf ARD, ZDF, RTL, SAT.1, ProSieben & allen Sendern im Überblick.';
+const keywords    = 'tv programm heute abend, was läuft heute im tv, tv programm heute 20:15, fernsehprogramm heute, 20.15 heute, tv programm heute jetzt, fernsehen heute, deutsches fernsehprogramm';
 ---
 
 <BaseLayout
-  title="TV Programm heute Abend – Alle Sender & Sendezeiten | FernsehHeute"
+  title={pageTitle}
   {description}
   {keywords}
   canonicalUrl="https://fernsehheute.de/"
@@ -87,19 +110,19 @@ const keywords    = 'tv programm heute abend, fernsehprogramm heute, was läuft 
         </span>
       </div>
       <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-        TV Programm <span class="text-blue-600 dark:text-blue-400">heute Abend</span>
+        TV Programm <span class="text-blue-600 dark:text-blue-400">heute Abend</span> & 20:15 Uhr
       </h1>
-      <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm sm:text-base">
-        <span data-live-date>{dateLabel}</span> &mdash; {channelsWithPrograms.length} Sender, alle Sendungen ab 17:00 Uhr
+      <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm sm:text-base max-w-3xl">
+        <span data-live-date>{dateLabel}</span> &mdash; Was läuft heute im TV? {channelsWithPrograms.length} Sender im Überblick mit Hauptabendprogramm ab 20:15 Uhr und allen Abendsendungen.
       </p>
       <div class="flex flex-wrap gap-2 mt-4">
         {[
-          { href: '/morgen/',             label: 'Morgen'        },
-          { href: '/film-heute-abend/',   label: '🎬 Filme'      },
+          { href: '/morgen/',             label: '📅 Morgen'     },
+          { href: '/film-heute-abend/',   label: '🎬 Filme 20:15' },
           { href: '/serien-heute-abend/', label: '📺 Serien'     },
           { href: '/sport-heute-abend/',  label: '⚽ Sport'      },
         ].map(item => (
-          <a href={item.href} class="text-sm font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-colors">
+          <a href={item.href} class="text-sm font-semibold px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-500 dark:hover:text-blue-400 transition-colors bg-slate-50 dark:bg-slate-800/50">
             {item.label}
           </a>
         ))}
@@ -119,7 +142,7 @@ const keywords    = 'tv programm heute abend, fernsehprogramm heute, was läuft 
     <!-- Senderliste -->
     {channelsWithPrograms.length > 0 ? (
       <section aria-label={`${channelsWithPrograms.length} Sender mit Abendsendungen`}>
-        <div class="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-900/50">
+        <div class="divide-y divide-slate-100 dark:divide-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-900/50 shadow-sm">
           {channelsWithPrograms.map(ch => (
             <ChannelCard
               channel={ch}
@@ -138,7 +161,27 @@ const keywords    = 'tv programm heute abend, fernsehprogramm heute, was läuft 
       </div>
     ) : null}
 
+    <!-- SEO FAQ Section -->
+    <section class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800" aria-label="Häufige Fragen zum TV-Programm">
+      <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-6">
+        Häufige Fragen zum TV Programm heute
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {FAQS.map(faq => (
+          <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60 rounded-xl p-5">
+            <h3 class="font-semibold text-slate-900 dark:text-slate-100 mb-2 text-base">
+              {faq.question}
+            </h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+              {faq.answer}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
   </main>
 
   <Footer />
 </BaseLayout>
+

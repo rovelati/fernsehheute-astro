@@ -15,7 +15,7 @@ import Footer from '../components/Footer.astro';
 import ProgramRow from '../components/ProgramRow.astro';
 import { fetchChannels, fetchProgramsForDate, fetchTmdbEnrichment } from '../lib/epg';
 import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
-import { buildHubChannelJsonLd } from '../utils/jsonld';
+import { buildHubChannelJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { getChannelStream } from '../utils/channelStreams';
 import { HUB_CHANNELS } from '../utils/hubChannels';
 import type { Channel, Program } from '../types';
@@ -62,15 +62,13 @@ export async function getStaticPaths() {
     }
   }
 
-  return channels
-    .filter(ch => (programsByChannel.get(normCidLocal(ch.id))?.length ?? 0) > 0)
-    .map(ch => {
-      const slug = normCidLocal(ch.id);
-      return {
-        params: { sender: slug },
-        props: { channel: { ...ch, programs: programsByChannel.get(slug) ?? [] } as Channel, today, slug },
-      };
-    });
+  return channels.map(ch => {
+    const slug = normCidLocal(ch.id);
+    return {
+      params: { sender: slug },
+      props: { channel: { ...ch, programs: programsByChannel.get(slug) ?? [] } as Channel, today, slug },
+    };
+  });
 }
 
 interface Props { channel: Channel; today: string; slug: string; }
@@ -107,12 +105,31 @@ const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_E
 // ── SEO ───────────────────────────────────────────────────────────────────
 const n           = channel.name;
 const pageTitle   = `${n} Programm heute – Sendungen & Sendezeiten`;
-const description = `Vollständiges ${n} Programm heute: alle Sendungen, Filme und Serien mit genauen Sendezeiten. Was läuft heute im ${n}? Hier findest du den kompletten Tages- und Abendplan.`;
+const description = `Vollständiges ${n} Programm heute: alle Sendungen, Filme und Serien mit genauen Sendezeiten. Was läuft heute auf ${n}? Hier findest du den kompletten Tages- und Abendplan.`;
 const keywords    = `${n.toLowerCase()} programm heute, ${n.toLowerCase()} heute abend, was läuft heute auf ${n.toLowerCase()}, ${n.toLowerCase()} sendeplan, ${n.toLowerCase()} sendungen heute, ${n.toLowerCase()} fernsehprogramm`;
 const canonicalUrl = `https://fernsehheute.de/${slug}/`;
 const ogImage      = channel.logo?.startsWith('http') ? channel.logo : undefined;
 
-const jsonLd = buildHubChannelJsonLd({ channel, programs, today });
+const channelFaqs = [
+  {
+    question: `Was läuft heute auf ${n}?`,
+    answer: `Hier findest du das vollständige heutige Fernsehprogramm von ${n} mit allen Sendungen, Spielfilmen, Serien und Magazinen im Tages- und Abendverlauf inklusive genauer Beginnzeiten.`,
+  },
+  {
+    question: `Wann beginnt das Hauptabendprogramm (Prime Time) auf ${n}?`,
+    answer: `Das Hauptabendprogramm auf ${n} startet regulär um 20:15 Uhr mit den besten Filmen, Shows oder Serien des Tages.`,
+  },
+  {
+    question: `Wo kann man ${n} live im Internet streamen?`,
+    answer: streamUrl
+      ? `${n} kann online über den offiziellen Livestream bzw. die Mediathek geschaut werden.`
+      : `Sendungen von ${n} sind in den offiziellen Mediatheken und Streaming-Angeboten des Senders abrufbar.`,
+  },
+];
+
+const channelSchemas = buildHubChannelJsonLd({ channel, programs, today });
+const faqSchema      = buildFaqJsonLd(channelFaqs);
+const jsonLd         = [...channelSchemas, faqSchema];
 
 // Andere Sender für Internal Links
 const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
@@ -276,6 +293,25 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
 
       </div>
     )}
+
+    <!-- ── Channel FAQs ─────────────────────────────────────────────── -->
+    <section class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Häufige Fragen zu ${channel.name}`}>
+      <h2 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-4">
+        Häufige Fragen zum {channel.name} Programm heute
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {channelFaqs.map(faq => (
+          <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60 rounded-xl p-4">
+            <h3 class="font-semibold text-slate-900 dark:text-slate-100 mb-1.5 text-sm">
+              {faq.question}
+            </h3>
+            <p class="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+              {faq.answer}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
 
     <!-- ── Internal Links ──────────────────────────────────────────────── -->
     <div class="mt-8 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">

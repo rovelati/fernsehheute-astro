@@ -9,6 +9,7 @@ import Footer from '../components/Footer.astro';
 import ChannelCard from '../components/ChannelCard.astro';
 import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTomorrowInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
+import { buildHubMorgenJsonLd } from '../utils/jsonld';
 import type { Channel, Program } from '../types';
 
 const normCid = (cid: string): string =>
@@ -24,7 +25,7 @@ const AGF_ORDER = [
 const tomorrow = getTomorrowInBerlin();
 const dateLabel = formatDateDE(tomorrow);
 
-let channelsWithPrograms: (Channel & { slug: string })[] = [];
+let channelsWithPrograms: (Channel & { slug: string; programs: Program[] })[] = [];
 
 try {
   const [channels, allPrograms] = await Promise.all([
@@ -35,7 +36,9 @@ try {
   const programsByChannel = new Map<string, Program[]>();
   for (const prog of allPrograms) {
     const key = normCid(prog.channel_id ?? '');
-    if (!programsByChannel.has(key)) programsByChannel.set(key, []);
+    if (!programsByChannel.has(key)) {
+      programsByChannel.set(key, []);
+    }
     programsByChannel.get(key)!.push(prog);
   }
 
@@ -62,6 +65,8 @@ try {
   console.error('[morgen.astro] fetch error:', err);
 }
 
+const jsonLd = buildHubMorgenJsonLd({ channels: channelsWithPrograms, tomorrow });
+
 const description = 'TV Programm morgen: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten.';
 const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morgen im tv, tv morgen abend, programm morgen abend';
 ---
@@ -71,6 +76,7 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
   description={description}
   keywords={keywords}
   canonicalUrl="https://fernsehheute.de/morgen/"
+  jsonLd={jsonLd}
 >
   <Header />
 

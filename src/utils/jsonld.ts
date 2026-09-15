@@ -476,3 +476,72 @@ export function buildHubCategoryJsonLd({
     },
   ];
 }
+
+// ---------------------------------------------------------------------------
+// Hub Morgen (/morgen/)
+// ---------------------------------------------------------------------------
+export function buildHubMorgenJsonLd({
+  channels,
+  tomorrow,
+  siteUrl = SITE_URL,
+}: {
+  channels: Channel[];
+  tomorrow: string;
+  siteUrl?: string;
+}): object[] {
+  const pageUrl = `${siteUrl}/morgen/`;
+  return [
+    { '@context': 'https://schema.org', ...websiteEntity() },
+    { '@context': 'https://schema.org', ...orgEntity() },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#list`,
+      name: 'TV Programm morgen – Alle Sender & Sendezeiten',
+      url: pageUrl,
+      numberOfItems: channels.length,
+      itemListElement: channels.slice(0, 15).map((ch, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${ch.name} morgen — TV Programm`,
+        url: `${siteUrl}/${ch.id}/`,
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'TV Programm heute',  item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: 'TV Programm morgen', item: pageUrl },
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      ...webPageEntity(
+        pageUrl,
+        'TV Programm morgen – Alle Sender & Sendezeiten',
+        'Deutsches TV Programm morgen: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren Sendern im Überblick.',
+      ),
+    },
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// FAQ Schema (FAQPage per Rich Snippets)
+// ---------------------------------------------------------------------------
+export function buildFaqJsonLd(faqs: { question: string; answer: string }[]): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(faq => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
