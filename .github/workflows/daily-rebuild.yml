@@ -129,4 +129,4 @@ jobs:
           ssh-keyscan -H "$CONTABO_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
           ssh -i ~/.ssh/contabo_key -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
             "root@${CONTABO_HOST}" \
-            '/var/www/fernsehheute.de/astro/scripts/rebuild-and-deploy-vps.sh'
+            'git -C /var/www/fernsehheute.de/astro pull origin main && /var/www/fernsehheute.de/astro/scripts/rebuild-and-deploy-vps.sh'
