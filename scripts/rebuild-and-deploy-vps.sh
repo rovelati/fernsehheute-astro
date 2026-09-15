@@ -39,6 +39,9 @@ if [ -z "${DATABASE_URL:-}" ]; then
   exit 1
 fi
 
+log "Pulling latest changes from git..."
+git pull origin main 2>&1 | tee -a "$LOG" || true
+
 log "Starting Astro build..."
 npm install 2>&1 | tee -a "$LOG"
 npm run build 2>&1 | tee -a "$LOG"
