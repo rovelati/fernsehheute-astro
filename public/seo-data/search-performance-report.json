@@ -1,6 +1,6 @@
 {
   "ok": true,
-  "generatedAt": "2026-09-15T13:08:26.902699+00:00",
+  "generatedAt": "2026-09-15T17:22:48.350183+00:00",
   "siteUrl": "https://fernsehheute.de/",
   "source": "Google Search Console Search Analytics API",
   "notes": {
@@ -32,46 +32,187 @@
       "position": 0.0
     },
     "headCurrent": {
-      "clicks": 0.0,
-      "impressions": 0.0,
-      "ctr": 0.0,
-      "position": 0.0
+      "clicks": 2.0,
+      "impressions": 1987.0,
+      "ctr": 0.001,
+      "position": 70.84
     },
     "headPrevious": {
-      "clicks": 0.0,
-      "impressions": 0.0,
-      "ctr": 0.0,
-      "position": 0.0
+      "clicks": 1.0,
+      "impressions": 2005.0,
+      "ctr": 0.0005,
+      "position": 73.6
     },
     "headDelta": {
-      "clicks": null,
-      "impressions": null,
-      "ctr": null,
-      "position": null
+      "clicks": 100.0,
+      "impressions": -0.9,
+      "ctr": 100.0,
+      "position": -2.76
     }
   },
-  "topQueries": [],
+  "topQueries": [
+    {
+      "query": "fernsehprogramm",
+      "clicks": 1.0,
+      "impressions": 12.0,
+      "ctr": 0.08333333333333333,
+      "position": 122.91666666666667
+    },
+    {
+      "query": "1&1 tv programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 75.0
+    },
+    {
+      "query": "1-2-3 tv wochenübersicht",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 78.0
+    },
+    {
+      "query": "123 tv programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 69.0
+    },
+    {
+      "query": "123tv programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 56.0
+    },
+    {
+      "query": "13th street programm jetzt",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 35.0
+    },
+    {
+      "query": "14 tage fernsehprogramm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 67.0
+    },
+    {
+      "query": "20 15 uhr fernsehprogramm",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 85.0
+    },
+    {
+      "query": "20.15 programm heute",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 95.0
+    },
+    {
+      "query": "20.15 uhr im tv",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 95.0
+    },
+    {
+      "query": "3 programm heute abend",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 65.0
+    },
+    {
+      "query": "3 programme heute abend",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 69.0
+    },
+    {
+      "query": "3 sat gold programm heute",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 70.5
+    },
+    {
+      "query": "4 wochen fernsehprogramm",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 67.5
+    },
+    {
+      "query": "abendprogramm",
+      "clicks": 0.0,
+      "impressions": 3.0,
+      "ctr": 0.0,
+      "position": 76.66666666666667
+    },
+    {
+      "query": "abendprogramm gestern",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 76.0
+    },
+    {
+      "query": "abendprogramm im tv",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 69.0
+    },
+    {
+      "query": "abendprogramm sixx",
+      "clicks": 0.0,
+      "impressions": 2.0,
+      "ctr": 0.0,
+      "position": 53.0
+    },
+    {
+      "query": "abendprogramme",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 71.0
+    },
+    {
+      "query": "adam sucht eva sendetermine",
+      "clicks": 0.0,
+      "impressions": 1.0,
+      "ctr": 0.0,
+      "position": 73.0
+    }
+  ],
   "targets": [
     {
       "slug": "home",
       "url": "https://fernsehheute.de/",
       "current": {
-        "clicks": 0.0,
-        "impressions": 0.0,
-        "ctr": 0.0,
-        "position": 0.0
+        "clicks": 2.0,
+        "impressions": 1987.0,
+        "ctr": 0.0010065425264217413,
+        "position": 70.83593356819325
       },
       "previous": {
-        "clicks": 0.0,
-        "impressions": 0.0,
-        "ctr": 0.0,
-        "position": 0.0
+        "clicks": 1.0,
+        "impressions": 2005.0,
+        "ctr": 0.0004987531172069825,
+        "position": 73.59501246882793
       },
       "delta": {
-        "clicks": null,
-        "impressions": null,
-        "ctr": null,
-        "position": null
+        "clicks": 100.0,
+        "impressions": -0.9,
+        "ctr": 101.81,
+        "position": -2.76
       }
     },
     {
