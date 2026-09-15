@@ -39,7 +39,7 @@ function getSupabase(): SupabaseClient {
   return supabase;
 }
 
-async function pgQuery<T extends Record<string, unknown>>(
+async function pgQuery<T = any>(
   text: string,
   values: unknown[] = [],
 ): Promise<T[]> {

@@ -168,7 +168,7 @@ function webPageEntity(url: string, name: string, description: string): Record<s
 
 /** BroadcastService-Entität mit Wikidata sameAs */
 function broadcastServiceEntity(channel: Channel, siteUrl = SITE_URL): Record<string, unknown> {
-  const channelUrl = `${siteUrl}/${channel.id}`;
+  const channelUrl = `${siteUrl}/${channel.id}/`;
   const wikidata   = CHANNEL_WIKIDATA[channel.id];
 
   return {
@@ -206,7 +206,7 @@ function broadcastEventEntity(
   const type       = workType(program);
   const year       = extractYear(program.title);
   const streamUrl  = CHANNEL_STREAM_URL[channel.id];
-  const channelUrl = `${siteUrl}/${channel.id}`;
+  const channelUrl = `${siteUrl}/${channel.id}/`;
 
   const liveUrl = streamUrl ?? channelUrl;
 
@@ -376,13 +376,13 @@ export function buildHubHomeJsonLd({
       '@type': 'ItemList',
       '@id': `${siteUrl}/#list`,
       name: 'TV Programm heute – Alle Sender & Sendezeiten',
-      url: siteUrl,
+      url: `${siteUrl}/`,
       numberOfItems: channels.length,
       itemListElement: channels.slice(0, 15).map((ch, i) => ({
         '@type': 'ListItem',
         position: i + 1,
         name: `${ch.name} heute Abend — TV Programm`,
-        url: `${siteUrl}/${ch.id}`,
+        url: `${siteUrl}/${ch.id}/`,
       })),
     },
     {
@@ -390,13 +390,13 @@ export function buildHubHomeJsonLd({
       '@type': 'BreadcrumbList',
       '@id': `${siteUrl}/#breadcrumb`,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'TV Programm heute', item: siteUrl },
+        { '@type': 'ListItem', position: 1, name: 'TV Programm heute', item: `${siteUrl}/` },
       ],
     },
     {
       '@context': 'https://schema.org',
       ...webPageEntity(
-        siteUrl,
+        `${siteUrl}/`,
         'TV Programm heute – Alle Sender & Sendezeiten',
         'Deutsches TV Programm heute: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten.',
       ),
@@ -420,7 +420,7 @@ export function buildHubCategoryJsonLd({
   today: string;
   siteUrl?: string;
 }): object[] {
-  const pageUrl    = `${siteUrl}/${categorySlug}`;
+  const pageUrl    = `${siteUrl}/${categorySlug}/`;
   const isFilmPage = categorySlug === 'film-heute-abend';
 
   const itemListElements = programs.slice(0, 20).map((p, i) => {
@@ -462,7 +462,7 @@ export function buildHubCategoryJsonLd({
       '@type': 'BreadcrumbList',
       '@id': `${pageUrl}#breadcrumb`,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'TV Programm heute',          item: siteUrl },
+        { '@type': 'ListItem', position: 1, name: 'TV Programm heute',          item: `${siteUrl}/` },
         { '@type': 'ListItem', position: 2, name: `${categoryName} heute Abend`, item: pageUrl },
       ],
     },

@@ -36,6 +36,15 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   <meta name="publisher" content="FernsehHeute" />
   <link rel="canonical" href={resolvedCanonical} />
 
+  <!-- Google Analytics (GA4) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEQCS4CCVP"></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FEQCS4CCVP');
+  </script>
+
   <!-- Favicon -->
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
