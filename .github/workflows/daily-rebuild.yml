@@ -113,7 +113,10 @@ jobs:
       needs.tmdb-enrichment.result != 'cancelled'
 
     steps:
-      - name: Build + deploy on Contabo VPS
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Sync and Build on Contabo VPS + Deploy to Cloudflare Pages
         env:
           CONTABO_SSH_KEY: ${{ secrets.CONTABO_SSH_KEY }}
           CONTABO_HOST: ${{ secrets.CONTABO_HOST }}
@@ -127,6 +130,13 @@ jobs:
           printf '%s\n' "$CONTABO_SSH_KEY" > ~/.ssh/contabo_key
           chmod 600 ~/.ssh/contabo_key
           ssh-keyscan -H "$CONTABO_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+          echo "Syncing latest repository code to Contabo VPS..."
+          rsync -avz --exclude='.env' --exclude='node_modules' --exclude='dist' --exclude='.git' \
+            -e "ssh -i ~/.ssh/contabo_key -o StrictHostKeyChecking=no -o IdentitiesOnly=yes" \
+            ./ "root@${CONTABO_HOST}:/var/www/fernsehheute.de/astro/"
+
+          echo "Executing rebuild and deploy on Contabo VPS..."
           ssh -i ~/.ssh/contabo_key -o StrictHostKeyChecking=no -o IdentitiesOnly=yes \
             "root@${CONTABO_HOST}" \
-            'git -C /var/www/fernsehheute.de/astro pull origin main && /var/www/fernsehheute.de/astro/scripts/rebuild-and-deploy-vps.sh'
+            'chmod +x /var/www/fernsehheute.de/astro/scripts/rebuild-and-deploy-vps.sh && /var/www/fernsehheute.de/astro/scripts/rebuild-and-deploy-vps.sh'
