@@ -27,11 +27,11 @@ const CHANNEL_STREAMS: Record<string, ChannelStream> = {
   'tagesschau24':{ url: 'https://www.tagesschau.de/multimedia/livestreams/index.html', login_required: false, geo_de: false, label: 'Tagesschau24' },
 
   // ── RTL-Gruppe (RTL+ / RTL) ───────────────────────────────────────────────
-  'rtl':        { url: 'https://plus.rtl.de/tv-programm',                login_required: true,  geo_de: true,  label: 'RTL+' },
-  'rtl2':       { url: 'https://plus.rtl.de/tv-programm',                login_required: true,  geo_de: true,  label: 'RTL+' },
-  'vox':        { url: 'https://plus.rtl.de/tv-programm',                login_required: true,  geo_de: true,  label: 'RTL+' },
-  'nitro':      { url: 'https://plus.rtl.de/tv-programm',                login_required: true,  geo_de: true,  label: 'RTL+' },
-  'super-rtl':  { url: 'https://plus.rtl.de/tv-programm',                login_required: true,  geo_de: true,  label: 'RTL+' },
+  'rtl':        { url: 'https://plus.rtl.de/',                           login_required: true,  geo_de: true,  label: 'RTL+' },
+  'rtl2':       { url: 'https://plus.rtl.de/',                           login_required: true,  geo_de: true,  label: 'RTL+' },
+  'vox':        { url: 'https://plus.rtl.de/',                           login_required: true,  geo_de: true,  label: 'RTL+' },
+  'nitro':      { url: 'https://plus.rtl.de/',                           login_required: true,  geo_de: true,  label: 'RTL+' },
+  'super-rtl':  { url: 'https://plus.rtl.de/',                           login_required: true,  geo_de: true,  label: 'RTL+' },
   'ntv':        { url: 'https://www.n-tv.de/mediathek/livestream/',      login_required: false, geo_de: false, label: 'ntv' },
   'n-tv':       { url: 'https://www.n-tv.de/mediathek/livestream/',      login_required: false, geo_de: false, label: 'ntv' },
 
