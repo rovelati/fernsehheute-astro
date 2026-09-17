@@ -53,25 +53,25 @@ const CHANNEL_WIKIDATA: Record<string, string> = {
 
 // URL streaming ufficiali — usati in WatchAction
 const CHANNEL_STREAM_URL: Record<string, string> = {
-  'das-erste':  'https://www.ardmediathek.de/live/das-erste',
+  'das-erste':  'https://www.daserste.de/live/index.html',
   'zdf':        'https://www.zdf.de/live-tv',
-  'rtl':        'https://plus.rtl.de/live-tv/rtl',
+  'rtl':        'https://plus.rtl.de/tv-programm',
   'sat1':       'https://www.sat1.de/live',
   'prosieben':  'https://www.prosieben.de/live',
-  'vox':        'https://plus.rtl.de/live-tv/vox',
-  'rtl2':       'https://plus.rtl.de/live-tv/rtl2',
+  'vox':        'https://plus.rtl.de/tv-programm',
+  'rtl2':       'https://plus.rtl.de/tv-programm',
   'kabel-eins': 'https://www.kabeleins.de/live',
   'sixx':       'https://www.sixx.de/live',
-  'super-rtl':  'https://plus.rtl.de/live-tv/superrtl',
-  'nitro':      'https://plus.rtl.de/live-tv/nitro',
-  '3sat':       'https://www.3sat.de/live',
+  'super-rtl':  'https://plus.rtl.de/tv-programm',
+  'nitro':      'https://plus.rtl.de/tv-programm',
+  '3sat':       'https://www.3sat.de/programm',
   'arte':       'https://www.arte.tv/de/live',
-  'phoenix':    'https://www.ardmediathek.de/live/phoenix',
-  'one':        'https://www.ardmediathek.de/live/one',
-  'tagesschau24': 'https://www.ardmediathek.de/live/tagesschau24',
+  'phoenix':    'https://www.phoenix.de/livestream.html',
+  'one':        'https://www.ardmediathek.de/live',
+  'tagesschau24': 'https://www.tagesschau.de/multimedia/livestreams/index.html',
   'sport1':     'https://www.sport1.de/liveticker/livestream',
-  'welt':       'https://www.welt.de/tv-programm/live-stream/',
-  'n-tv':       'https://plus.rtl.de/live-tv/ntv',
+  'welt':       'https://www.welt.de/tv-programm-live-stream/',
+  'n-tv':       'https://www.n-tv.de/mediathek/livestream/',
 };
 
 // ---------------------------------------------------------------------------
