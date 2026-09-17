@@ -48,9 +48,15 @@
     <!-- Scrollbarer Body -->
     <div class="flex-1 overflow-y-auto">
 
-      <!-- Poster (standardmäßig versteckt) -->
-      <div id="overlay-poster-wrap" class="hidden overflow-hidden">
+      <!-- Poster o Banner categoria fallback -->
+      <div id="overlay-poster-wrap" class="overflow-hidden relative">
         <img id="overlay-poster" src="" alt="" class="w-full h-52 sm:h-64 object-cover" loading="lazy" />
+        <div id="overlay-banner-fallback" class="w-full h-36 sm:h-44 flex items-center justify-center p-6 bg-gradient-to-br from-slate-800 to-slate-900 border-b border-slate-700/50">
+          <div class="text-center">
+            <span id="overlay-banner-icon" class="text-4xl sm:text-5xl mb-1.5 block">📺</span>
+            <span id="overlay-banner-label" class="text-xs uppercase font-bold tracking-widest text-slate-300">TV-Programm</span>
+          </div>
+        </div>
       </div>
 
       <!-- Hauptinhalt -->
@@ -290,10 +296,59 @@
     if (logoEl) { logoEl.src = data.channelLogo || ''; logoEl.alt = data.channelName || ''; }
     txt('overlay-channel-name', data.channelName);
 
-    // Poster
+    // Poster & Category Banner Fallback
     const posterEl = $('overlay-poster') as HTMLImageElement | null;
-    if (data.poster_url && posterEl) { posterEl.src = data.poster_url; posterEl.alt = data.title || ''; }
-    hidden('overlay-poster-wrap', !data.poster_url);
+    const bannerFallback = $('overlay-banner-fallback');
+    const bannerIcon = $('overlay-banner-icon');
+    const bannerLabel = $('overlay-banner-label');
+
+    const cat = (data.category || '').toLowerCase();
+    let bannerEmoji = '📺';
+    let bannerText = data.category || 'TV-Programm';
+    let bannerGradient = 'from-slate-800 to-slate-900';
+
+    if (cat.includes('film') || cat.includes('kino') || cat.includes('thriller') || cat.includes('drama') || cat.includes('komödie')) {
+      bannerEmoji = '🎬';
+      bannerText = 'Spielfilm';
+      bannerGradient = 'from-purple-900 via-indigo-950 to-slate-950';
+    } else if (cat.includes('serie') || cat.includes('sitcom')) {
+      bannerEmoji = '📺';
+      bannerText = 'Serie';
+      bannerGradient = 'from-blue-900 via-slate-900 to-slate-950';
+    } else if (cat.includes('sport') || cat.includes('fussball') || cat.includes('fußball')) {
+      bannerEmoji = '⚽';
+      bannerText = 'Sport & Live';
+      bannerGradient = 'from-emerald-900 via-teal-950 to-slate-950';
+    } else if (cat.includes('doku') || cat.includes('wissen') || cat.includes('natur')) {
+      bannerEmoji = '🌍';
+      bannerText = 'Dokumentation';
+      bannerGradient = 'from-amber-900 via-stone-900 to-slate-950';
+    } else if (cat.includes('nachrichten') || cat.includes('news')) {
+      bannerEmoji = '📰';
+      bannerText = 'Nachrichten & Aktuelles';
+      bannerGradient = 'from-sky-900 via-slate-900 to-slate-950';
+    } else if (cat.includes('show') || cat.includes('unterhaltung') || cat.includes('quiz')) {
+      bannerEmoji = '🌟';
+      bannerText = 'Show & Unterhaltung';
+      bannerGradient = 'from-pink-900 via-rose-950 to-slate-950';
+    }
+
+    if (bannerIcon) bannerIcon.textContent = bannerEmoji;
+    if (bannerLabel) bannerLabel.textContent = bannerText;
+    if (bannerFallback) bannerFallback.className = `w-full h-36 sm:h-44 flex items-center justify-center p-6 bg-gradient-to-br ${bannerGradient} border-b border-slate-700/50`;
+
+    if (data.poster_url && posterEl) {
+      posterEl.src = data.poster_url;
+      posterEl.style.display = 'block';
+      if (bannerFallback) bannerFallback.style.display = 'none';
+      posterEl.onerror = () => {
+        posterEl.style.display = 'none';
+        if (bannerFallback) bannerFallback.style.display = 'flex';
+      };
+    } else {
+      if (posterEl) posterEl.style.display = 'none';
+      if (bannerFallback) bannerFallback.style.display = 'flex';
+    }
 
     // Live + Progress
     const now = Date.now();

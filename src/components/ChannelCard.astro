@@ -1,13 +1,11 @@
 ---
 /**
  * ChannelCard — fernsehheute.de
- * Kanalzeile mit Logo, Name, Kanal-Nr und Prime-Time-Programm.
- * Entspricht dem Design von 123programmitv.it.
- *
- * mode = 'abend'  → server-side: bestes Abendprogramm (20:15+)
- * mode = 'morgen' → server-side: bestes Programm morgen
+ * Card di canale con Logo ottimizzato, Nome e Programma Prime Time.
+ * Supporta live filtering client-side e responsive desktop grid.
  */
 import { formatTime } from '../utils/timeSlots';
+import { getChannelLogo } from '../utils/channelLogos';
 import type { Channel, Program } from '../types';
 
 interface Props {
@@ -18,6 +16,9 @@ interface Props {
 }
 
 const { channel, programs, slug, mode = 'abend' } = Astro.props;
+
+// Risolve logo locale ad alta definizione con fallback automatico
+const resolvedLogo = getChannelLogo(channel.id, channel.logo, channel.name);
 
 // ─── UTC-Offsets für Berlin (CEST = UTC+2) ────────────────────────────────
 const toUTCMin = (t: string) => { const d = new Date(t); return d.getUTCHours() * 60 + d.getUTCMinutes(); };
@@ -38,7 +39,29 @@ const nextProgram = displayProgram
   ? programs.find(p => new Date(p.start_time) > new Date(displayProgram!.end_time)) ?? null
   : null;
 
-// Overlay-JSON für Klick auf Programm
+// Category grouping for fast search filter chips
+const rawCat = (displayProgram?.category || '').toLowerCase();
+let catGroup = 'sonstiges';
+if (rawCat.includes('film') || rawCat.includes('kino') || rawCat.includes('thriller') || rawCat.includes('komödie') || rawCat.includes('drama') || rawCat.includes('western')) {
+  catGroup = 'film';
+} else if (rawCat.includes('serie') || rawCat.includes('sitcom') || rawCat.includes('soap')) {
+  catGroup = 'serie';
+} else if (rawCat.includes('sport') || rawCat.includes('fussball') || rawCat.includes('fußball') || rawCat.includes('formel')) {
+  catGroup = 'sport';
+} else if (rawCat.includes('doku') || rawCat.includes('wissen') || rawCat.includes('natur') || rawCat.includes('report')) {
+  catGroup = 'doku';
+} else if (rawCat.includes('nachrichten') || rawCat.includes('news') || rawCat.includes('magazin') || rawCat.includes('journal')) {
+  catGroup = 'news';
+} else if (rawCat.includes('show') || rawCat.includes('unterhaltung') || rawCat.includes('quiz') || rawCat.includes('comedy')) {
+  catGroup = 'show';
+}
+
+const isPrimeTimeSlot = displayProgram ? (() => {
+  const m = toUTCMin(displayProgram.start_time);
+  return m >= PRIME_START && m <= 18 * 60 + 30;
+})() : false;
+
+// Overlay-JSON per apertura modale con click su programma
 const overlayJson = displayProgram ? JSON.stringify({
   id:          displayProgram.id,
   title:       displayProgram.title,
@@ -49,77 +72,105 @@ const overlayJson = displayProgram ? JSON.stringify({
   poster_url:  displayProgram.poster_url  ?? null,
   cast_json:   (displayProgram as any).cast_json  ?? null,
   channelId:   slug,
-  channelLogo: channel.logo,
+  channelLogo: resolvedLogo,
   channelName: channel.name,
 }) : null;
+
+// Fallback image SVG data-uri se il caricamento fallisce
+const initials = ((channel.name || slug).replace(/^DE\s*-\s*/i, '').trim().slice(0, 3) || 'TV').toUpperCase();
+const fallbackDataUri = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231e293b'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' fill='%2338bdf8' font-family='system-ui,sans-serif' font-weight='900' font-size='28'>${initials}</text></svg>`;
 ---
 
-<a
-  href={`/${slug}/`}
-  class="block group border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
-  aria-label={`Alle Sendungen von ${channel.name}`}
+<div
+  class="channel-card-item block group rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-blue-400 dark:hover:border-blue-500/60 hover:shadow-lg hover:shadow-blue-500/5 transition-all duration-200 overflow-hidden"
+  data-channel-card
+  data-channel-name={channel.name.toLowerCase()}
+  data-channel-slug={slug}
+  data-program-title={displayProgram?.title?.toLowerCase() ?? ''}
+  data-category={catGroup}
 >
-  <div class="grid grid-cols-[72px_1fr] sm:grid-cols-[88px_1fr_20px] gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
+  <div class="grid grid-cols-[76px_1fr] sm:grid-cols-[92px_1fr_24px] gap-3.5 p-3.5 sm:p-4">
 
-    <!-- Spalte links: Logo + Name + Kanal-Nr -->
-    <div class="flex flex-col items-start gap-1.5">
-      <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 shadow-sm">
+    <!-- Colonna sinistra: Logo + Nome Canale + Link -->
+    <a
+      href={`/${slug}/`}
+      class="flex flex-col items-center sm:items-start text-center sm:text-left gap-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+      aria-label={`Programmübersicht ${channel.name}`}
+    >
+      <div class="w-11 h-11 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/90 shadow-sm p-1.5 group-hover:scale-105 transition-transform">
         <img
-          src={channel.logo}
+          src={resolvedLogo}
           alt={`Logo ${channel.name}`}
-          width="36" height="36"
+          width="44" height="44"
           class="w-full h-full object-contain"
           loading="lazy"
-          onerror="this.style.display='none'"
+          onerror={`this.onerror=null; this.src='${fallbackDataUri}';`}
         />
       </div>
       <div class="min-w-0 w-full">
-        <p class="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate">{channel.name}</p>
-        {channel.number > 0 && <p class="text-[10px] text-slate-400 dark:text-slate-500">CH {channel.number}</p>}
+        <p class="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          {channel.name.replace(/^DE\s*-\s*/i, '')}
+        </p>
+        <span class="text-[10px] font-medium text-slate-400 dark:text-slate-500 block">Programm →</span>
       </div>
-    </div>
+    </a>
 
-    <!-- Spalte rechts: Programm -->
-    <div class="min-w-0 py-0.5">
+    <!-- Colonna destra: Programma Principale (Cliccabile per aprire l'overlay) -->
+    <div class="min-w-0 flex flex-col justify-center">
       {displayProgram ? (
         <div
           data-program={overlayJson}
-          class="cursor-pointer"
-          title="Klicken für Details"
+          class="cursor-pointer text-left focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+          title="Klicken für Programmdetails & Kalender"
           role="button"
           tabindex="0"
         >
-          <p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mb-0.5 flex items-center gap-1.5 flex-wrap">
-            <span class="tabular-nums">{formatTime(displayProgram.start_time)} – {formatTime(displayProgram.end_time)}</span>
+          <!-- Orario + Badge Categoria -->
+          <div class="flex items-center gap-2 mb-1 flex-wrap">
+            <span class:list={[
+              'inline-flex items-center text-[11px] sm:text-xs font-bold tabular-nums px-2 py-0.5 rounded-md',
+              isPrimeTimeSlot
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+            ]}>
+              {formatTime(displayProgram.start_time)} – {formatTime(displayProgram.end_time)} Uhr
+            </span>
+
             {displayProgram.category && (
-              <span class="uppercase tracking-wide font-semibold">{displayProgram.category}</span>
+              <span class="text-[10px] sm:text-[11px] uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
+                {displayProgram.category}
+              </span>
             )}
-          </p>
-          <p class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+          </div>
+
+          <!-- Titolo Programma -->
+          <p class="text-sm sm:text-[15px] font-extrabold text-slate-900 dark:text-slate-100 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
             {displayProgram.title}
           </p>
-          <!-- Fortschrittsbalken (immer 0 = zukünftige Sendung) -->
-          <div class="h-[3px] w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-600 mb-2">
-            <div class="h-full rounded-full bg-slate-300 dark:bg-slate-500" style="width:0%"></div>
-          </div>
+
+          <!-- Prossimo Programma -->
           {nextProgram && (
-            <p class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 truncate">
-              <span class="tabular-nums">{formatTime(nextProgram.start_time)}</span>{' — '}
-              <span class="text-slate-600 dark:text-slate-400">{nextProgram.title}</span>
+            <p class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 truncate mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-800/80">
+              <span class="text-slate-400 dark:text-slate-500 font-semibold">Danach:</span>{' '}
+              <span class="tabular-nums font-medium">{formatTime(nextProgram.start_time)}</span>{' '}
+              <span class="text-slate-600 dark:text-slate-400 font-medium">{nextProgram.title}</span>
             </p>
           )}
         </div>
       ) : (
-        <p class="text-xs text-slate-400 dark:text-slate-500 italic">Kein Programm verfügbar</p>
+        <p class="text-xs text-slate-400 dark:text-slate-500 italic py-2">Kein Programm für diesen Zeitraum verfügbar</p>
       )}
     </div>
 
-    <!-- Chevron (nur Desktop) -->
+    <!-- Icona Dettagli (Desktop) -->
     <div class="hidden sm:flex items-center justify-center">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-slate-300 dark:text-slate-600 group-hover:text-blue-400 transition-colors">
-        <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <div class="w-7 h-7 rounded-full bg-slate-50 dark:bg-slate-800/80 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="transition-transform group-hover:translate-x-0.5">
+          <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
     </div>
 
   </div>
-</a>
+</div>
+

@@ -14,6 +14,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ProgramRow from '../components/ProgramRow.astro';
 import { fetchChannels, fetchProgramsForDate, fetchTmdbEnrichment } from '../lib/epg';
+import { getChannelLogo } from '../utils/channelLogos';
 import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
 import { buildHubChannelJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { getChannelStream } from '../utils/channelStreams';
@@ -74,6 +75,11 @@ export async function getStaticPaths() {
 interface Props { channel: Channel; today: string; slug: string; }
 const { channel, today, slug } = Astro.props;
 
+// Risolve logo locale ad alta definizione con fallback SVG
+const resolvedLogo = getChannelLogo(channel.id, channel.logo, channel.name);
+const initials = ((channel.name || slug).replace(/^DE\s*-\s*/i, '').trim().slice(0, 3) || 'TV').toUpperCase();
+const fallbackDataUri = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231e293b'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' fill='%2338bdf8' font-family='system-ui,sans-serif' font-weight='900' font-size='28'>${initials}</text></svg>`;
+
 type ExtProgram = Program & {
   cast_json?:    { name: string; role: string; character?: string }[];
   release_year?: number;
@@ -108,7 +114,7 @@ const pageTitle   = `${n} Programm heute – Sendungen & Sendezeiten`;
 const description = `Vollständiges ${n} Programm heute: alle Sendungen, Filme und Serien mit genauen Sendezeiten. Was läuft heute auf ${n}? Hier findest du den kompletten Tages- und Abendplan.`;
 const keywords    = `${n.toLowerCase()} programm heute, ${n.toLowerCase()} heute abend, was läuft heute auf ${n.toLowerCase()}, ${n.toLowerCase()} sendeplan, ${n.toLowerCase()} sendungen heute, ${n.toLowerCase()} fernsehprogramm`;
 const canonicalUrl = `https://fernsehheute.de/${slug}/`;
-const ogImage      = channel.logo?.startsWith('http') ? channel.logo : undefined;
+const ogImage      = resolvedLogo.startsWith('http') || resolvedLogo.startsWith('/') ? resolvedLogo : undefined;
 
 const channelFaqs = [
   {
@@ -127,7 +133,7 @@ const channelFaqs = [
   },
 ];
 
-const channelSchemas = buildHubChannelJsonLd({ channel, programs, today });
+const channelSchemas = buildHubChannelJsonLd({ channel: { ...channel, logo: resolvedLogo }, programs, today });
 const faqSchema      = buildFaqJsonLd(channelFaqs);
 const jsonLd         = [...channelSchemas, faqSchema];
 
@@ -158,27 +164,27 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
   <section class="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-b border-slate-100 dark:border-slate-700/50">
     <div class="flex items-center gap-4 mb-3">
       <!-- Logo -->
-      <div class="w-16 h-16 flex-shrink-0 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-600 overflow-hidden flex items-center justify-center shadow-sm p-2">
+      <div class="w-16 h-16 flex-shrink-0 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shadow-sm p-2">
         <img
-          src={channel.logo}
+          src={resolvedLogo}
           alt={`Logo ${channel.name}`}
           width="56" height="56"
           class="w-14 h-14 object-contain"
           loading="eager"
-          onerror="this.style.display='none'"
+          onerror={`this.onerror=null; this.src='${fallbackDataUri}';`}
         />
       </div>
       <!-- Name + Datum -->
       <div>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-          <span class="text-blue-600 dark:text-blue-400">{channel.name}</span> Programm heute
+          <span class="text-blue-600 dark:text-blue-400">{channel.name.replace(/^DE\s*-\s*/i, '')}</span> Programm heute
         </h1>
         <p class="text-slate-500 dark:text-slate-400 text-sm mt-1"><span data-live-date>{dateLabel}</span></p>
       </div>
     </div>
 
     <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
-      Vollständiger Sendeplan für {channel.name} heute: alle Sendungen mit Uhrzeit, Beschreibung und Details.
+      Vollständiger Sendeplan für {channel.name.replace(/^DE\s*-\s*/i, '')} heute: alle Sendungen mit Uhrzeit, Beschreibung und Details.
     </p>
 
     <div class="flex flex-wrap gap-2">
@@ -212,24 +218,70 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
   <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-12">
 
     {programs.length === 0 ? (
-      <div class="text-center py-16 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
-        <p class="text-4xl mb-3" aria-hidden="true">📺</p>
-        <p class="text-slate-500 dark:text-slate-400 font-medium">Kein Programm verfügbar für {channel.name} heute.</p>
-        <a href="/" class="mt-4 inline-block text-blue-600 hover:text-blue-700 text-sm transition-colors">← Alle Sender</a>
+      <div class="max-w-2xl mx-auto text-center py-14 px-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm my-6">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl shadow-inner">
+          📺
+        </div>
+        <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+          Keine Sendedaten für {channel.name.replace(/^DE\s*-\s*/i, '')} heute
+        </h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6 leading-relaxed">
+          Für diesen Sender liegt für heute kein elektronischer EPG-Sendeplan vor. Du kannst den Sender online im Live-Stream ansehen oder das Hauptabendprogramm beliebter deutscher Sender durchstöbern.
+        </p>
+
+        {streamUrl && (
+          <div class="mb-8">
+            <a
+              href={streamUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-5 py-3 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-2xl transition-all shadow-md shadow-red-500/20"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+              Offiziellen Live-Stream öffnen
+            </a>
+          </div>
+        )}
+
+        <div class="border-t border-slate-100 dark:border-slate-800 pt-6">
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
+            Beliebte TV-Sender heute Abend
+          </p>
+          <div class="flex flex-wrap justify-center gap-2">
+            {[
+              { id: 'das-erste', name: 'Das Erste' },
+              { id: 'zdf', name: 'ZDF' },
+              { id: 'rtl', name: 'RTL' },
+              { id: 'sat1', name: 'SAT.1' },
+              { id: 'prosieben', name: 'ProSieben' },
+              { id: 'vox', name: 'VOX' },
+              { id: 'kabel-eins', name: 'Kabel Eins' },
+              { id: 'arte', name: 'Arte' },
+              { id: '3sat', name: '3sat' },
+            ].map(ch => (
+              <a
+                href={`/${ch.id}/`}
+                class="px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/60 dark:border-slate-700 transition-colors"
+              >
+                {ch.name}
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
     ) : (
-      <div class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-800/50 shadow-sm">
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-800/50 shadow-sm">
 
         {/* ── Prime Time (orange) ── */}
         {sectionPrimeTime.length > 0 && (
           <section aria-label="Prime Time">
-            <h2 class="text-[11px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 px-4 py-2 bg-orange-50 dark:bg-orange-900/20 border-b border-orange-100 dark:border-orange-800/30 flex items-center gap-1.5">
-              <span class="w-1.5 h-1.5 bg-orange-500 rounded-full inline-block" aria-hidden="true"></span>
+            <h2 class="text-[11px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 px-4 py-2.5 bg-orange-50 dark:bg-orange-900/20 border-b border-orange-100 dark:border-orange-800/30 flex items-center gap-1.5">
+              <span class="w-2 h-2 bg-orange-500 rounded-full inline-block" aria-hidden="true"></span>
               Prime Time · ab 20:15 Uhr
             </h2>
             <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
               {sectionPrimeTime.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
               ))}
             </ul>
           </section>
@@ -243,7 +295,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
             </h2>
             <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
               {sectionAbend.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
               ))}
             </ul>
           </section>
@@ -257,7 +309,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
             </h2>
             <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
               {sectionNacht.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
               ))}
             </ul>
           </section>
@@ -271,7 +323,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
             </h2>
             <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
               {sectionNachmittag.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
               ))}
             </ul>
           </section>
@@ -285,7 +337,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
             </h2>
             <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
               {sectionVormittag.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={channel.logo} channelName={channel.name} />
+                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
               ))}
             </ul>
           </section>

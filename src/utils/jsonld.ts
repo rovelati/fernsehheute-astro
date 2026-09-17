@@ -91,7 +91,8 @@ function isoDuration(start: string, end: string): string {
 }
 
 /** Extrahiert Jahr aus Titeln wie "Filmname (2023)" */
-function extractYear(title: string): string | null {
+function extractYear(title?: string | null): string | null {
+  if (!title) return null;
   const match = title.match(/\((\d{4})\)/);
   if (!match) return null;
   const y = parseInt(match[1], 10);
