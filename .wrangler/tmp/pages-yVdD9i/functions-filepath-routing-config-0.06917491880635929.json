@@ -1,0 +1,13 @@
+{
+  "routes": [
+    {
+      "routePath": "/programm/:path*",
+      "mountPath": "/programm",
+      "method": "",
+      "module": [
+        "programm/[[path]].js:onRequest"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}

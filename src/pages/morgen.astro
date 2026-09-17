@@ -137,7 +137,7 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
     {channelsWithPrograms.length > 0 ? (
       <section aria-label={`${channelsWithPrograms.length} Sender mit Programmvorschau für morgen`}>
-        <div id="channels-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 sm:gap-4">
+        <div id="channels-grid" class="divide-y divide-slate-100 dark:divide-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-900/50 shadow-sm">
           {channelsWithPrograms.map(channel => (
             <ChannelCard channel={channel} programs={channel.programs} slug={channel.slug} mode="morgen" />
           ))}

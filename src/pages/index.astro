@@ -166,10 +166,10 @@ const keywords    = 'tv programm heute abend, was läuft heute im tv, tv program
       </div>
     )}
 
-    <!-- Senderliste in 2-Spalten-Desktop-Grid -->
+    <!-- Senderliste auf Zeilen (Full-Width Rows) -->
     {channelsWithPrograms.length > 0 ? (
       <section aria-label={`${channelsWithPrograms.length} Sender mit Abendsendungen`}>
-        <div id="channels-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 sm:gap-4">
+        <div id="channels-grid" class="divide-y divide-slate-100 dark:divide-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-900/50 shadow-sm">
           {channelsWithPrograms.map(ch => (
             <ChannelCard
               channel={ch}
