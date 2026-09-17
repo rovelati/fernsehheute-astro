@@ -36,6 +36,15 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   <meta name="publisher" content="FernsehHeute" />
   <link rel="canonical" href={resolvedCanonical} />
 
+  <!-- Microsoft Edge & Windows Compatibility -->
+  <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+  <meta name="application-name" content="FernsehHeute" />
+  <meta name="msapplication-TileColor" content="#2563eb" />
+  <meta name="msapplication-tap-highlight" content="no" />
+
   <!-- Google Analytics (GA4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEQCS4CCVP"></script>
   <script is:inline>
@@ -57,6 +66,12 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   <meta property="og:image" content={ogImage ?? defaultOgImage} />
   <meta property="og:locale" content="de_DE" />
   <meta property="og:site_name" content="FernsehHeute" />
+
+  <!-- Twitter / Edge Feed Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  {description && <meta name="twitter:description" content={description} />}
+  <meta name="twitter:image" content={ogImage ?? defaultOgImage} />
 
   <!-- JSON-LD -->
   {jsonLd?.map(schema => (
