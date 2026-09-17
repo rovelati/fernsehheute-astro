@@ -5,6 +5,7 @@
  * Design: angelehnt an 123programmitv.it
  */
 import { HUB_CHANNELS } from '../utils/hubChannels';
+import BookmarkButton from './BookmarkButton.astro';
 
 const CATEGORY_LINKS = [
   { href: '/film-heute-abend/',   label: 'Filme heute Abend'  },
@@ -67,8 +68,10 @@ const isMorgen = pathname === '/morgen';
         ))}
       </nav>
 
-      <!-- Rechts: Mobile Pills + Theme Toggle -->
+      <!-- Rechts: Mobile Pills + Bookmark Button + Theme Toggle -->
       <div class="flex items-center gap-2 shrink-0">
+
+        <BookmarkButton />
 
         <!-- Mobile: HEUTE / MORGEN -->
         <div class="flex md:hidden items-center gap-0.5 bg-slate-100 dark:bg-slate-800 rounded-full p-1">
