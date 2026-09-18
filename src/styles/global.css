@@ -63,3 +63,17 @@ html.theme-transition *::before,
 html.theme-transition *::after {
   transition: background-color 200ms ease, border-color 200ms ease, color 150ms ease !important;
 }
+
+/* Windows Fluent & Edge Scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+/* Windows High Contrast Mode Support */
+@media (forced-colors: active) {
+  .filter-chip, #bookmark-btn, #theme-toggle {
+    forced-color-adjust: none;
+    border: 1px solid ButtonBorder !important;
+  }
+}

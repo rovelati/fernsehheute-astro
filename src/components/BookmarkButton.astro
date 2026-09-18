@@ -76,27 +76,48 @@
       <p id="bookmark-desc" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
         Speichern Sie <strong>FernsehHeute.de</strong> in Ihren Favoriten, um jederzeit mit einem Klick das TV-Programm aufzurufen.
       </p>
+
+      <!-- Edge Sidebar Tip -->
+      <div id="bookmark-edge-sidebar-tip" class="hidden pt-2.5 border-t border-slate-200 dark:border-slate-700 text-xs text-blue-700 dark:text-blue-300 flex items-start gap-2">
+        <span class="text-sm shrink-0">📌</span>
+        <span>
+          <strong>Edge-Seitenleiste:</strong> Klicke rechts auf <strong>„+“</strong> in der Edge-Sidebar, um FernsehHeute als permanente Mini-TV-App anzuheften.
+        </span>
+      </div>
     </div>
 
     <!-- Actions -->
-    <div class="flex items-center justify-end gap-2 pt-2">
+    <div class="flex items-center justify-between gap-2 pt-2">
       <button
-        id="bookmark-copy-link-btn"
+        id="bookmark-install-pwa-btn"
         type="button"
-        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+        class="hidden items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
       >
-        <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
         </svg>
-        <span id="bookmark-copy-link-text">Link kopieren</span>
+        <span id="bookmark-install-pwa-text">App installieren</span>
       </button>
-      <button
-        id="bookmark-confirm-btn"
-        type="button"
-        class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors shadow-sm"
-      >
-        Verstanden
-      </button>
+
+      <div class="flex items-center gap-2 ml-auto">
+        <button
+          id="bookmark-copy-link-btn"
+          type="button"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+        >
+          <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span id="bookmark-copy-link-text">Link kopieren</span>
+        </button>
+        <button
+          id="bookmark-confirm-btn"
+          type="button"
+          class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition-colors shadow-sm"
+        >
+          Verstanden
+        </button>
+      </div>
     </div>
 
   </div>
@@ -116,6 +137,30 @@
     const kbdContainer = document.getElementById('bookmark-kbd-keys');
     const descEl = document.getElementById('bookmark-desc');
     const shortcutSection = document.getElementById('bookmark-shortcut-section');
+    const edgeTip = document.getElementById('bookmark-edge-sidebar-tip');
+    const pwaBtn = document.getElementById('bookmark-install-pwa-btn');
+
+    let deferredPrompt: any = null;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (pwaBtn) {
+        pwaBtn.classList.remove('hidden');
+        pwaBtn.classList.add('inline-flex');
+      }
+    });
+
+    pwaBtn?.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const choiceResult = await deferredPrompt.userChoice;
+        if (choiceResult.outcome === 'accepted') {
+          pwaBtn.classList.add('hidden');
+        }
+        deferredPrompt = null;
+      }
+    });
 
     if (!btn || !modal) return;
 
@@ -145,6 +190,7 @@
     function openModal() {
       if (isEdge) {
         if (titleEl) titleEl.textContent = 'Zu Microsoft Edge Favoriten hinzufügen';
+        if (edgeTip) edgeTip.classList.remove('hidden');
         if (descEl) {
           descEl.innerHTML = isMac
             ? 'Drücken Sie <strong>⌘ + D</strong>, um <strong>FernsehHeute.de</strong> zu Ihren Edge-Favoriten hinzuzufügen.'

@@ -1,0 +1,79 @@
+{
+  "name": "FernsehHeute — TV-Programm heute Abend",
+  "short_name": "FernsehHeute",
+  "description": "Aktuelles TV-Programm heute Abend in Deutschland mit allen Sendern, Spielfilmen, Serien und Sport ab 20:15 Uhr.",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "lang": "de-DE",
+  "dir": "ltr",
+  "categories": [
+    "entertainment",
+    "news",
+    "tv",
+    "utilities"
+  ],
+  "edge_side_panel": {
+    "preferred_width": 380
+  },
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32 48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Heute Abend 20:15",
+      "short_name": "Heute 20:15",
+      "description": "Das aktuelle Hauptabendprogramm ab 20:15 Uhr",
+      "url": "/",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Filme heute Abend",
+      "short_name": "Filme",
+      "description": "Alle Spielfilme heute im Fernsehen",
+      "url": "/film-heute-abend/",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Serien heute Abend",
+      "short_name": "Serien",
+      "description": "Serien und Serien-Highlights heute",
+      "url": "/serien-heute-abend/",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Sport heute Abend",
+      "short_name": "Sport",
+      "description": "Live-Sport und Sportübertragungen heute",
+      "url": "/sport-heute-abend/",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "TV-Programm morgen",
+      "short_name": "Morgen",
+      "description": "Fernsehprogramm und Vorschau für morgen",
+      "url": "/morgen/",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    }
+  ]
+}

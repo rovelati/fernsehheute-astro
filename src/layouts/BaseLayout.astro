@@ -36,15 +36,20 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   <meta name="publisher" content="FernsehHeute" />
   <link rel="canonical" href={resolvedCanonical} />
 
-  <!-- Microsoft Edge & Windows Compatibility -->
+  <!-- Microsoft Edge, Windows & PWA Compatibility -->
   <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
   <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
   <meta name="application-name" content="FernsehHeute" />
   <meta name="msapplication-TileColor" content="#2563eb" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
   <meta name="msapplication-tap-highlight" content="no" />
   <meta name="msvalidate.01" content="F5DABCFE31DB618797D7F6B92B67C3F1" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+
+  <!-- RSS / Microsoft Start Feed -->
+  <link rel="alternate" type="application/rss+xml" title="FernsehHeute — TV Highlights heute Abend" href="https://fernsehheute.de/feed/heute-abend.xml" />
 
   <!-- Google Analytics (GA4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEQCS4CCVP"></script>
@@ -58,6 +63,7 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   <!-- Favicon -->
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
