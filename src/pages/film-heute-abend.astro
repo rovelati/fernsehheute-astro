@@ -1,17 +1,16 @@
 ---
 /**
- * /film-heute-abend — Filme heute Abend im TV
- *
- * Alle Spielfilme heute Abend auf deutschen Sendern.
- * Genre-Erkennung: keywords im genre-Feld ("Film", "Spielfilm", "Kino", "Movie")
- *   + Titel-Klammern wie "Filmname (2023)"
+ * /film-heute-abend — Spielfilme heute Abend im TV
+ * Alle Spielfilme, Kinofilme und TV-Highlights heute im deutschen Fernsehen ab 17:00 Uhr.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ProgramOverlay from '../components/ProgramOverlay.astro';
 import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../utils/timeSlots';
 import { buildHubCategoryJsonLd } from '../utils/jsonld';
+import { isFilm, MAIN_GERMAN_CHANNELS } from '../utils/programClassifier';
 import type { Channel, Program } from '../types';
 
 const normCid = (cid: string): string =>
@@ -25,7 +24,7 @@ const [channels, allPrograms] = await Promise.all([
   fetchProgramsForDate(today),
 ]);
 
-// Build channel name lookup
+// Build channel name and logo lookup
 const channelName = new Map<string, string>();
 const channelLogo = new Map<string, string>();
 for (const ch of channels) {
@@ -35,31 +34,56 @@ for (const ch of channels) {
 }
 
 // Filter: Spielfilme heute Abend (ab 17:00)
-const FILM_KEYWORDS = ['film', 'spielfilm', 'kinofilm', 'movie', 'kino', 'tv-movie', 'fernsehfilm', 'dokumentarfilm'];
-
-function isFilm(prog: Program): boolean {
-  const genre = (prog.category ?? '').toLowerCase();
-  const hasYear = /\(\d{4}\)/.test(prog.title ?? '');
-  return FILM_KEYWORDS.some(k => genre.includes(k)) || hasYear;
-}
-
 const films = allPrograms
   .filter(p => getBerlinHour(p.start_time) >= 17 && isFilm(p))
-  .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+  .sort((a, b) => {
+    const aSlug = normCid(a.channel_id ?? '');
+    const bSlug = normCid(b.channel_id ?? '');
+    const aMain = MAIN_GERMAN_CHANNELS.includes(aSlug);
+    const bMain = MAIN_GERMAN_CHANNELS.includes(bSlug);
+    
+    // Sort prime time (around 20:15) first, then main channels, then chronological
+    const aHour = getBerlinHour(a.start_time);
+    const bHour = getBerlinHour(b.start_time);
+    const aPrime = aHour >= 20 && aHour <= 21;
+    const bPrime = bHour >= 20 && bHour <= 21;
+
+    if (aPrime && !bPrime) return -1;
+    if (!aPrime && bPrime) return 1;
+    if (aMain && !bMain) return -1;
+    if (!aMain && bMain) return 1;
+    return new Date(a.start_time).getTime() - new Date(b.start_time).getTime();
+  });
+
+function getOverlayJson(prog: Program, slug: string, logo: string, name: string): string {
+  return JSON.stringify({
+    id:          prog.id,
+    title:       prog.title,
+    startTime:   prog.start_time,
+    endTime:     prog.end_time,
+    category:    prog.category || 'Spielfilm',
+    description: prog.description ?? '',
+    poster_url:  prog.poster_url ?? null,
+    cast_json:   (prog as any).cast_json ?? null,
+    channelId:   slug,
+    channelLogo: logo,
+    channelName: name,
+  });
+}
 
 const jsonLd = buildHubCategoryJsonLd({
-  categoryName: 'Filme',
+  categoryName: 'Spielfilme',
   categorySlug: 'film-heute-abend',
   programs: films,
   today,
 });
 
-const description = 'Alle Spielfilme heute Abend im deutschen Fernsehen: Sendezeiten, Sender und Kurzbeschreibungen. Kein Film verpassen – der komplette Überblick.';
-const keywords    = 'filme heute abend tv, kinofilme heute im tv, was läuft heute für filme im tv, spielfilme heute abend, film tv heute, fernsehfilm heute';
+const description = 'Alle Spielfilme heute Abend im TV: TV-Premieren, Blockbuster, Klassiker und Spielfilme ab 20:15 Uhr auf allen deutschen Sendern mit Sendezeiten & Mediathek-Infos.';
+const keywords    = 'filme heute abend tv, spielfilme heute im tv, kinofilme heute tv programm, was läuft heute für filme im tv, spielfilme 20:15, tv film heute';
 ---
 
 <BaseLayout
-  title="Filme heute Abend im TV – Kinofilme & Sendezeiten | FernsehHeute"
+  title="Spielfilme heute Abend im TV – Filme ab 20:15 Uhr | FernsehHeute"
   description={description}
   keywords={keywords}
   canonicalUrl="https://fernsehheute.de/film-heute-abend/"
@@ -69,106 +93,161 @@ const keywords    = 'filme heute abend tv, kinofilme heute im tv, was läuft heu
 
   <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6">
 
-    <div class="mb-6">
-      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">🎬 Filme heute Abend im TV</h1>
-      <p class="text-zinc-500 dark:text-zinc-400 mt-1">{dateLabel} · {films.length} Film{films.length !== 1 ? 'e' : ''} gefunden</p>
+    <!-- Header Section -->
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 border border-purple-200/60 dark:border-purple-800/40 text-xs font-bold mb-2">
+          <span>🎬</span> Spielfilm-Übersicht
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Spielfilme heute Abend im TV
+        </h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">
+          {dateLabel} · <strong>{films.length}</strong> Spielfilme gefunden
+        </p>
+      </div>
+
+      <!-- Quick Category Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+        <a href="/film-heute-abend/" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-xs whitespace-nowrap">
+          🎬 Spielfilme
+        </a>
+        <a href="/serien-heute-abend/" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors whitespace-nowrap">
+          📺 Serien
+        </a>
+        <a href="/sport-heute-abend/" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors whitespace-nowrap">
+          ⚽ Sport
+        </a>
+      </div>
     </div>
 
     {films.length > 0 ? (
-      <ul class="divide-y divide-slate-100 dark:divide-slate-800" role="list">
+      <ul class="divide-y divide-slate-100 dark:divide-slate-800/80" role="list">
         {films.map(prog => {
           const slug = normCid(prog.channel_id ?? '');
           const name = channelName.get(slug) ?? prog.channel_id ?? '';
           const logo = channelLogo.get(slug) || '';
+          const isMain = MAIN_GERMAN_CHANNELS.includes(slug);
+          const startH = getBerlinHour(prog.start_time);
+          const isPrime = startH >= 20 && startH <= 21;
 
-          const overlayJson = JSON.stringify({
-            id:          prog.id,
-            title:       prog.title,
-            startTime:   prog.start_time,
-            endTime:     prog.end_time,
-            category:    prog.category ?? 'Spielfilm',
-            description: prog.description ?? '',
-            poster_url:  prog.poster_url ?? null,
-            cast_json:   (prog as any).cast_json ?? null,
-            channelId:   slug,
-            channelLogo: logo,
-            channelName: name,
-          });
+          const durationMin = Math.round((new Date(prog.end_time).getTime() - new Date(prog.start_time).getTime()) / 60000);
+          const overlayJson = getOverlayJson(prog, slug, logo, name);
 
           return (
-            <li class="flex gap-4 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl px-2.5 transition-colors group">
+            <li class="flex gap-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-2xl px-3 transition-colors group">
               <!-- Poster / Fallback Badge -->
               <div
-                class="shrink-0 w-16 h-24 sm:w-20 sm:h-28 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs flex items-center justify-center cursor-pointer group-hover:scale-105 transition-transform"
+                class="shrink-0 w-20 h-28 sm:w-24 sm:h-36 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-center cursor-pointer group-hover:scale-[1.03] group-hover:shadow-md transition-all relative"
                 data-program={overlayJson}
                 role="button"
                 tabindex="0"
                 title={`${prog.title} — Details ansehen`}
               >
+                {isPrime && (
+                  <span class="absolute top-1 left-1 z-10 bg-amber-500 text-slate-950 text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-xs">
+                    20:15
+                  </span>
+                )}
                 {prog.poster_url ? (
                   <img
                     src={prog.poster_url}
                     alt={prog.title}
-                    width="80"
-                    height="112"
+                    width="96"
+                    height="144"
                     loading="lazy"
                     decoding="async"
                     referrerpolicy="no-referrer"
                     class="w-full h-full object-cover"
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                   />
-                  <div class="hidden w-full h-full items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-950 to-slate-950 text-2xl">
+                  <div class="hidden w-full h-full items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-950 to-slate-950 text-3xl">
                     🎬
                   </div>
                 ) : (
-                  <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-950 to-slate-950 text-2xl">
-                    🎬
+                  <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-950 to-slate-950 p-2 text-center">
+                    <span class="text-3xl mb-1">🎬</span>
+                    <span class="text-[10px] font-bold text-purple-200 line-clamp-2 leading-tight">
+                      {prog.title}
+                    </span>
                   </div>
                 )}
               </div>
 
               <!-- Content -->
-              <div class="flex-1 min-w-0 py-0.5">
-                <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5 mb-1">
-                  <time datetime={prog.start_time} class="text-sm sm:text-base font-bold tabular-nums text-blue-600 dark:text-blue-400 shrink-0">
-                    {formatTime(prog.start_time)}
-                  </time>
-                  <a href={`/${slug}/`} class="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0">
-                    {name.replace(/^DE\s*-\s*/i, '')}
-                  </a>
-                  {prog.category && (
-                    <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border border-purple-200/60 dark:border-purple-800/40">
-                      {prog.category}
-                    </span>
+              <div class="flex-1 min-w-0 py-0.5 flex flex-col justify-between">
+                <div>
+                  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mb-1.5">
+                    <time datetime={prog.start_time} class="text-base sm:text-lg font-black tabular-nums text-blue-600 dark:text-blue-400 shrink-0">
+                      {formatTime(prog.start_time)}
+                    </time>
+
+                    <a
+                      href={`/${slug}/`}
+                      class:list={[
+                        "text-xs font-bold px-2 py-0.5 rounded-md transition-colors shrink-0",
+                        isMain
+                          ? "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/40 hover:bg-blue-100"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
+                      ]}
+                    >
+                      {name.replace(/^DE\s*-\s*/i, '')}
+                    </a>
+
+                    {prog.category && (
+                      <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border border-purple-200/60 dark:border-purple-800/40">
+                        {prog.category}
+                      </span>
+                    )}
+
+                    {durationMin > 0 && (
+                      <span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tabular-nums">
+                        ⏱ {durationMin} Min.
+                      </span>
+                    )}
+                  </div>
+
+                  <h2
+                    class="font-bold text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-snug cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2"
+                    data-program={overlayJson}
+                    role="button"
+                    tabindex="0"
+                  >
+                    {prog.title}
+                  </h2>
+
+                  {prog.description && (
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 line-clamp-2 sm:line-clamp-3 leading-relaxed">
+                      {prog.description}
+                    </p>
                   )}
                 </div>
 
-                <h2
-                  class="font-bold text-base sm:text-lg text-slate-900 dark:text-slate-100 leading-snug cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2"
-                  data-program={overlayJson}
-                  role="button"
-                  tabindex="0"
-                >
-                  {prog.title}
-                </h2>
-
-                {prog.description && (
-                  <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                    {prog.description}
-                  </p>
-                )}
+                <!-- Footer meta / info button -->
+                <div class="mt-2.5 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60 text-xs">
+                  <span class="text-slate-400 text-[11px]">
+                    Ende: {formatTime(prog.end_time)} Uhr
+                  </span>
+                  <button
+                    type="button"
+                    class="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-1 cursor-pointer"
+                    data-program={overlayJson}
+                  >
+                    Details & Besetzung &rarr;
+                  </button>
+                </div>
               </div>
 
               <!-- Channel logo -->
               {logo && (
-                <div class="shrink-0 hidden sm:flex items-center justify-center w-14 h-10 self-center">
+                <div class="shrink-0 hidden md:flex items-center justify-center w-16 h-12 self-start mt-2">
                   <img
                     src={logo}
                     alt={name}
-                    width="56"
-                    height="40"
+                    width="64"
+                    height="44"
                     loading="lazy"
-                    class="max-w-[56px] max-h-[36px] w-auto h-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                    class="max-w-[60px] max-h-[40px] w-auto h-auto object-contain opacity-85 group-hover:opacity-100 transition-opacity"
                     onerror="this.style.display='none'"
                   />
                 </div>
@@ -178,12 +257,13 @@ const keywords    = 'filme heute abend tv, kinofilme heute im tv, was läuft heu
         })}
       </ul>
     ) : (
-      <div class="text-center py-16 text-zinc-500 dark:text-zinc-400">
+      <div class="text-center py-16 text-slate-500 dark:text-slate-400">
         <p class="text-4xl mb-4" aria-hidden="true">🎬</p>
-        <p class="text-lg font-medium">Keine Filme heute Abend gefunden</p>
+        <p class="text-lg font-medium">Keine Spielfilme für heute Abend gefunden</p>
       </div>
     )}
   </main>
 
+  <ProgramOverlay />
   <Footer />
 </BaseLayout>

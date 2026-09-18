@@ -125,6 +125,7 @@ interface RawProgram {
   end_time: string;
   date: string;
   genre?: string | null;
+  category?: string | null;
   poster_url: string | null;
 }
 
@@ -148,7 +149,8 @@ function normalizeProgram(row: Record<string, unknown>): RawProgram {
     start_time: toIso(row.start_time),
     end_time: toIso(row.end_time),
     date: toDateOnly(row.date),
-    genre: (row.genre as string | null) ?? null,
+    genre: (row.genre as string | null) ?? (row.category as string | null) ?? null,
+    category: (row.category as string | null) ?? (row.genre as string | null) ?? null,
     poster_url: (row.poster_url as string | null) ?? null,
   };
 }
@@ -161,7 +163,7 @@ function mapProgram(raw: RawProgram): Program {
     start_time: raw.start_time,
     end_time: raw.end_time,
     date: raw.date,
-    category: raw.genre ?? '',
+    category: raw.genre ?? raw.category ?? '',
     description: raw.description ?? '',
     poster_url: raw.poster_url ?? null,
     channel_id: raw.channel_id,
@@ -199,7 +201,7 @@ export async function fetchProgramsForDate(date: string, channelId?: string): Pr
     const targetDate = date.slice(0, 10);
     const normCid = channelId ? channelId.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '') : null;
 
-    const filtered = (epgData.programmes as RawProgram[]).filter((p) => {
+    const filtered = (epgData.programmes as any[]).filter((p) => {
       const matchesDate = p.date === targetDate || p.start_time.startsWith(targetDate);
       if (!matchesDate) return false;
       if (normCid) {
@@ -209,7 +211,7 @@ export async function fetchProgramsForDate(date: string, channelId?: string): Pr
       return true;
     });
 
-    return filtered.map(mapProgram);
+    return filtered.map((p) => mapProgram(normalizeProgram(p)));
   }
 
   return [];

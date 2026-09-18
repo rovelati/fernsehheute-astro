@@ -5,10 +5,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import ProgramOverlay from '../components/ProgramOverlay.astro';
 import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../utils/timeSlots';
 import { buildHubCategoryJsonLd } from '../utils/jsonld';
-import type { Program } from '../types';
+import { isSport, MAIN_GERMAN_CHANNELS } from '../utils/programClassifier';
+import type { Channel, Program } from '../types';
 
 const normCid = (cid: string): string =>
   cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
@@ -29,25 +31,41 @@ for (const ch of channels) {
   channelLogo.set(slug, ch.logo);
 }
 
-const SPORT_KEYWORDS = ['sport', 'fußball', 'bundesliga', 'champions league', 'europa league',
-  'formel 1', 'tennis', 'handball', 'basketball', 'eishockey', 'golf', 'radrennen',
-  'leichtathletik', 'schwimmen', 'olympia', 'ski', 'motorsport', 'boxing', 'boxen',
-  'ufc', 'darts', 'snooker', 'rugby', 'volleyball', 'radsport', 'marathon'];
-
-const SPORT_TITLE = ['bundesliga', 'dfb', 'champions league', 'europa league', 'conference league',
-  'formel 1', 'gp ', ' gp', 'grand prix', 'wimbledon', 'roland garros', 'us open',
-  'wm ', 'em ', 'olympia', 'tour de france'];
-
-function isSport(prog: Program): boolean {
-  const genre = (prog.category ?? '').toLowerCase();
-  const title = (prog.title ?? '').toLowerCase();
-  return SPORT_KEYWORDS.some(k => genre.includes(k)) ||
-         SPORT_TITLE.some(k => title.includes(k));
-}
-
 const sports = allPrograms
-  .filter(p => getBerlinHour(p.start_time) >= 14 && isSport(p))
-  .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+  .filter(p => getBerlinHour(p.start_time) >= 12 && isSport(p))
+  .sort((a, b) => {
+    const aSlug = normCid(a.channel_id ?? '');
+    const bSlug = normCid(b.channel_id ?? '');
+    const aMain = MAIN_GERMAN_CHANNELS.includes(aSlug);
+    const bMain = MAIN_GERMAN_CHANNELS.includes(bSlug);
+
+    const aHour = getBerlinHour(a.start_time);
+    const bHour = getBerlinHour(b.start_time);
+    const aPrime = aHour >= 18 && aHour <= 22;
+    const bPrime = bHour >= 18 && bHour <= 22;
+
+    if (aPrime && !bPrime) return -1;
+    if (!aPrime && bPrime) return 1;
+    if (aMain && !bMain) return -1;
+    if (!aMain && bMain) return 1;
+    return new Date(a.start_time).getTime() - new Date(b.start_time).getTime();
+  });
+
+function getOverlayJson(prog: Program, slug: string, logo: string, name: string): string {
+  return JSON.stringify({
+    id:          prog.id,
+    title:       prog.title,
+    startTime:   prog.start_time,
+    endTime:     prog.end_time,
+    category:    prog.category || 'Sport',
+    description: prog.description ?? '',
+    poster_url:  prog.poster_url ?? null,
+    cast_json:   (prog as any).cast_json ?? null,
+    channelId:   slug,
+    channelLogo: logo,
+    channelName: name,
+  });
+}
 
 const jsonLd = buildHubCategoryJsonLd({
   categoryName: 'Sport',
@@ -56,12 +74,12 @@ const jsonLd = buildHubCategoryJsonLd({
   today,
 });
 
-const description = 'Alle Sportübertragungen heute im deutschen Fernsehen: Fußball, Formel 1, Tennis und mehr mit genauen Sendezeiten und Sender-Übersicht.';
-const keywords    = 'sport heute im tv, fußball heute abend tv, sport übertragungen heute, sport im tv heute, live sport fernsehen heute';
+const description = 'Alle Live-Sportübertragungen und Sport-Sendungen heute im deutschen Fernsehen: Fußball, Formel 1, Tennis, Motorsport und Highlights.';
+const keywords    = 'sport heute im tv, live sport tv programm, fußball heute abend tv, sportübertragungen heute, bundesliga heute fernsehen';
 ---
 
 <BaseLayout
-  title="Sport heute im TV – Live-Übertragungen & Sendezeiten | FernsehHeute"
+  title="Sport heute im TV – Live-Sport & Übertragungen | FernsehHeute"
   description={description}
   keywords={keywords}
   canonicalUrl="https://fernsehheute.de/sport-heute-abend/"
@@ -71,106 +89,161 @@ const keywords    = 'sport heute im tv, fußball heute abend tv, sport übertrag
 
   <main class="max-w-4xl mx-auto px-4 sm:px-6 py-6">
 
-    <div class="mb-6">
-      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">⚽ Sport heute im TV</h1>
-      <p class="text-zinc-500 dark:text-zinc-400 mt-1">{dateLabel} · {sports.length} Sendung{sports.length !== 1 ? 'en' : ''}</p>
+    <!-- Header Section -->
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40 text-xs font-bold mb-2">
+          <span>⚽</span> Live-Sport & Highlights
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          Sport heute im TV
+        </h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">
+          {dateLabel} · <strong>{sports.length}</strong> Sport-Sendungen gefunden
+        </p>
+      </div>
+
+      <!-- Quick Category Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+        <a href="/film-heute-abend/" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors whitespace-nowrap">
+          🎬 Spielfilme
+        </a>
+        <a href="/serien-heute-abend/" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors whitespace-nowrap">
+          📺 Serien
+        </a>
+        <a href="/sport-heute-abend/" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow-xs whitespace-nowrap">
+          ⚽ Sport
+        </a>
+      </div>
     </div>
 
     {sports.length > 0 ? (
-      <ul class="divide-y divide-slate-100 dark:divide-slate-800" role="list">
+      <ul class="divide-y divide-slate-100 dark:divide-slate-800/80" role="list">
         {sports.map(prog => {
           const slug = normCid(prog.channel_id ?? '');
           const name = channelName.get(slug) ?? prog.channel_id ?? '';
           const logo = channelLogo.get(slug) || '';
+          const isMain = MAIN_GERMAN_CHANNELS.includes(slug);
+          const startH = getBerlinHour(prog.start_time);
+          const isPrime = startH >= 18 && startH <= 22;
 
-          const overlayJson = JSON.stringify({
-            id:          prog.id,
-            title:       prog.title,
-            startTime:   prog.start_time,
-            endTime:     prog.end_time,
-            category:    prog.category ?? 'Sport',
-            description: prog.description ?? '',
-            poster_url:  prog.poster_url ?? null,
-            cast_json:   (prog as any).cast_json ?? null,
-            channelId:   slug,
-            channelLogo: logo,
-            channelName: name,
-          });
+          const durationMin = Math.round((new Date(prog.end_time).getTime() - new Date(prog.start_time).getTime()) / 60000);
+          const overlayJson = getOverlayJson(prog, slug, logo, name);
 
           return (
-            <li class="flex gap-4 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-xl px-2.5 transition-colors group">
+            <li class="flex gap-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-2xl px-3 transition-colors group">
               <!-- Poster / Fallback Badge -->
               <div
-                class="shrink-0 w-16 h-24 sm:w-20 sm:h-28 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs flex items-center justify-center cursor-pointer group-hover:scale-105 transition-transform"
+                class="shrink-0 w-20 h-28 sm:w-24 sm:h-36 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-center cursor-pointer group-hover:scale-[1.03] group-hover:shadow-md transition-all relative"
                 data-program={overlayJson}
                 role="button"
                 tabindex="0"
                 title={`${prog.title} — Details ansehen`}
               >
+                {isPrime && (
+                  <span class="absolute top-1 left-1 z-10 bg-emerald-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-xs">
+                    LIVE / TOP
+                  </span>
+                )}
                 {prog.poster_url ? (
                   <img
                     src={prog.poster_url}
                     alt={prog.title}
-                    width="80"
-                    height="112"
+                    width="96"
+                    height="144"
                     loading="lazy"
                     decoding="async"
                     referrerpolicy="no-referrer"
                     class="w-full h-full object-cover"
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                   />
-                  <div class="hidden w-full h-full items-center justify-center bg-gradient-to-br from-emerald-900 via-teal-950 to-slate-950 text-2xl">
+                  <div class="hidden w-full h-full items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 text-3xl">
                     ⚽
                   </div>
                 ) : (
-                  <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-900 via-teal-950 to-slate-950 text-2xl">
-                    ⚽
+                  <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 p-2 text-center">
+                    <span class="text-3xl mb-1">⚽</span>
+                    <span class="text-[10px] font-bold text-emerald-200 line-clamp-2 leading-tight">
+                      {prog.title}
+                    </span>
                   </div>
                 )}
               </div>
 
               <!-- Content -->
-              <div class="flex-1 min-w-0 py-0.5">
-                <div class="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5 mb-1">
-                  <time datetime={prog.start_time} class="text-sm sm:text-base font-bold tabular-nums text-blue-600 dark:text-blue-400 shrink-0">
-                    {formatTime(prog.start_time)}
-                  </time>
-                  <a href={`/${slug}/`} class="text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0">
-                    {name.replace(/^DE\s*-\s*/i, '')}
-                  </a>
-                  {prog.category && (
-                    <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
-                      {prog.category}
-                    </span>
+              <div class="flex-1 min-w-0 py-0.5 flex flex-col justify-between">
+                <div>
+                  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mb-1.5">
+                    <time datetime={prog.start_time} class="text-base sm:text-lg font-black tabular-nums text-blue-600 dark:text-blue-400 shrink-0">
+                      {formatTime(prog.start_time)}
+                    </time>
+
+                    <a
+                      href={`/${slug}/`}
+                      class:list={[
+                        "text-xs font-bold px-2 py-0.5 rounded-md transition-colors shrink-0",
+                        isMain
+                          ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40 hover:bg-emerald-100"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
+                      ]}
+                    >
+                      {name.replace(/^DE\s*-\s*/i, '')}
+                    </a>
+
+                    {prog.category && (
+                      <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                        {prog.category}
+                      </span>
+                    )}
+
+                    {durationMin > 0 && (
+                      <span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tabular-nums">
+                        ⏱ {durationMin} Min.
+                      </span>
+                    )}
+                  </div>
+
+                  <h2
+                    class="font-bold text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-snug cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2"
+                    data-program={overlayJson}
+                    role="button"
+                    tabindex="0"
+                  >
+                    {prog.title}
+                  </h2>
+
+                  {prog.description && (
+                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 line-clamp-2 sm:line-clamp-3 leading-relaxed">
+                      {prog.description}
+                    </p>
                   )}
                 </div>
 
-                <h2
-                  class="font-bold text-base sm:text-lg text-slate-900 dark:text-slate-100 leading-snug cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2"
-                  data-program={overlayJson}
-                  role="button"
-                  tabindex="0"
-                >
-                  {prog.title}
-                </h2>
-
-                {prog.description && (
-                  <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                    {prog.description}
-                  </p>
-                )}
+                <!-- Footer meta / info button -->
+                <div class="mt-2.5 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60 text-xs">
+                  <span class="text-slate-400 text-[11px]">
+                    Ende: {formatTime(prog.end_time)} Uhr
+                  </span>
+                  <button
+                    type="button"
+                    class="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-1 cursor-pointer"
+                    data-program={overlayJson}
+                  >
+                    Sendungsdetails &rarr;
+                  </button>
+                </div>
               </div>
 
               <!-- Channel logo -->
               {logo && (
-                <div class="shrink-0 hidden sm:flex items-center justify-center w-14 h-10 self-center">
+                <div class="shrink-0 hidden md:flex items-center justify-center w-16 h-12 self-start mt-2">
                   <img
                     src={logo}
                     alt={name}
-                    width="56"
-                    height="40"
+                    width="64"
+                    height="44"
                     loading="lazy"
-                    class="max-w-[56px] max-h-[36px] w-auto h-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                    class="max-w-[60px] max-h-[40px] w-auto h-auto object-contain opacity-85 group-hover:opacity-100 transition-opacity"
                     onerror="this.style.display='none'"
                   />
                 </div>
@@ -180,11 +253,13 @@ const keywords    = 'sport heute im tv, fußball heute abend tv, sport übertrag
         })}
       </ul>
     ) : (
-      <div class="text-center py-16 text-zinc-500 dark:text-zinc-400">
+      <div class="text-center py-16 text-slate-500 dark:text-slate-400">
         <p class="text-4xl mb-4" aria-hidden="true">⚽</p>
-        <p class="text-lg font-medium">Kein Sport heute Abend gefunden</p>
+        <p class="text-lg font-medium">Keine Sport-Übertragungen für heute gefunden</p>
       </div>
     )}
   </main>
+
+  <ProgramOverlay />
   <Footer />
 </BaseLayout>
