@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "typecheck": "astro check --no-watch",
     "notify-indexing": "node scripts/notify-indexing.js",
+    "notify-gsc": "node scripts/ping-gsc.mjs",
     "indexnow": "node scripts/ping-indexnow.mjs"
   },
   "dependencies": {

@@ -5,14 +5,36 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
-/channel-logos/*
-  Cache-Control: public, max-age=31536000, immutable
-
+# ---------------------------------------------------------------------------
+# Static immutable assets (1 year max-age)
+# Googlebot saves crawl budget and does not re-fetch these repeatedly
+# ---------------------------------------------------------------------------
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
+/channel-logos/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/favicon/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /favicon.ico
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=604800, immutable
 
 /favicon.svg
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=604800, immutable
+
+/og-default.png
+  Cache-Control: public, max-age=604800, immutable
+
+/BingSiteAuth.xml
+  Cache-Control: public, max-age=86400, immutable
+
+# ---------------------------------------------------------------------------
+# Sitemaps & Feeds
+# ---------------------------------------------------------------------------
+/sitemap*.xml
+  Cache-Control: public, max-age=1800, must-revalidate
+
+/feed/*.xml
+  Cache-Control: public, max-age=1800, must-revalidate

@@ -1,6 +1,27 @@
 # ---------------------------------------------------------------------------
-# 410 Gone — programm detail pages were removed permanently.
-# Tells Google to de-index these URLs immediately.
+# Cloudflare Pages Redirects & HTTP status codes
 # ---------------------------------------------------------------------------
-/programm/*    410
-/programm      410
+
+# 301 Permanent Redirects for shortcuts and aliases
+/spielfilme         /film-heute-abend/   301
+/spielfilme/        /film-heute-abend/   301
+/filme              /film-heute-abend/   301
+/filme/             /film-heute-abend/   301
+/serien             /serien-heute-abend/ 301
+/serien/            /serien-heute-abend/ 301
+/sport              /sport-heute-abend/  301
+/sport/             /sport-heute-abend/  301
+
+# 301 Legacy URL Migration: /live/:channel -> /:channel/
+/live/voxup         /voxup/              301
+/live/rtf1          /rtf1/               301
+/live/of-tv         /of-tv/              301
+/live/welt          /welt/               301
+/live/:channel      /:channel/           301
+
+# 301 Legacy URL Migration: /morgen/:channel -> /:channel/
+/morgen/:channel    /:channel/           301
+
+# 410 Gone — programm detail pages were removed permanently
+/programm/*         410
+/programm           410
