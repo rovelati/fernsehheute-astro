@@ -24,9 +24,20 @@ const topChannels = [
 <BaseLayout
   title="404 — Seite nicht gefunden | FernsehHeute"
   description="Die angeforderte Seite wurde leider nicht gefunden. Finden Sie hier das aktuelle TV-Programm von heute."
-  noIndex={true}
+  noindex={true}
 >
   <Header />
+
+  <script is:inline>
+    // Invia evento specifico a GA4 con l'URL non trovato e il referrer per diagnostica immediata
+    if (typeof gtag === 'function') {
+      gtag('event', 'error_404', {
+        page_location: window.location.href,
+        page_path: window.location.pathname,
+        page_referrer: document.referrer || '(direct)'
+      });
+    }
+  </script>
 
   <main class="max-w-3xl mx-auto px-4 sm:px-6 py-16 text-center">
     <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 text-4xl mb-6 shadow-sm border border-blue-200/60 dark:border-blue-800/40">
