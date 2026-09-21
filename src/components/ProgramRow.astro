@@ -96,7 +96,7 @@ const overlayData = JSON.stringify({
   data-program={overlayData}
   role="button"
   tabindex="0"
-  class="grid grid-cols-[56px_1fr] sm:grid-cols-[56px_1fr_56px] gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
+  class="grid grid-cols-[48px_1fr_auto] sm:grid-cols-[56px_1fr_auto] gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset items-center"
   aria-label={`${program.title} — ${startLabel}`}
 >
   <!-- Uhrzeit -->
@@ -152,19 +152,22 @@ const overlayData = JSON.stringify({
     )}
   </div>
 
-  <!-- Poster (Desktop) -->
+  <!-- Poster (Mobile & Desktop) -->
   {program.poster_url && (
-    <div class="hidden sm:flex items-start justify-end flex-shrink-0">
-      <img
-        src={program.poster_url}
-        alt={program.title}
-        width="40"
-        height="56"
-        loading="lazy"
-        decoding="async"
-        class="w-10 h-14 object-cover rounded shadow-sm"
-        onerror="this.style.display='none'"
-      />
+    <div class="flex items-center justify-end shrink-0 pl-1">
+      <div class="w-11 h-15 sm:w-12 sm:h-16 rounded-lg overflow-hidden bg-slate-800 border border-slate-200 dark:border-slate-700/80 shadow-xs">
+        <img
+          src={program.poster_url}
+          alt={program.title}
+          width="48"
+          height="64"
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+          class="w-full h-full object-cover"
+          onerror="this.parentElement.style.display='none'"
+        />
+      </div>
     </div>
   )}
 </li>

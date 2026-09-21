@@ -89,7 +89,7 @@ const fallbackDataUri = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2
   data-program-title={displayProgram?.title?.toLowerCase() ?? ''}
   data-category={catGroup}
 >
-  <div class="grid grid-cols-[72px_1fr] sm:grid-cols-[88px_1fr_20px] gap-3 px-3 py-2.5 sm:px-4 sm:py-3">
+  <div class="grid grid-cols-[68px_1fr_auto] sm:grid-cols-[84px_1fr_auto] gap-2.5 sm:gap-4 px-3 py-2.5 sm:px-4 sm:py-3 items-center">
 
     <!-- Spalte links: Logo + Name + Link -->
     <a
@@ -115,7 +115,7 @@ const fallbackDataUri = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2
       </div>
     </a>
 
-    <!-- Spalte rechts: Programm -->
+    <!-- Spalte mitte: Programm -->
     <div class="min-w-0 py-0.5">
       {displayProgram ? (
         <div
@@ -150,11 +150,36 @@ const fallbackDataUri = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2
       )}
     </div>
 
-    <!-- Chevron (nur Desktop) -->
-    <div class="hidden sm:flex items-center justify-center">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-slate-300 dark:text-slate-600 group-hover:text-blue-400 transition-colors">
-        <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+    <!-- Spalte rechts: Poster & Chevron -->
+    <div class="flex items-center gap-2 shrink-0">
+      {displayProgram?.poster_url && (
+        <div
+          data-program={overlayJson}
+          class="w-11 h-15 sm:w-14 sm:h-20 shrink-0 rounded-lg overflow-hidden bg-slate-800 border border-slate-200 dark:border-slate-700/80 shadow-xs cursor-pointer group-hover:scale-105 transition-transform"
+          role="button"
+          tabindex="0"
+          title={`${displayProgram.title} — Details ansehen`}
+        >
+          <img
+            src={displayProgram.poster_url}
+            alt={displayProgram.title}
+            width="56"
+            height="80"
+            loading="lazy"
+            decoding="async"
+            referrerpolicy="no-referrer"
+            class="w-full h-full object-cover"
+            onerror="this.parentElement.style.display='none'"
+          />
+        </div>
+      )}
+
+      <!-- Chevron (nur Desktop) -->
+      <div class="hidden sm:flex items-center justify-center pl-1">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-slate-300 dark:text-slate-600 group-hover:text-blue-400 transition-colors">
+          <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
     </div>
 
   </div>
