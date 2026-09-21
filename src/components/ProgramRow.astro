@@ -155,16 +155,16 @@ const overlayData = JSON.stringify({
   <!-- Poster (Mobile & Desktop) -->
   {program.poster_url && (
     <div class="flex items-center justify-end shrink-0 pl-1">
-      <div class="w-11 h-15 sm:w-12 sm:h-16 rounded-lg overflow-hidden bg-slate-800 border border-slate-200 dark:border-slate-700/80 shadow-xs">
+      <div class="w-16 sm:w-24 aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs">
         <img
           src={program.poster_url}
           alt={program.title}
-          width="48"
-          height="64"
+          width="96"
+          height="54"
           loading="lazy"
           decoding="async"
           referrerpolicy="no-referrer"
-          class="w-full h-full object-cover"
+          class="w-full h-full object-cover object-top"
           onerror="this.parentElement.style.display='none'"
         />
       </div>

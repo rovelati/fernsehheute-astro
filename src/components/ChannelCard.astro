@@ -155,7 +155,7 @@ const fallbackDataUri = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2
       {displayProgram?.poster_url && (
         <div
           data-program={overlayJson}
-          class="w-11 h-15 sm:w-14 sm:h-20 shrink-0 rounded-lg overflow-hidden bg-slate-800 border border-slate-200 dark:border-slate-700/80 shadow-xs cursor-pointer group-hover:scale-105 transition-transform"
+          class="w-16 sm:w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs cursor-pointer group-hover:scale-105 transition-transform"
           role="button"
           tabindex="0"
           title={`${displayProgram.title} — Details ansehen`}
@@ -163,12 +163,12 @@ const fallbackDataUri = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2
           <img
             src={displayProgram.poster_url}
             alt={displayProgram.title}
-            width="56"
-            height="80"
+            width="96"
+            height="54"
             loading="lazy"
             decoding="async"
             referrerpolicy="no-referrer"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover object-top"
             onerror="this.parentElement.style.display='none'"
           />
         </div>
