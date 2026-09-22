@@ -86,9 +86,9 @@ const homeSchemas = buildHubHomeJsonLd({ channels: channelsWithPrograms, today }
 const faqSchema   = buildFaqJsonLd(FAQS);
 const jsonLd      = [...homeSchemas, faqSchema];
 
-const pageTitle   = 'TV Programm heute Abend – Was läuft heute im TV & 20:15 Uhr | FernsehHeute';
-const description = 'Das aktuelle TV Programm heute Abend: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr auf ARD, ZDF, RTL, SAT.1, ProSieben & allen Sendern im Überblick.';
-const keywords    = 'tv programm heute abend, was läuft heute im tv, tv programm heute 20:15, fernsehprogramm heute, 20.15 heute, tv programm heute jetzt, fernsehen heute, deutsches fernsehprogramm';
+const pageTitle   = 'Fernsehprogramm heute – TV Programm heute Abend & 20:15 Uhr | FernsehHeute';
+const description = 'Aktuelles Fernsehprogramm heute und TV Programm heute Abend: Was läuft heute im TV um 20:15 Uhr? Alle Sendungen, Spielfilme & Serien auf Das Erste, ZDF, RTL & allen Sendern im Überblick.';
+const keywords    = 'fernsehprogramm heute, tv programm heute, fernsehprogramm heute abend, tv heute abend 20 uhr 15, fernsehen heute abend, tv programm heute abend, fernsehen heute, was läuft heute im tv, tv heute, programm heute';
 ---
 
 <BaseLayout
@@ -110,11 +110,11 @@ const keywords    = 'tv programm heute abend, was läuft heute im tv, tv program
         </span>
       </div>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-        TV Programm <span class="text-blue-600 dark:text-blue-400">heute Abend</span> & 20:15 Uhr
+        Fernsehprogramm heute &amp; <span class="text-blue-600 dark:text-blue-400">TV Programm heute Abend</span>
       </h1>
       <p class="text-slate-600 dark:text-slate-400 mt-2.5 text-sm sm:text-base max-w-3xl leading-relaxed">
-        <span class="font-semibold text-slate-800 dark:text-slate-200" data-live-date>{dateLabel}</span> &mdash; Was läuft heute im TV? 
-        Alle Hauptsender und Spartenkanäle im Überblick mit Hauptabendprogramm ab 20:15 Uhr, Spielfilmen, Serien und Sport.
+        <span class="font-semibold text-slate-800 dark:text-slate-200" data-live-date>{dateLabel}</span> &mdash; <strong>Was läuft heute im TV um 20:15 Uhr?</strong> 
+        Das vollständige Fernsehprogramm von heute mit allen Hauptsendern und Spartenkanälen im Überblick: Spielfilme, Serien, Nachrichten und Live-Sport.
       </p>
 
       <!-- Search & Category Quick-Filter Bar -->

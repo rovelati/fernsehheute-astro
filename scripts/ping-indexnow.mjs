@@ -56,6 +56,8 @@ const CORE_PATHS = [
   '/hr/',
   '/mdr/',
   '/rbb/',
+  '/hse24/',
+  '/qvc/',
 ];
 
 async function pingIndexNow() {

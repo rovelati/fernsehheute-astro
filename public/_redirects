@@ -22,6 +22,24 @@
 # 301 Legacy URL Migration: /morgen/:channel -> /:channel/
 /morgen/:channel    /:channel/           301
 
+# 301 Channel Slug Aliases (Bing / Direct Navigation)
+/hse-24             /hse24/              301
+/hse-24/            /hse24/              301
+/daserste           /das-erste/          301
+/daserste/          /das-erste/          301
+/kabeleins          /kabel-eins/         301
+/kabeleins/         /kabel-eins/         301
+/superrtl           /super-rtl/          301
+/superrtl/          /super-rtl/          301
+/zdfneo             /zdf-neo/            301
+/zdfneo/            /zdf-neo/            301
+/pro7               /prosieben/          301
+/pro7/              /prosieben/          301
+/sat-1              /sat1/               301
+/sat-1/             /sat1/               301
+/kabel1             /kabel-eins/         301
+/kabel1/            /kabel-eins/         301
+
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410
 /programm           410
