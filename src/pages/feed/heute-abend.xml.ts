@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { fetchChannels, fetchProgramsForDate } from '../../lib/epg';
 import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../../utils/timeSlots';
 import { getChannelLogo } from '../../utils/channelLogos';
+import { normCid } from '../../utils/channelSlug';
 import type { Channel, Program } from '../../types';
 
 const SITE_URL = 'https://fernsehheute.de';
@@ -39,20 +40,20 @@ export const GET: APIRoute = async () => {
 
   const channelMap = new Map<string, Channel>();
   for (const ch of channels) {
-    const norm = ch.id.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
-    channelMap.set(norm, ch);
+    const slug = normCid(ch.id);
+    channelMap.set(slug, ch);
   }
 
   // Filter programs for evening (>= 18:00 CEST) from main channels
   const primePrograms: Array<{ program: Program; channel: Channel }> = [];
 
   for (const prog of allPrograms) {
-    const normCid = (prog.channel_id ?? '').toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
-    if (!MAIN_CHANNELS.includes(normCid)) continue;
+    const slug = normCid(prog.channel_id ?? '');
+    if (!MAIN_CHANNELS.includes(slug)) continue;
 
     const startH = getBerlinHour(prog.start_time);
     if (startH >= 18 && startH <= 23) {
-      const ch = channelMap.get(normCid);
+      const ch = channelMap.get(slug);
       if (ch) {
         primePrograms.push({ program: prog, channel: ch });
       }
@@ -61,8 +62,8 @@ export const GET: APIRoute = async () => {
 
   // Sort by channel priority and start time
   primePrograms.sort((a, b) => {
-    const aNorm = a.channel.id.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
-    const bNorm = b.channel.id.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+    const aNorm = normCid(a.channel.id);
+    const bNorm = normCid(b.channel.id);
     const aIdx = MAIN_CHANNELS.indexOf(aNorm);
     const bIdx = MAIN_CHANNELS.indexOf(bNorm);
     if (aIdx !== bIdx) return aIdx - bIdx;
@@ -72,15 +73,15 @@ export const GET: APIRoute = async () => {
   const nowRfc = new Date().toUTCString();
 
   const itemsXml = primePrograms.slice(0, 50).map(({ program, channel }) => {
-    const normCid = channel.id.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+    const slug = normCid(channel.id);
     const channelName = channel.name.replace(/^DE\s*-\s*/i, '');
     const startTimeStr = formatTime(program.start_time);
     const endTimeStr = formatTime(program.end_time);
-    const channelUrl = `${SITE_URL}/${normCid}/`;
+    const channelUrl = `${SITE_URL}/${slug}/`;
     const programTitle = program.title || 'Sendung';
     const itemTitle = `${startTimeStr} Uhr auf ${channelName}: ${programTitle}`;
     const pubDate = new Date(program.start_time).toUTCString();
-    const guid = `https://fernsehheute.de/${normCid}/#prog-${program.id || program.title.replace(/\s+/g, '-')}-${today}`;
+    const guid = `https://fernsehheute.de/${slug}/#prog-${program.id || program.title.replace(/\s+/g, '-')}-${today}`;
     
     const logoUrl = getChannelLogo(channel.id, channel.logo, channel.name);
     const resolvedImage = program.poster_url || (logoUrl.startsWith('http') ? logoUrl : `${SITE_URL}${logoUrl}`);

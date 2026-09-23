@@ -10,10 +10,8 @@ import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../utils/timeSlots';
 import { buildHubCategoryJsonLd } from '../utils/jsonld';
 import { isSeries, MAIN_GERMAN_CHANNELS } from '../utils/programClassifier';
+import { normCid } from '../utils/channelSlug';
 import type { Channel, Program } from '../types';
-
-const normCid = (cid: string): string =>
-  cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
 
 const today = getTodayInBerlin();
 const dateLabel = formatDateDE(today);

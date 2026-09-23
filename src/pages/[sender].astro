@@ -19,15 +19,12 @@ import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlot
 import { buildHubChannelJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { getChannelStream } from '../utils/channelStreams';
 import { HUB_CHANNELS } from '../utils/hubChannels';
+import { normCid } from '../utils/channelSlug';
 import type { Channel, Program } from '../types';
 import type { ProgramEnrichment } from '../lib/epg';
 
-const normCid = (cid: string): string =>
-  cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
-
 export async function getStaticPaths() {
-  const normCidLocal = (cid: string) =>
-    cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+  const normCidLocal = normCid;
 
   const today = getTodayInBerlin();
   const [channels, allPrograms] = await Promise.all([

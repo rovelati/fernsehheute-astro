@@ -8,6 +8,7 @@
 import pg from 'pg';
 import { getChannelLogo } from '../utils/channelLogos';
 import { HUB_CHANNELS } from '../utils/hubChannels';
+import { normCid } from '../utils/channelSlug';
 import type { Channel, Program } from '../types';
 
 // Import fallback data directly
@@ -51,9 +52,10 @@ interface RawChannel {
 }
 
 function mapChannel(raw: RawChannel): Channel {
-  const logo = getChannelLogo(raw.channel_id, raw.logo_url, raw.name);
+  const normId = normCid(raw.channel_id);
+  const logo = getChannelLogo(normId, raw.logo_url, raw.name);
   return {
-    id: raw.channel_id,
+    id: normId,
     name: raw.name,
     number: raw.channel_number ?? 0,
     logo,
@@ -84,7 +86,7 @@ export async function fetchChannels(): Promise<Channel[]> {
   // Fallback: epg-cache.json
   if (epgData?.channels && epgData.channels.length > 0) {
     return epgData.channels.map((ch: any, idx: number) => {
-      const normId = ch.id.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
+      const normId = normCid(ch.id);
       return {
         id: normId,
         name: ch.name,
@@ -142,7 +144,7 @@ function toDateOnly(value: unknown): string {
 function normalizeProgram(row: Record<string, unknown>): RawProgram {
   return {
     id: String(row.id),
-    channel_id: String(row.channel_id),
+    channel_id: normCid(String(row.channel_id)),
     title: String(row.title),
     slug: (row.slug as string | null) ?? null,
     description: (row.description as string | null) ?? null,
@@ -166,7 +168,7 @@ function mapProgram(raw: RawProgram): Program {
     category: raw.genre ?? raw.category ?? '',
     description: raw.description ?? '',
     poster_url: raw.poster_url ?? null,
-    channel_id: raw.channel_id,
+    channel_id: normCid(raw.channel_id),
   };
 }
 
@@ -199,14 +201,14 @@ export async function fetchProgramsForDate(date: string, channelId?: string): Pr
   // Fallback: epg-cache.json
   if (epgData?.programmes && epgData.programmes.length > 0) {
     const targetDate = date.slice(0, 10);
-    const normCid = channelId ? channelId.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '') : null;
+    const targetChannelId = channelId ? normCid(channelId) : null;
 
     const filtered = (epgData.programmes as any[]).filter((p) => {
       const matchesDate = p.date === targetDate || p.start_time.startsWith(targetDate);
       if (!matchesDate) return false;
-      if (normCid) {
-        const pChan = p.channel_id.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
-        return pChan === normCid;
+      if (targetChannelId) {
+        const pChan = normCid(p.channel_id);
+        return pChan === targetChannelId;
       }
       return true;
     });

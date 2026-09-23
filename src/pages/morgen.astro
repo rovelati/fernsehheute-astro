@@ -10,10 +10,8 @@ import ChannelCard from '../components/ChannelCard.astro';
 import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTomorrowInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
 import { buildHubMorgenJsonLd } from '../utils/jsonld';
+import { normCid } from '../utils/channelSlug';
 import type { Channel, Program } from '../types';
-
-const normCid = (cid: string): string =>
-  cid.toLowerCase().replace(/^de-/, '').replace(/\.de$/, '');
 
 const AGF_ORDER = [
   'rtl', 'zdf', 'das-erste', 'sat1', 'prosieben', 'vox', 'rtl2', 'kabel-eins',
