@@ -69,6 +69,9 @@ npx --yes wrangler@4 pages deploy dist \
   --project-name="$CF_PROJECT" \
   --branch=main \
   --commit-dirty=true \
-  2>&1 | tee -a "$LOG"
-
 log "Deploy complete"
+
+log "Submitting all canonical URLs to IndexNow (Bing)..."
+node scripts/ping-indexnow.mjs 2>&1 | tee -a "$LOG" || true
+
+log "Rebuild, deploy, and IndexNow sync finished successfully."

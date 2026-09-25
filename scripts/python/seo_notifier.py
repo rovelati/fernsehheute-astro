@@ -122,6 +122,45 @@ def build_absolute_urls(paths: List[str]) -> List[str]:
     return result
 
 
+def get_all_sitemap_urls() -> List[str]:
+    """Extract all valid canonical URLs from local sitemap-0.xml or remote."""
+    import re
+    possible_paths = [
+        os.path.join(PUBLIC_DIR, 'sitemap-0.xml'),
+        os.path.join(_SCRIPT_DIR, '../../dist/sitemap-0.xml'),
+        os.path.join(_SCRIPT_DIR, '../../public/sitemap-0.xml'),
+    ]
+    for sp in possible_paths:
+        if os.path.exists(sp):
+            try:
+                with open(sp, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                matches = re.findall(r'<loc>(.*?)</loc>', content)
+                if matches:
+                    urls = [m.strip() for m in matches if m.strip().startswith(SITE_URL)]
+                    if urls:
+                        logger.info(f'Loaded {len(urls)} URLs from sitemap at {sp}')
+                        return sorted(list(set(urls)))
+            except Exception as e:
+                logger.warning(f'Could not parse sitemap at {sp}: {e}')
+
+    # Try fetching remote sitemap if local not found
+    try:
+        remote_url = f'{SITE_URL}/sitemap-0.xml'
+        resp = requests.get(remote_url, timeout=10)
+        if resp.status_code == 200:
+            matches = re.findall(r'<loc>(.*?)</loc>', resp.text)
+            if matches:
+                urls = [m.strip() for m in matches if m.strip().startswith(SITE_URL)]
+                if urls:
+                    logger.info(f'Loaded {len(urls)} URLs from remote sitemap')
+                    return sorted(list(set(urls)))
+    except Exception as e:
+        logger.warning(f'Could not fetch remote sitemap: {e}')
+
+    return build_absolute_urls(SHORT_TAIL_PATHS)
+
+
 def get_site_host() -> str:
     from urllib.parse import urlparse
     return urlparse(SITE_URL).netloc
@@ -842,14 +881,16 @@ def main() -> None:
     except Exception as e:
         logger.error(f'Google Search Analytics failed: {e}')
 
-    # Step 4: IndexNow — all short-tail URLs
+    # Step 4: IndexNow — submit ALL valid sitemap URLs
     logger.info('[4/5] IndexNow')
     try:
-        submit_indexnow(all_urls)
+        sitemap_urls = get_all_sitemap_urls()
+        logger.info(f'IndexNow submitting {len(sitemap_urls)} canonical URLs')
+        submit_indexnow(sitemap_urls)
     except Exception as e:
         logger.error(f'IndexNow failed: {e}')
 
-    # Step 5: WebSub — all short-tail URLs
+    # Step 5: WebSub — all short-tail URLs and sitemap
     logger.info('[5/5] WebSub')
     try:
         publish_websub(all_urls)
