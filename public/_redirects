@@ -29,6 +29,12 @@
 /daserste/          /das-erste/          301
 /kabeleins          /kabel-eins/         301
 /kabeleins/         /kabel-eins/         301
+/sat1gold           /sat1-gold/          301
+/sat1gold/          /sat1-gold/          301
+/rtlzwei            /rtl2/               301
+/rtlzwei/           /rtl2/               301
+/rtl-2              /rtl2/               301
+/rtl-2/             /rtl2/               301
 /superrtl           /super-rtl/          301
 /superrtl/          /super-rtl/          301
 /zdfneo             /zdf-neo/            301
@@ -39,6 +45,12 @@
 /sat-1/             /sat1/               301
 /kabel1             /kabel-eins/         301
 /kabel1/            /kabel-eins/         301
+/eurosport-1        /eurosport1/         301
+/eurosport-1/       /eurosport1/         301
+/comedy-central     /comedycentral/      301
+/comedy-central/    /comedycentral/      301
+/bibel-tv           /bibeltv/            301
+/bibel-tv/          /bibeltv/            301
 
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410
