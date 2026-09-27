@@ -68,7 +68,7 @@ log "Deploying to Cloudflare Pages project=$CF_PROJECT ..."
 npx --yes wrangler@4 pages deploy dist \
   --project-name="$CF_PROJECT" \
   --branch=main \
-  --commit-dirty=true \
+  --commit-dirty=true
 log "Deploy complete"
 
 log "Submitting all canonical URLs to IndexNow (Bing)..."
