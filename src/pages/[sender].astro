@@ -107,7 +107,9 @@ const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_E
 
 // ── SEO ───────────────────────────────────────────────────────────────────
 const cleanName   = channel.name.replace(/^DE\s*-\s*/i, '').trim();
-const pageTitle   = `${cleanName} Programm heute & heute Abend – TV-Programm`;
+const pageTitle   = cleanName.length <= 10
+  ? `${cleanName} Programm heute & 20:15`
+  : `${cleanName} Programm heute`;
 const description = `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr auf ${cleanName} im TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`;
 const keywords    = `${cleanName.toLowerCase()} programm heute, ${cleanName.toLowerCase()} heute, ${cleanName.toLowerCase()} programm heute abend, ${cleanName.toLowerCase()} heute abend, ${cleanName.toLowerCase()} programm, was läuft heute auf ${cleanName.toLowerCase()}, ${cleanName.toLowerCase()} sendeplan, ${cleanName.toLowerCase()} fernsehprogramm`;
 const canonicalUrl = `https://fernsehheute.de/${slug}/`;
