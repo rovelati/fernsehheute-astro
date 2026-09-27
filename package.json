@@ -7,8 +7,9 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "python3 scripts/fetch-epg-json.py || true",
+    "prebuild": "node scripts/fetch-epg.mjs || python3 scripts/fetch-epg-json.py || true",
     "build": "astro build",
+    "postbuild": "node scripts/verify-build.mjs",
     "preview": "astro preview",
     "typecheck": "astro check --no-watch",
     "notify-indexing": "node scripts/notify-indexing.js",
