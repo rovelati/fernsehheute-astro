@@ -110,36 +110,70 @@
 /anixe%2B/          /anixe-plus/         301
 
 # 301 Redirect for Test channels (Sky Testkanäle -> Homepage)
-/testkanal*         /                    301
 /testkanal/*        /                    301
-/testkanal-*        /                    301
-/testkanal-*/*      /                    301
+/testkanal-l01      /                    301
+/testkanal-l01/     /                    301
+/testkanal-l02      /                    301
+/testkanal-l02/     /                    301
+/testkanal-l03      /                    301
+/testkanal-l03/     /                    301
+/testkanal-l04      /                    301
+/testkanal-l04/     /                    301
+/testkanal-l05      /                    301
+/testkanal-l05/     /                    301
+/testkanal-l06      /                    301
+/testkanal-l06/     /                    301
+/testkanal-l07      /                    301
+/testkanal-l07/     /                    301
+/testkanall01       /                    301
+/testkanall01/      /                    301
+/testkanall02       /                    301
+/testkanall02/      /                    301
+/testkanall03       /                    301
+/testkanall03/      /                    301
+/testkanall04       /                    301
+/testkanall04/      /                    301
+/testkanall05       /                    301
+/testkanall05/      /                    301
+/testkanall06       /                    301
+/testkanall06/      /                    301
+/testkanall07       /                    301
+/testkanall07/      /                    301
+/testkanalh01       /                    301
+/testkanalh01/      /                    301
+/testkanali01       /                    301
+/testkanali01/      /                    301
+/testkanali03       /                    301
+/testkanali03/      /                    301
 
 # 301 Redirect for Adult / Erotic channels (Policy compliance -> Homepage)
-/beate-uhse*        /                    301
-/beate-uhse/*       /                    301
 /beate-uhse-tv      /                    301
 /beate-uhse-tv/     /                    301
 /beateuhsetv        /                    301
 /beateuhsetv/       /                    301
+/beate-uhse/*       /                    301
 /blue-hustler       /                    301
 /blue-hustler/      /                    301
 /bluehustler        /                    301
 /bluehustler/       /                    301
-/playboy*           /                    301
-/playboy/*          /                    301
+/playboy            /                    301
+/playboy/           /                    301
 /playboyeurope      /                    301
 /playboyeurope/     /                    301
-/penthouse*         /                    301
-/penthouse/*        /                    301
+/playboy-europe     /                    301
+/playboy-europe/    /                    301
+/penthouse          /                    301
+/penthouse/         /                    301
 /penthousepassion   /                    301
 /penthousepassion/  /                    301
+/penthouse-passion  /                    301
+/penthouse-passion/ /                    301
 /lustpur            /                    301
 /lustpur/           /                    301
 /lust-pur           /                    301
 /lust-pur/          /                    301
 
-# 301 Redirect for Removed Dummy / No-Data channels -> Homepage
+# 301 Redirect for Removed Dummy / No-Data channels -> Hubs
 /actionfilme        /film-heute-abend/   301
 /actionfilme/       /film-heute-abend/   301
 /artflix            /film-heute-abend/   301
