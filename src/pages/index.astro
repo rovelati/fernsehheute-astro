@@ -11,12 +11,13 @@ import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
 import { buildHubHomeJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { normCid } from '../utils/channelSlug';
+import { isAdultChannel, isTestChannel, filterRealPrograms } from '../utils/channelFilters';
 import type { Channel, Program } from '../types';
 
 const AGF_ORDER = [
   'rtl', 'zdf', 'das-erste', 'sat1', 'prosieben', 'vox', 'rtl2', 'kabel-eins',
   'sixx', 'super-rtl', 'nitro', 'tele5', 'zdf-neo', 'zdfinfo', '3sat', 'arte',
-  'phoenix', 'one', 'sport1', 'eurosport-1', 'dmax', 'tlc', 'n-tv', 'ntv', 'welt',
+  'phoenix', 'one', 'sport1', 'eurosport1', 'eurosport-1', 'dmax', 'tlc', 'n-tv', 'ntv', 'welt',
   'tagesschau24', 'kika', 'comedy-central', 'disney-channel', 'ard-alpha',
   'sat1-gold', 'prosieben-maxx', 'kabel-eins-doku', 'mdr', 'ndr', 'wdr', 'br', 'swr', 'hr', 'rbb',
 ];
@@ -43,10 +44,19 @@ try {
 
   for (const ch of channels) {
     const slug = normCid(ch.id);
-    const programs = (programsByChannel.get(slug) ?? [])
+    if (isAdultChannel(slug, ch.name) || isTestChannel(slug, ch.name)) continue;
+
+    const allChPrograms = programsByChannel.get(slug) ?? [];
+    const realChPrograms = filterRealPrograms(allChPrograms);
+    if (realChPrograms.length < 3) continue;
+
+    const eveningPrograms = realChPrograms
       .filter(p => getBerlinHour(p.start_time) >= 17)
       .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
-    if (programs.length > 0) channelsWithPrograms.push({ ...ch, programs, slug });
+
+    if (eveningPrograms.length > 0) {
+      channelsWithPrograms.push({ ...ch, programs: eveningPrograms, slug });
+    }
   }
 
   channelsWithPrograms.sort((a, b) => {

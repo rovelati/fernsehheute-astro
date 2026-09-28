@@ -1,6 +1,6 @@
 # fernsehheute.de
 
-> Das aktuelle deutsche TV-Programm von heute und heute Abend ab 20:15 Uhr für über 430 Fernsehsender in Deutschland, Österreich und der Schweiz (DACH-Region).
+> Das aktuelle deutsche TV-Programm von heute und heute Abend ab 20:15 Uhr für über 340 Fernsehsender in Deutschland, Österreich und der Schweiz (DACH-Region).
 
 ## Hauptbereiche (Main Sections)
 

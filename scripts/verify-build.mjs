@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 const DIST_DIR = path.resolve(__dirname, '..', 'dist');
 
 const REQUIRED_CHANNELS = ['zdf', 'das-erste', 'rtl', 'sat1', 'prosieben', 'vox', 'kabel-eins', 'arte', '3sat'];
+const FORBIDDEN_CHANNELS = ['testkanalh01', 'testkanall01', 'beate-uhsetv', 'bluehustler', 'playboyeurope', 'penthousepassion', 'lustpur'];
 
 function verify() {
   console.log('[verify-build] Checking built artifacts in dist/ ...');
@@ -21,6 +22,15 @@ function verify() {
   if (!homeContent.includes('FernsehHeute') || homeContent.length < 5000) {
     console.error('[verify-build] ERROR: dist/index.html looks incomplete or corrupted!');
     process.exit(1);
+  }
+
+  // Check forbidden channels (adult & test channels must NOT be built)
+  for (const forbidden of FORBIDDEN_CHANNELS) {
+    const forbiddenDir = path.join(DIST_DIR, forbidden);
+    if (fs.existsSync(forbiddenDir)) {
+      console.error(`[verify-build] ERROR: Forbidden channel page generated: ${forbidden}`);
+      process.exit(1);
+    }
   }
 
   let failed = 0;
@@ -44,7 +54,7 @@ function verify() {
     process.exit(1);
   }
 
-  console.log(`[verify-build] SUCCESS: All critical channels verified with active program lineups!`);
+  console.log(`[verify-build] SUCCESS: All critical channels verified and all forbidden channels excluded!`);
 }
 
 verify();

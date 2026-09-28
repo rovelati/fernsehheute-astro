@@ -20,6 +20,7 @@ import { buildHubChannelJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { getChannelStream } from '../utils/channelStreams';
 import { HUB_CHANNELS } from '../utils/hubChannels';
 import { normCid } from '../utils/channelSlug';
+import { isAdultChannel, isTestChannel, filterRealPrograms } from '../utils/channelFilters';
 import type { Channel, Program } from '../types';
 import type { ProgramEnrichment } from '../lib/epg';
 
@@ -60,13 +61,23 @@ export async function getStaticPaths() {
     }
   }
 
-  return channels.map(ch => {
-    const slug = normCidLocal(ch.id);
-    return {
-      params: { sender: slug },
-      props: { channel: { ...ch, programs: programsByChannel.get(slug) ?? [] } as Channel, today, slug },
-    };
-  });
+  return channels
+    .filter(ch => {
+      const slug = normCidLocal(ch.id);
+      if (isAdultChannel(slug, ch.name) || isTestChannel(slug, ch.name)) return false;
+      const progs = programsByChannel.get(slug) ?? [];
+      const realProgs = filterRealPrograms(progs);
+      return realProgs.length >= 3;
+    })
+    .map(ch => {
+      const slug = normCidLocal(ch.id);
+      const progs = programsByChannel.get(slug) ?? [];
+      const realProgs = filterRealPrograms(progs);
+      return {
+        params: { sender: slug },
+        props: { channel: { ...ch, programs: realProgs } as Channel, today, slug },
+      };
+    });
 }
 
 interface Props { channel: Channel; today: string; slug: string; }

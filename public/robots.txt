@@ -1,8 +1,16 @@
 User-agent: *
 Allow: /
 
-# Kein Indexieren von Testkanälen und nicht-redaktionellen Seiten
+# Kein Indexieren von Testkanälen, Adult-Kanälen und rechtlichen Seiten
+Disallow: /testkanal*
 Disallow: /testkanal-*
+Disallow: /beate-uhse*
+Disallow: /blue-hustler*
+Disallow: /bluehustler*
+Disallow: /playboy*
+Disallow: /penthouse*
+Disallow: /lust-pur*
+Disallow: /lustpur*
 Disallow: /impressum
 Disallow: /datenschutz
 

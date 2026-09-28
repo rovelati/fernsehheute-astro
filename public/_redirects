@@ -109,6 +109,36 @@
 /anixe%2B           /anixe-plus/         301
 /anixe%2B/          /anixe-plus/         301
 
+# 410 Gone — Test channels (Sky Testkanäle)
+/testkanal*         410
+/testkanal/*        410
+/testkanal-*        410
+/testkanal-*/*      410
+
+# 410 Gone — Adult / Erotic channels (Policy compliance)
+/beate-uhse*        410
+/beate-uhse/*       410
+/beate-uhse-tv      410
+/beate-uhse-tv/     410
+/beateuhsetv        410
+/beateuhsetv/       410
+/blue-hustler       410
+/blue-hustler/      410
+/bluehustler        410
+/bluehustler/       410
+/playboy*           410
+/playboy/*          410
+/playboyeurope      410
+/playboyeurope/     410
+/penthouse*         410
+/penthouse/*        410
+/penthousepassion   410
+/penthousepassion/  410
+/lustpur            410
+/lustpur/           410
+/lust-pur           410
+/lust-pur/          410
+
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410
 /programm           410

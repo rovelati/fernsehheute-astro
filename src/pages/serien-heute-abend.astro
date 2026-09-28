@@ -11,6 +11,7 @@ import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../ut
 import { buildHubCategoryJsonLd } from '../utils/jsonld';
 import { isSeries, MAIN_GERMAN_CHANNELS } from '../utils/programClassifier';
 import { normCid } from '../utils/channelSlug';
+import { isAdultChannel, isTestChannel, isRealProgram } from '../utils/channelFilters';
 import type { Channel, Program } from '../types';
 
 const today = getTodayInBerlin();
@@ -30,7 +31,12 @@ for (const ch of channels) {
 }
 
 const series = allPrograms
-  .filter(p => getBerlinHour(p.start_time) >= 17 && isSeries(p))
+  .filter(p => {
+    const slug = normCid(p.channel_id ?? '');
+    if (!isRealProgram(p.title)) return false;
+    if (isAdultChannel(slug) || isTestChannel(slug)) return false;
+    return getBerlinHour(p.start_time) >= 17 && isSeries(p);
+  })
   .sort((a, b) => {
     const aSlug = normCid(a.channel_id ?? '');
     const bSlug = normCid(b.channel_id ?? '');
