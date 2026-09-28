@@ -36,6 +36,20 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   <meta name="publisher" content="FernsehHeute" />
   <link rel="canonical" href={resolvedCanonical} />
 
+  <!-- Language & Geotargeting (Germany & DACH Region) -->
+  <meta name="content-language" content="de-DE" />
+  <meta name="language" content="German" />
+  <meta name="geo.region" content="DE" />
+  <meta name="geo.placename" content="Deutschland" />
+  <meta name="geo.position" content="51.165691;10.451526" />
+  <meta name="ICBM" content="51.165691, 10.451526" />
+
+  <!-- Hreflang Canonical & Regional Alternates -->
+  <link rel="alternate" hreflang="de-DE" href={resolvedCanonical} />
+  <link rel="alternate" hreflang="de-AT" href={resolvedCanonical} />
+  <link rel="alternate" hreflang="de-CH" href={resolvedCanonical} />
+  <link rel="alternate" hreflang="x-default" href={resolvedCanonical} />
+
   <!-- Microsoft Edge, Windows & PWA Compatibility -->
   <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
   <meta name="color-scheme" content="light dark" />
@@ -72,6 +86,8 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   {description && <meta property="og:description" content={description} />}
   <meta property="og:image" content={ogImage ?? defaultOgImage} />
   <meta property="og:locale" content="de_DE" />
+  <meta property="og:locale:alternate" content="de_AT" />
+  <meta property="og:locale:alternate" content="de_CH" />
   <meta property="og:site_name" content="FernsehHeute" />
 
   <!-- Twitter / Edge Feed Card -->

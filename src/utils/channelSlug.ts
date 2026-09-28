@@ -123,8 +123,22 @@ const CHANNEL_SLUGS: Record<string, string> = {
 
 export const normCid = (cid: string): string => {
   if (!cid || typeof cid !== 'string') return '';
-  const cleaned = cid.toLowerCase().trim().replace(/^de-/, '').replace(/\.de$/, '');
-  return CHANNEL_SLUGS[cleaned] ?? CHANNEL_SLUGS[cid.toLowerCase().trim()] ?? cleaned.replace(/\s+/g, '-');
+  const cleaned = cid
+    .toLowerCase()
+    .trim()
+    .replace(/^de\s*-\s*/i, '')
+    .replace(/^de\s+/i, '')
+    .replace(/^de-/, '')
+    .replace(/\.de$/, '')
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .replace(/\+/g, '-plus-')
+    .replace(/&/g, '-and-')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return CHANNEL_SLUGS[cleaned] ?? CHANNEL_SLUGS[cid.toLowerCase().trim()] ?? cleaned;
 };
 
 export const getChannelSlug = normCid;

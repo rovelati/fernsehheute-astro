@@ -22,7 +22,7 @@
 # 301 Legacy URL Migration: /morgen/:channel -> /:channel/
 /morgen/:channel    /:channel/           301
 
-# 301 Channel Slug Aliases (Bing / Direct Navigation)
+# 301 Channel Slug Aliases & Normalization (Bing / Google / Direct Navigation)
 /hse-24             /hse24/              301
 /hse-24/            /hse24/              301
 /daserste           /das-erste/          301
@@ -51,6 +51,52 @@
 /comedy-central/    /comedycentral/      301
 /bibel-tv           /bibeltv/            301
 /bibel-tv/          /bibeltv/            301
+/disney-channel     /disneychannel/      301
+/disney-channel/    /disneychannel/      301
+/sky-cinema-action  /skycinemaaction/    301
+/sky-cinema-action/ /skycinemaaction/    301
+/sky-sport-bundesliga /skysportbundesliga/ 301
+/sky-sport-bundesliga/ /skysportbundesliga/ 301
+/sky-sport-mix      /skysportmix/        301
+/sky-sport-mix/     /skysportmix/        301
+/rtl-living         /rtlliving/          301
+/rtl-living/        /rtlliving/          301
+/kinowelt-tv        /kinowelttv/         301
+/kinowelt-tv/       /kinowelttv/         301
+/regio-tv           /regiotv/            301
+/regio-tv/          /regiotv/            301
+/red-bull-tv        /redbulltv/          301
+/red-bull-tv/       /redbulltv/          301
+/rbb-berlin         /rbbberlin/          301
+/rbb-berlin/        /rbbberlin/          301
+/sat1-bayern        /sat1bayern/         301
+/sat1-bayern/       /sat1bayern/         301
+/rtr-planeta        /rtrplaneta/         301
+/rtr-planeta/       /rtrplaneta/         301
+/swr-bw             /swrbw/              301
+/swr-bw/            /swrbw/              301
+/dazn-1-8-live      /dazn18live/         301
+/dazn-1-8-live/     /dazn18live/         301
+/ndr-fernsehen-niedersachsen /ndrfernsehenniedersachsen/ 301
+/ndr-fernsehen-niedersachsen/ /ndrfernsehenniedersachsen/ 301
+/mdr-thueringen     /mdrthuringen/       301
+/mdr-thueringen/    /mdrthuringen/       301
+/mdr-thuringen      /mdrthuringen/       301
+/mdr-thuringen/     /mdrthuringen/       301
+/komödien           /film-heute-abend/   301
+/komödien/          /film-heute-abend/   301
+/kom%C3%B6dien      /film-heute-abend/   301
+/kom%C3%B6dien/     /film-heute-abend/   301
+/komoedien          /film-heute-abend/   301
+/komoedien/         /film-heute-abend/   301
+/sport1+            /sport1-plus/        301
+/sport1+/           /sport1-plus/        301
+/sport1%2B          /sport1-plus/        301
+/sport1%2B/         /sport1-plus/        301
+/anixe+             /anixe-plus/         301
+/anixe+/            /anixe-plus/         301
+/anixe%2B           /anixe-plus/         301
+/anixe%2B/          /anixe-plus/         301
 
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410

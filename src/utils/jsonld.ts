@@ -118,7 +118,16 @@ function orgEntity(): Record<string, unknown> {
     '@id': ORG_ID,
     name: SITE_NAME,
     url: SITE_URL,
-    knowsAbout: ['Television', 'Deutsches Fernsehen', 'TV Programm', 'Fernsehprogramm'],
+    knowsAbout: ['Television', 'Deutsches Fernsehen', 'TV Programm', 'Fernsehprogramm', 'DACH Fernsehen'],
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'DE',
+    },
+    areaServed: [
+      { '@type': 'Country', name: 'Germany', sameAs: GERMANY_ID, identifier: 'DE' },
+      { '@type': 'Country', name: 'Austria', sameAs: 'https://www.wikidata.org/wiki/Q40', identifier: 'AT' },
+      { '@type': 'Country', name: 'Switzerland', sameAs: 'https://www.wikidata.org/wiki/Q39', identifier: 'CH' },
+    ],
     logo: {
       '@type': 'ImageObject',
       url: `${SITE_URL}/favicon/apple-touch-icon.png`,
@@ -135,7 +144,16 @@ function websiteEntity(): Record<string, unknown> {
     '@id': WEBSITE_ID,
     name: SITE_NAME,
     url: SITE_URL,
-    inLanguage: 'de',
+    inLanguage: 'de-DE',
+    spatialCoverage: {
+      '@type': 'Place',
+      name: 'Deutschland',
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: 51.165691,
+        longitude: 10.451526,
+      },
+    },
     publisher: { '@id': ORG_ID },
     potentialAction: {
       '@type': 'SearchAction',
@@ -159,7 +177,7 @@ function webPageEntity(url: string, name: string, description: string): Record<s
     url,
     name,
     description,
-    inLanguage: 'de',
+    inLanguage: 'de-DE',
     dateModified: new Date().toISOString(),
     isPartOf: { '@id': WEBSITE_ID },
     publisher: { '@id': ORG_ID },
@@ -179,12 +197,27 @@ function broadcastServiceEntity(channel: Channel, siteUrl = SITE_URL): Record<st
     broadcastDisplayName: channel.name,
     ...(channel.number ? { broadcastChannelId: String(channel.number) } : {}),
     broadcastTimezone: 'Europe/Berlin',
-    inLanguage: 'de',
-    areaServed: {
-      '@type': 'Country',
-      name: 'Germany',
-      sameAs: GERMANY_ID,
-    },
+    inLanguage: 'de-DE',
+    areaServed: [
+      {
+        '@type': 'Country',
+        name: 'Germany',
+        sameAs: GERMANY_ID,
+        identifier: 'DE',
+      },
+      {
+        '@type': 'Country',
+        name: 'Austria',
+        sameAs: 'https://www.wikidata.org/wiki/Q40',
+        identifier: 'AT',
+      },
+      {
+        '@type': 'Country',
+        name: 'Switzerland',
+        sameAs: 'https://www.wikidata.org/wiki/Q39',
+        identifier: 'CH',
+      },
+    ],
     ...(wikidata ? { sameAs: wikidata } : {}),
     broadcastAffiliateOf: {
       '@type': 'Organization',

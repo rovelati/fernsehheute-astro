@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "node scripts/fetch-epg.mjs || python3 scripts/fetch-epg-json.py || true",
+    "prebuild": "python3 scripts/fetch-epg-json.py || true",
     "build": "astro build",
     "postbuild": "node scripts/verify-build.mjs",
     "preview": "astro preview",
