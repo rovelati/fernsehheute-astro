@@ -109,35 +109,45 @@
 /anixe%2B           /anixe-plus/         301
 /anixe%2B/          /anixe-plus/         301
 
-# 410 Gone — Test channels (Sky Testkanäle)
-/testkanal*         410
-/testkanal/*        410
-/testkanal-*        410
-/testkanal-*/*      410
+# 301 Redirect for Test channels (Sky Testkanäle -> Homepage)
+/testkanal*         /                    301
+/testkanal/*        /                    301
+/testkanal-*        /                    301
+/testkanal-*/*      /                    301
 
-# 410 Gone — Adult / Erotic channels (Policy compliance)
-/beate-uhse*        410
-/beate-uhse/*       410
-/beate-uhse-tv      410
-/beate-uhse-tv/     410
-/beateuhsetv        410
-/beateuhsetv/       410
-/blue-hustler       410
-/blue-hustler/      410
-/bluehustler        410
-/bluehustler/       410
-/playboy*           410
-/playboy/*          410
-/playboyeurope      410
-/playboyeurope/     410
-/penthouse*         410
-/penthouse/*        410
-/penthousepassion   410
-/penthousepassion/  410
-/lustpur            410
-/lustpur/           410
-/lust-pur           410
-/lust-pur/          410
+# 301 Redirect for Adult / Erotic channels (Policy compliance -> Homepage)
+/beate-uhse*        /                    301
+/beate-uhse/*       /                    301
+/beate-uhse-tv      /                    301
+/beate-uhse-tv/     /                    301
+/beateuhsetv        /                    301
+/beateuhsetv/       /                    301
+/blue-hustler       /                    301
+/blue-hustler/      /                    301
+/bluehustler        /                    301
+/bluehustler/       /                    301
+/playboy*           /                    301
+/playboy/*          /                    301
+/playboyeurope      /                    301
+/playboyeurope/     /                    301
+/penthouse*         /                    301
+/penthouse/*        /                    301
+/penthousepassion   /                    301
+/penthousepassion/  /                    301
+/lustpur            /                    301
+/lustpur/           /                    301
+/lust-pur           /                    301
+/lust-pur/          /                    301
+
+# 301 Redirect for Removed Dummy / No-Data channels -> Homepage
+/actionfilme        /film-heute-abend/   301
+/actionfilme/       /film-heute-abend/   301
+/artflix            /film-heute-abend/   301
+/artflix/           /film-heute-abend/   301
+/dramafilme         /film-heute-abend/   301
+/dramafilme/        /film-heute-abend/   301
+/romantischefilme   /film-heute-abend/   301
+/romantischefilme/  /film-heute-abend/   301
 
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410
