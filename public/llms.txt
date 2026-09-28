@@ -1,0 +1,41 @@
+# fernsehheute.de
+
+> Das aktuelle deutsche TV-Programm von heute und heute Abend ab 20:15 Uhr für über 430 Fernsehsender in Deutschland, Österreich und der Schweiz (DACH-Region).
+
+## Hauptbereiche (Main Sections)
+
+- [TV-Programm Heute](https://fernsehheute.de/): Übersicht des gesamten heutigen Fernsehprogramms und Live-Sendungen.
+- [TV-Programm Morgen](https://fernsehheute.de/morgen/): Das Fernsehprogramm für morgen im Überblick.
+- [Spielfilme heute Abend ab 20:15](https://fernsehheute.de/film-heute-abend/): Alle Spielfilme, Blockbuster und Free-TV-Premieren zur Primetime.
+- [Serien heute Abend ab 20:15](https://fernsehheute.de/serien-heute-abend/): Alle Fernsehserien, Krimis und Sitcoms heute Abend.
+- [Sport heute Abend ab 20:15](https://fernsehheute.de/sport-heute-abend/): Live-Sportübertragungen, Fußball, Motorsport und Highlights.
+
+## Beliebte Sender (Top German TV Channels)
+
+- [Das Erste (ARD)](https://fernsehheute.de/das-erste/): Das Erste Fernsehprogramm heute, Tagesschau, Tatort und Mediathek.
+- [ZDF](https://fernsehheute.de/zdf/): ZDF heute, heute-show, ZDF Magazin Royale und aktuelle Sendungen.
+- [RTL](https://fernsehheute.de/rtl/): RTL TV-Programm heute, Shows, Magazine und Serien.
+- [SAT.1](https://fernsehheute.de/sat1/): SAT.1 Fernsehprogramm heute und Primetime 20:15 Uhr.
+- [ProSieben](https://fernsehheute.de/prosieben/): ProSieben TV-Programm heute, Serien, Blockbuster und Shows.
+- [VOX](https://fernsehheute.de/vox/): VOX TV-Programm heute, Kochshows, Dokus und Serien.
+- [RTLZWEI](https://fernsehheute.de/rtl2/): RTLZWEI TV-Programm heute und Reality-Formate.
+- [Kabel Eins](https://fernsehheute.de/kabel-eins/): Kabel Eins TV-Programm heute und Filmklassiker.
+- [ZDFneo](https://fernsehheute.de/zdf-neo/): ZDFneo TV-Programm heute, Krimis und internationale Serien.
+- [3sat](https://fernsehheute.de/3sat/): 3sat TV-Programm heute, Kultur, Dokumentationen und Wissenschaft.
+- [ARTE](https://fernsehheute.de/arte/): ARTE TV-Programm heute, europäische Kultur und Filmkunst.
+- [NITRO](https://fernsehheute.de/nitro/): NITRO TV-Programm heute, Action, Sitcoms und Live-Sport.
+- [Super RTL](https://fernsehheute.de/super-rtl/): Super RTL / TOGGO Kinder- und Familienprogramm.
+- [Tele 5](https://fernsehheute.de/tele5/): Tele 5 TV-Programm heute, Sci-Fi und Kultfilme.
+- [sixx](https://fernsehheute.de/sixx/): sixx TV-Programm heute, Lifestyle und Serien.
+- [SPORT1](https://fernsehheute.de/sport1/): SPORT1 TV-Programm heute und Live-Sport.
+- [SAT.1 Gold](https://fernsehheute.de/sat1-gold/): SAT.1 Gold TV-Programm heute und Kult-Serien.
+- [phoenix](https://fernsehheute.de/phoenix/): phoenix TV-Programm heute, Ereignis- und Dokumentationskanal von ARD und ZDF.
+- [Eurosport 1](https://fernsehheute.de/eurosport1/): Eurosport 1 TV-Programm heute und internationaler Spitzensport.
+- [Comedy Central](https://fernsehheute.de/comedy-central/): Comedy Central Programm heute und Serien.
+- [Disney Channel](https://fernsehheute.de/disney-channel/): Disney Channel TV-Programm heute für Kinder und Familien.
+- [Bibel TV](https://fernsehheute.de/bibeltv/): Bibel TV Programm heute.
+- [HSE](https://fernsehheute.de/hse24/): HSE Shopping-TV Programm heute.
+
+## Sitemaps & Feeds
+
+- [Sitemap Index](https://fernsehheute.de/sitemap-index.xml): XML-Sitemap aller 430+ Sender und Kategorieseiten.
