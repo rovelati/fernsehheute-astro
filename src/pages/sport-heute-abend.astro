@@ -62,9 +62,8 @@ function getOverlayJson(prog: Program, slug: string, logo: string, name: string)
     startTime:   prog.start_time,
     endTime:     prog.end_time,
     category:    prog.category || 'Sport',
-    description: prog.description ?? '',
+    description: prog.description ? prog.description.slice(0, 240) : '',
     poster_url:  prog.poster_url ?? null,
-    cast_json:   (prog as any).cast_json ?? null,
     channelId:   slug,
     channelLogo: logo,
     channelName: name,
@@ -80,6 +79,38 @@ const jsonLd = buildHubCategoryJsonLd({
 
 const description = 'Alle Live-Sportübertragungen und Sport-Sendungen heute im deutschen Fernsehen: Fußball heute Abend, Bundesliga, Formel 1, Tennis und Sport-Highlights.';
 const keywords    = 'sport heute im tv, sport heute abend, live sport tv programm, fußball heute abend tv, sportübertragungen heute, bundesliga heute fernsehen, sport programm heute';
+const INITIAL_LIMIT = 60;
+const initialSports = sports.slice(0, INITIAL_LIMIT);
+const moreSports    = sports.slice(INITIAL_LIMIT);
+
+const moreSportsJson = JSON.stringify(moreSports.map(prog => {
+  const slug = normCid(prog.channel_id ?? '');
+  const name = channelName.get(slug) ?? prog.channel_id ?? '';
+  const logo = channelLogo.get(slug) || '';
+  const isMain = MAIN_GERMAN_CHANNELS.includes(slug);
+  const startH = getBerlinHour(prog.start_time);
+  const isPrime = startH >= 18 && startH <= 22;
+  const durationMin = Math.round((new Date(prog.end_time).getTime() - new Date(prog.start_time).getTime()) / 60000);
+
+  return {
+    id: prog.id,
+    title: prog.title,
+    startTime: prog.start_time,
+    endTime: prog.end_time,
+    startFormatted: formatTime(prog.start_time),
+    endFormatted: formatTime(prog.end_time),
+    durationMin,
+    isPrime,
+    category: prog.category || 'Sport',
+    description: prog.description ? prog.description.slice(0, 240) : '',
+    poster_url: prog.poster_url ?? '',
+    channelId: slug,
+    channelName: name.replace(/^DE\s*-\s*/i, ''),
+    channelFullName: name,
+    channelLogo: logo,
+    isMain,
+  };
+}));
 ---
 
 <BaseLayout
@@ -122,140 +153,153 @@ const keywords    = 'sport heute im tv, sport heute abend, live sport tv program
     </div>
 
     {sports.length > 0 ? (
-      <ul class="divide-y divide-slate-100 dark:divide-slate-800/80" role="list">
-        {sports.map(prog => {
-          const slug = normCid(prog.channel_id ?? '');
-          const name = channelName.get(slug) ?? prog.channel_id ?? '';
-          const logo = channelLogo.get(slug) || '';
-          const isMain = MAIN_GERMAN_CHANNELS.includes(slug);
-          const startH = getBerlinHour(prog.start_time);
-          const isPrime = startH >= 18 && startH <= 22;
+      <div>
+        <ul id="sports-list" class="divide-y divide-slate-100 dark:divide-slate-800/80" role="list">
+          {initialSports.map(prog => {
+            const slug = normCid(prog.channel_id ?? '');
+            const name = channelName.get(slug) ?? prog.channel_id ?? '';
+            const logo = channelLogo.get(slug) || '';
+            const isMain = MAIN_GERMAN_CHANNELS.includes(slug);
+            const startH = getBerlinHour(prog.start_time);
+            const isPrime = startH >= 18 && startH <= 22;
 
-          const durationMin = Math.round((new Date(prog.end_time).getTime() - new Date(prog.start_time).getTime()) / 60000);
-          const overlayJson = getOverlayJson(prog, slug, logo, name);
+            const durationMin = Math.round((new Date(prog.end_time).getTime() - new Date(prog.start_time).getTime()) / 60000);
+            const overlayJson = getOverlayJson(prog, slug, logo, name);
 
-          return (
-            <li class="flex gap-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-2xl px-3 transition-colors group">
-              <!-- Poster / Fallback Badge -->
-              <div
-                class="shrink-0 w-20 h-28 sm:w-24 sm:h-36 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-center cursor-pointer group-hover:scale-[1.03] group-hover:shadow-md transition-all relative"
+            return (
+              <li
+                class="flex gap-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-2xl px-3 transition-colors group cursor-pointer"
                 data-program={overlayJson}
-                role="button"
-                tabindex="0"
-                title={`${prog.title} — Details ansehen`}
               >
-                {isPrime && (
-                  <span class="absolute top-1 left-1 z-10 bg-emerald-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-xs">
-                    LIVE / TOP
-                  </span>
-                )}
-                {prog.poster_url ? (
-                  <img
-                    src={prog.poster_url}
-                    alt={prog.title}
-                    width="96"
-                    height="144"
-                    loading="lazy"
-                    decoding="async"
-                    referrerpolicy="no-referrer"
-                    class="w-full h-full object-cover"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                  />
-                  <div class="hidden w-full h-full items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 text-3xl">
-                    ⚽
-                  </div>
-                ) : (
-                  <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 p-2 text-center">
-                    <span class="text-3xl mb-1">⚽</span>
-                    <span class="text-[10px] font-bold text-emerald-200 line-clamp-2 leading-tight">
-                      {prog.title}
+                <!-- Poster / Fallback Badge -->
+                <div
+                  class="shrink-0 w-20 h-28 sm:w-24 sm:h-36 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-center group-hover:scale-[1.03] group-hover:shadow-md transition-all relative"
+                  title={`${prog.title} — Details ansehen`}
+                >
+                  {isPrime && (
+                    <span class="absolute top-1 left-1 z-10 bg-emerald-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-xs">
+                      LIVE / TOP
                     </span>
-                  </div>
-                )}
-              </div>
-
-              <!-- Content -->
-              <div class="flex-1 min-w-0 py-0.5 flex flex-col justify-between">
-                <div>
-                  <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mb-1.5">
-                    <time datetime={prog.start_time} class="text-base sm:text-lg font-black tabular-nums text-blue-600 dark:text-blue-400 shrink-0">
-                      {formatTime(prog.start_time)}
-                    </time>
-
-                    <a
-                      href={`/${slug}/`}
-                      class:list={[
-                        "text-xs font-bold px-2 py-0.5 rounded-md transition-colors shrink-0",
-                        isMain
-                          ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40 hover:bg-emerald-100"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
-                      ]}
-                    >
-                      {name.replace(/^DE\s*-\s*/i, '')}
-                    </a>
-
-                    {prog.category && (
-                      <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
-                        {prog.category}
+                  )}
+                  {prog.poster_url ? (
+                    <img
+                      src={prog.poster_url}
+                      alt={prog.title}
+                      width="96"
+                      height="144"
+                      loading="lazy"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                      class="w-full h-full object-cover"
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="hidden w-full h-full items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 text-3xl">
+                      ⚽
+                    </div>
+                  ) : (
+                    <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 p-2 text-center">
+                      <span class="text-3xl mb-1">⚽</span>
+                      <span class="text-[10px] font-bold text-emerald-200 line-clamp-2 leading-tight">
+                        {prog.title}
                       </span>
-                    )}
-
-                    {durationMin > 0 && (
-                      <span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tabular-nums">
-                        ⏱ {durationMin} Min.
-                      </span>
-                    )}
-                  </div>
-
-                  <h2
-                    class="font-bold text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-snug cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2"
-                    data-program={overlayJson}
-                    role="button"
-                    tabindex="0"
-                  >
-                    {prog.title}
-                  </h2>
-
-                  {prog.description && (
-                    <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 line-clamp-2 sm:line-clamp-3 leading-relaxed">
-                      {prog.description}
-                    </p>
+                    </div>
                   )}
                 </div>
 
-                <!-- Footer meta / info button -->
-                <div class="mt-2.5 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60 text-xs">
-                  <span class="text-slate-400 text-[11px]">
-                    Ende: {formatTime(prog.end_time)} Uhr
-                  </span>
-                  <button
-                    type="button"
-                    class="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-1 cursor-pointer"
-                    data-program={overlayJson}
-                  >
-                    Sendungsdetails &rarr;
-                  </button>
-                </div>
-              </div>
+                <!-- Content -->
+                <div class="flex-1 min-w-0 py-0.5 flex flex-col justify-between">
+                  <div>
+                    <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mb-1.5">
+                      <time datetime={prog.start_time} class="text-base sm:text-lg font-black tabular-nums text-blue-600 dark:text-blue-400 shrink-0">
+                        {formatTime(prog.start_time)}
+                      </time>
 
-              <!-- Channel logo -->
-              {logo && (
-                <div class="shrink-0 hidden md:flex items-center justify-center w-16 h-12 self-start mt-2">
-                  <img
-                    src={logo}
-                    alt={name}
-                    width="64"
-                    height="44"
-                    loading="lazy"
-                    class="max-w-[60px] max-h-[40px] w-auto h-auto object-contain opacity-85 group-hover:opacity-100 transition-opacity"
-                    onerror="this.style.display='none'"
-                  />
+                      <a
+                        href={`/${slug}/`}
+                        onclick="event.stopPropagation();"
+                        class:list={[
+                          "text-xs font-bold px-2 py-0.5 rounded-md transition-colors shrink-0",
+                          isMain
+                            ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40 hover:bg-emerald-100"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200"
+                        ]}
+                      >
+                        {name.replace(/^DE\s*-\s*/i, '')}
+                      </a>
+
+                      {prog.category && (
+                        <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
+                          {prog.category}
+                        </span>
+                      )}
+
+                      {durationMin > 0 && (
+                        <span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tabular-nums">
+                          ⏱ {durationMin} Min.
+                        </span>
+                      )}
+                    </div>
+
+                    <h2 class="font-bold text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                      {prog.title}
+                    </h2>
+
+                    {prog.description && (
+                      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 line-clamp-2 sm:line-clamp-3 leading-relaxed">
+                        {prog.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <!-- Footer meta / info button -->
+                  <div class="mt-2.5 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60 text-xs">
+                    <span class="text-slate-400 text-[11px]">
+                      Ende: {formatTime(prog.end_time)} Uhr
+                    </span>
+                    <span class="text-blue-600 dark:text-blue-400 font-bold group-hover:underline inline-flex items-center gap-1">
+                      Sendungsdetails &rarr;
+                    </span>
+                  </div>
                 </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+
+                <!-- Channel logo -->
+                {logo && (
+                  <div class="shrink-0 hidden md:flex items-center justify-center w-16 h-12 self-start mt-2">
+                    <img
+                      src={logo}
+                      alt={name}
+                      width="64"
+                      height="44"
+                      loading="lazy"
+                      class="max-w-[60px] max-h-[40px] w-auto h-auto object-contain opacity-85 group-hover:opacity-100 transition-opacity"
+                      onerror="this.style.display='none'"
+                    />
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+
+        {moreSports.length > 0 && (
+          <div id="show-more-sports-wrapper" class="text-center py-8">
+            <button
+              id="show-more-sports-btn"
+              type="button"
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md transition-all active:scale-95 cursor-pointer"
+            >
+              <span>Alle {sports.length} Sport-Sendungen anzeigen (+{moreSports.length})</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {moreSports.length > 0 && (
+          <script id="more-sports-data" type="application/json" set:html={moreSportsJson} />
+        )}
+      </div>
     ) : (
       <div class="text-center py-16 text-slate-500 dark:text-slate-400">
         <p class="text-4xl mb-4" aria-hidden="true">⚽</p>
@@ -267,3 +311,102 @@ const keywords    = 'sport heute im tv, sport heute abend, live sport tv program
   <ProgramOverlay />
   <Footer />
 </BaseLayout>
+
+<script>
+  (function () {
+    const btn = document.getElementById('show-more-sports-btn');
+    const wrapper = document.getElementById('show-more-sports-wrapper');
+    const list = document.getElementById('sports-list');
+    const dataScript = document.getElementById('more-sports-data');
+
+    if (!btn || !list || !dataScript) return;
+
+    btn.addEventListener('click', () => {
+      try {
+        const items = JSON.parse(dataScript.textContent || '[]');
+        let html = '';
+        for (const item of items) {
+          const overlayData = JSON.stringify({
+            id: item.id,
+            title: item.title,
+            startTime: item.startTime,
+            endTime: item.endTime,
+            category: item.category,
+            description: item.description,
+            poster_url: item.poster_url || null,
+            channelId: item.channelId,
+            channelLogo: item.channelLogo,
+            channelName: item.channelFullName,
+          });
+
+          html += `
+<li
+  class="flex gap-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-2xl px-3 transition-colors group cursor-pointer"
+  data-program='${overlayData.replace(/'/g, "&#39;")}'
+>
+  <div
+    class="shrink-0 w-20 h-28 sm:w-24 sm:h-36 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-center group-hover:scale-[1.03] group-hover:shadow-md transition-all relative"
+    title="${item.title} — Details ansehen"
+  >
+    ${item.isPrime ? '<span class="absolute top-1 left-1 z-10 bg-emerald-500 text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded shadow-xs">LIVE / TOP</span>' : ''}
+    ${item.poster_url ? `
+      <img
+        src="${item.poster_url}"
+        alt="${item.title}"
+        width="96"
+        height="144"
+        loading="lazy"
+        decoding="async"
+        referrerpolicy="no-referrer"
+        class="w-full h-full object-cover"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <div class="hidden w-full h-full items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 text-3xl">⚽</div>
+    ` : `
+      <div class="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 p-2 text-center">
+        <span class="text-3xl mb-1">⚽</span>
+        <span class="text-[10px] font-bold text-emerald-200 line-clamp-2 leading-tight">${item.title}</span>
+      </div>
+    `}
+  </div>
+  <div class="flex-1 min-w-0 py-0.5 flex flex-col justify-between">
+    <div>
+      <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1 mb-1.5">
+        <time datetime="${item.startTime}" class="text-base sm:text-lg font-black tabular-nums text-blue-600 dark:text-blue-400 shrink-0">
+          ${item.startFormatted}
+        </time>
+        <a
+          href="/${item.channelId}/"
+          onclick="event.stopPropagation();"
+          class="text-xs font-bold px-2 py-0.5 rounded-md transition-colors shrink-0 ${item.isMain ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40 hover:bg-emerald-100' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200'}"
+        >
+          ${item.channelName}
+        </a>
+        ${item.category ? `<span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">${item.category}</span>` : ''}
+        ${item.durationMin > 0 ? `<span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500 tabular-nums">⏱ ${item.durationMin} Min.</span>` : ''}
+      </div>
+      <h2 class="font-bold text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+        ${item.title}
+      </h2>
+      ${item.description ? `<p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-1.5 line-clamp-2 sm:line-clamp-3 leading-relaxed">${item.description}</p>` : ''}
+    </div>
+    <div class="mt-2.5 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60 text-xs">
+      <span class="text-slate-400 text-[11px]">Ende: ${item.endFormatted} Uhr</span>
+      <span class="text-blue-600 dark:text-blue-400 font-bold group-hover:underline inline-flex items-center gap-1">Sendungsdetails &rarr;</span>
+    </div>
+  </div>
+  ${item.channelLogo ? `
+    <div class="shrink-0 hidden md:flex items-center justify-center w-16 h-12 self-start mt-2">
+      <img src="${item.channelLogo}" alt="${item.channelFullName}" width="64" height="44" loading="lazy" class="max-w-[60px] max-h-[40px] w-auto h-auto object-contain opacity-85 group-hover:opacity-100 transition-opacity" onerror="this.style.display='none'" />
+    </div>
+  ` : ''}
+</li>`;
+        }
+        list.insertAdjacentHTML('beforeend', html);
+        if (wrapper) wrapper.style.display = 'none';
+      } catch (e) {
+        console.error('Error rendering more sports', e);
+      }
+    });
+  })();
+</script>

@@ -71,6 +71,13 @@ try {
   console.error('[morgen.astro] fetch error:', err);
 }
 
+import { serializeChannelForClient } from '../utils/channelSerializer';
+
+const INITIAL_LIMIT = 50;
+const initialChannels = channelsWithPrograms.slice(0, INITIAL_LIMIT);
+const moreChannels    = channelsWithPrograms.slice(INITIAL_LIMIT);
+const moreChannelsJson = JSON.stringify(moreChannels.map(ch => serializeChannelForClient(ch, 'morgen')));
+
 const jsonLd = buildHubMorgenJsonLd({ channels: channelsWithPrograms, tomorrow });
 
 const description = 'TV Programm morgen: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten.';
@@ -144,10 +151,33 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
     {channelsWithPrograms.length > 0 ? (
       <section aria-label={`${channelsWithPrograms.length} Sender mit Programmvorschau für morgen`}>
         <div id="channels-grid" class="divide-y divide-slate-100 dark:divide-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-900/50 shadow-sm">
-          {channelsWithPrograms.map(channel => (
+          {initialChannels.map(channel => (
             <ChannelCard channel={channel} programs={channel.programs} slug={channel.slug} mode="morgen" />
           ))}
+
+          {moreChannels.length > 0 && (
+            <div id="more-channels-container" class="divide-y divide-slate-100 dark:divide-slate-800 hidden"></div>
+          )}
+
+          {moreChannels.length > 0 && (
+            <div id="show-more-wrapper" class="text-center py-5 bg-slate-50/70 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800">
+              <button
+                id="show-more-btn"
+                type="button"
+                class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-sm border border-slate-200 dark:border-slate-700 shadow-xs transition-all active:scale-95 cursor-pointer"
+              >
+                <span>Alle {channelsWithPrograms.length} Sender anzeigen (+{moreChannels.length})</span>
+                <svg class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
+
+        {moreChannels.length > 0 && (
+          <script id="more-channels-data" type="application/json" set:html={moreChannelsJson} />
+        )}
 
         <!-- No Results Fallback -->
         <div id="no-search-results" class="hidden text-center py-16 text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
@@ -171,22 +201,128 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
   (function () {
     const searchInput = document.getElementById('channel-search-input') as HTMLInputElement | null;
     const chips = document.querySelectorAll<HTMLButtonElement>('.filter-chip');
-    const cards = document.querySelectorAll<HTMLElement>('[data-channel-card]');
     const countEl = document.getElementById('visible-count');
     const noResultsEl = document.getElementById('no-search-results');
+    const showMoreBtn = document.getElementById('show-more-btn');
+    const moreContainer = document.getElementById('more-channels-container');
+    const showMoreWrapper = document.getElementById('show-more-wrapper');
 
     const MAIN_SLUGS = new Set([
       'das-erste', 'zdf', 'rtl', 'sat1', 'prosieben', 'vox', 'kabel-eins', 'rtl2',
       'super-rtl', 'nitro', 'sixx', '3sat', 'arte', 'zdf-neo', 'tele5', 'sport1',
-      'eurosport-1', 'dmax', 'welt', 'n-tv', 'phoenix', 'tagesschau24', 'kika', 'one'
+      'eurosport-1', 'eurosport1', 'dmax', 'welt', 'n-tv', 'ntv', 'phoenix', 'tagesschau24', 'kika', 'one'
     ]);
 
     let activeFilter = 'all';
     let searchQuery = '';
 
+    function renderMoreChannels() {
+      if (!moreContainer || moreContainer.dataset.rendered === 'true') return;
+      const dataScript = document.getElementById('more-channels-data');
+      if (!dataScript) return;
+      try {
+        const list = JSON.parse(dataScript.textContent || '[]');
+        let html = '';
+        for (const item of list) {
+          const overlayData = JSON.stringify({
+            id: item.progId,
+            title: item.title,
+            startTime: item.isoStart,
+            endTime: item.isoEnd,
+            category: item.cat,
+            description: item.desc,
+            poster_url: item.poster || null,
+            channelId: item.slug,
+            channelLogo: item.logo,
+            channelName: item.name
+          });
+          html += `
+<div
+  class="channel-card-item block group border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+  data-channel-card
+  data-channel-name="${item.name.toLowerCase()}"
+  data-channel-slug="${item.slug}"
+  data-program-title="${(item.title || '').toLowerCase()}"
+  data-category="${item.catGroup}"
+  data-program='${overlayData.replace(/'/g, "&#39;")}'
+>
+  <div class="grid grid-cols-[68px_1fr_auto] sm:grid-cols-[84px_1fr_auto] gap-2.5 sm:gap-4 px-3 py-2.5 sm:px-4 sm:py-3 items-center">
+    <a href="/${item.slug}/" class="flex flex-col items-start gap-1 focus:outline-none" aria-label="Programmübersicht ${item.name}">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs p-1 group-hover:scale-105 transition-transform">
+        <img src="${item.logo}" alt="Logo ${item.name}" width="36" height="36" class="w-full h-full object-contain" loading="lazy" onerror="this.style.opacity='0.4';" />
+      </div>
+      <div class="min-w-0 w-full">
+        <p class="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+          ${item.displayName}
+        </p>
+        ${item.number > 0 ? `<p class="text-[10px] text-slate-400 dark:text-slate-500">CH ${item.number}</p>` : ''}
+      </div>
+    </a>
+    <div class="min-w-0 py-0.5 cursor-pointer" role="button" tabindex="0" title="Klicken für Details">
+      ${item.title ? `
+        <div>
+          <p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mb-0.5 flex items-center gap-1.5 flex-wrap">
+            <span class="tabular-nums font-semibold text-slate-700 dark:text-slate-300">${item.start} – ${item.end}</span>
+            ${item.cat ? `<span class="uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500">${item.cat}</span>` : ''}
+          </p>
+          <p class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug mb-1.5 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+            ${item.title}
+          </p>
+          <div class="h-[3px] w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700 mb-1.5">
+            <div class="h-full rounded-full bg-slate-300 dark:bg-slate-600" style="width:0%"></div>
+          </div>
+          ${item.nextTitle ? `
+            <p class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 truncate">
+              <span class="tabular-nums">${item.nextStart}</span> — <span class="text-slate-600 dark:text-slate-400">${item.nextTitle}</span>
+            </p>
+          ` : ''}
+        </div>
+      ` : `
+        <p class="text-xs text-slate-400 dark:text-slate-500 italic">Kein Programm verfügbar</p>
+      `}
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      ${item.poster ? `
+        <div class="w-16 sm:w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs cursor-pointer group-hover:scale-105 transition-transform" role="button" tabindex="0" title="${item.title} — Details ansehen">
+          <img src="${item.poster}" alt="${item.title}" width="96" height="54" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-cover object-top" onerror="this.parentElement.style.display='none'" />
+        </div>
+      ` : ''}
+      <div class="hidden sm:flex items-center justify-center pl-1">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-slate-300 dark:text-slate-600 group-hover:text-blue-400 transition-colors">
+          <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>`;
+        }
+        moreContainer.innerHTML = html;
+        moreContainer.dataset.rendered = 'true';
+      } catch (e) {
+        console.error('Error parsing more channels', e);
+      }
+    }
+
+    function revealAllChannels() {
+      renderMoreChannels();
+      if (moreContainer) moreContainer.classList.remove('hidden');
+      if (showMoreWrapper) showMoreWrapper.style.display = 'none';
+    }
+
+    if (showMoreBtn) {
+      showMoreBtn.addEventListener('click', () => {
+        revealAllChannels();
+      });
+    }
+
     function applyFilters() {
+      if (searchQuery || activeFilter !== 'all') {
+        revealAllChannels();
+      }
+
+      const allCards = document.querySelectorAll<HTMLElement>('[data-channel-card]');
       let visible = 0;
-      cards.forEach(card => {
+      allCards.forEach(card => {
         const name = card.getAttribute('data-channel-name') || '';
         const slug = card.getAttribute('data-channel-slug') || '';
         const title = card.getAttribute('data-program-title') || '';

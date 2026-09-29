@@ -66,9 +66,8 @@ function getOverlayJson(prog: Program, slug: string, logo: string, name: string)
     startTime:   prog.start_time,
     endTime:     prog.end_time,
     category:    prog.category || 'Spielfilm',
-    description: prog.description ?? '',
+    description: prog.description ? prog.description.slice(0, 240) : '',
     poster_url:  prog.poster_url ?? null,
-    cast_json:   (prog as any).cast_json ?? null,
     channelId:   slug,
     channelLogo: logo,
     channelName: name,
@@ -139,13 +138,13 @@ const keywords    = 'filme heute abend tv, spielfilme heute im tv, kinofilme heu
           const overlayJson = getOverlayJson(prog, slug, logo, name);
 
           return (
-            <li class="flex gap-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-2xl px-3 transition-colors group">
+            <li
+              class="flex gap-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-2xl px-3 transition-colors group cursor-pointer"
+              data-program={overlayJson}
+            >
               <!-- Poster / Fallback Badge -->
               <div
-                class="shrink-0 w-20 h-28 sm:w-24 sm:h-36 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-center cursor-pointer group-hover:scale-[1.03] group-hover:shadow-md transition-all relative"
-                data-program={overlayJson}
-                role="button"
-                tabindex="0"
+                class="shrink-0 w-20 h-28 sm:w-24 sm:h-36 rounded-xl overflow-hidden bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-200 dark:border-slate-700/80 shadow-sm flex items-center justify-center group-hover:scale-[1.03] group-hover:shadow-md transition-all relative"
                 title={`${prog.title} — Details ansehen`}
               >
                 {isPrime && (
@@ -188,6 +187,7 @@ const keywords    = 'filme heute abend tv, spielfilme heute im tv, kinofilme heu
 
                     <a
                       href={`/${slug}/`}
+                      onclick="event.stopPropagation();"
                       class:list={[
                         "text-xs font-bold px-2 py-0.5 rounded-md transition-colors shrink-0",
                         isMain
@@ -211,12 +211,7 @@ const keywords    = 'filme heute abend tv, spielfilme heute im tv, kinofilme heu
                     )}
                   </div>
 
-                  <h2
-                    class="font-bold text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-snug cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2"
-                    data-program={overlayJson}
-                    role="button"
-                    tabindex="0"
-                  >
+                  <h2 class="font-bold text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                     {prog.title}
                   </h2>
 
@@ -232,13 +227,9 @@ const keywords    = 'filme heute abend tv, spielfilme heute im tv, kinofilme heu
                   <span class="text-slate-400 text-[11px]">
                     Ende: {formatTime(prog.end_time)} Uhr
                   </span>
-                  <button
-                    type="button"
-                    class="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-1 cursor-pointer"
-                    data-program={overlayJson}
-                  >
+                  <span class="text-blue-600 dark:text-blue-400 font-bold group-hover:underline inline-flex items-center gap-1">
                     Details & Besetzung &rarr;
-                  </button>
+                  </span>
                 </div>
               </div>
 
