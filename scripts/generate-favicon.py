@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+#!/usr/bin/env python3
+import os
+import sys
+from PIL import Image, ImageDraw
+
+svg_content = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
     <!-- Background Gradient: Deep Royal Blue to Electric Sapphire -->
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -83,3 +88,9 @@
     <circle cx="394" cy="120" r="3.5" fill="#ffffff" opacity="0.9"/>
   </g>
 </svg>
+'''
+
+output_svg_path = os.path.abspath('public/favicon.svg')
+with open(output_svg_path, 'w', encoding='utf-8') as f:
+    f.write(svg_content.strip())
+print(f"Written: {output_svg_path}")
