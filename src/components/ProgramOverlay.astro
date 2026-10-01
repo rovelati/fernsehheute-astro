@@ -103,10 +103,16 @@
             href="#"
             class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-2xl transition-colors text-sm shadow-sm"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <svg id="icon-watch-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <polygon points="5,3 19,12 5,21"/>
             </svg>
-            Jetzt ansehen
+            <svg id="icon-watch-globe" class="hidden" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+            </svg>
+            <svg id="icon-watch-close" class="hidden" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+            <span id="overlay-watch-label">Jetzt ansehen</span>
           </a>
           <button
             id="overlay-calendar"
@@ -193,6 +199,54 @@
     'welt':        'https://www.welt.de/tv-programm-live-stream/',
     'sport1':      'https://www.sport1.de/liveticker/livestream',
     'tele5':       'https://tele5.de/',
+  };
+
+  /** channel_id → offizielle Sender-Website (Fallback wenn kein Live-Stream) */
+  const WEBSITES: Record<string, string> = {
+    'volksmusiktv':       'https://www.volksmusik.tv',
+    'volksmusik-tv':      'https://www.volksmusik.tv',
+    'bibeltv':            'https://www.bibeltv.de',
+    'bibel-tv':           'https://www.bibeltv.de',
+    'dmax':               'https://dmax.de',
+    'tlc':                'https://tlc.de',
+    'comedy-central':     'https://www.comedycentral.de',
+    'comedycentral':      'https://www.comedycentral.de',
+    'disney-channel':     'https://tv.disney.de',
+    'disneychannel':      'https://tv.disney.de',
+    'kinowelt-tv':        'https://www.kinowelt-tv.de',
+    'kinowelttv':         'https://www.kinowelt-tv.de',
+    'servustv':           'https://www.servustv.com',
+    'servustvmotorsport': 'https://www.servustv.com',
+    'deluxemusic':        'https://deluxemusic.de',
+    'hse24':              'https://www.hse.de',
+    'hse':                'https://www.hse.de',
+    'qvc':                'https://www.qvc.de',
+    'qvc-zwei':           'https://www.qvc.de',
+    'sonnenklartv':       'https://www.sonnenklar.tv',
+    'schlagerdeluxe':     'https://schlagerdeluxe.de',
+    'schlagerparadiestv': 'https://www.schlagerparadies.de',
+    'goldstar-tv':        'https://www.goldstar-tv.de',
+    'heimatkanal':        'https://www.heimatkanal.de',
+    'romance-tv':         'https://www.romance-tv.de',
+    'sky-cinema-action':  'https://www.sky.de',
+    'sky-sport-bundesliga': 'https://sport.sky.de',
+    'sky-sport-mix':      'https://sport.sky.de',
+    'rtl-living':         'https://plus.rtl.de',
+    'rtl-crime':          'https://plus.rtl.de',
+    'rtl-passion':        'https://plus.rtl.de',
+    'sat1-gold':          'https://www.sat1gold.de',
+    'prosieben-maxx':     'https://www.prosiebenmaxx.de',
+    'kabel-eins-doku':    'https://www.kabeleinsdoku.de',
+    'regio-tv':           'https://www.regio-tv.de',
+    'tv8int':             'https://www.tv8.com.tr',
+    'tv-8-int':           'https://www.tv8.com.tr',
+    'rbb-berlin':         'https://www.rbb-online.de',
+    'swr-bw':             'https://www.swr.de',
+    'mdr-thueringen':     'https://www.mdr.de',
+    'ndr-fernsehen-niedersachsen': 'https://www.ndr.de',
+    'wdr':                'https://www.wdr.de',
+    'br':                 'https://www.br.de',
+    'hr':                 'https://www.hr.de',
   };
 
   let _prog: any = null;
@@ -380,18 +434,56 @@
     txt('overlay-cast', castParts.join(' · '));
     hidden('overlay-cast', castParts.length === 0);
 
-    // Watch button
+    // Watch / Website / Close button
     const watchEl = $('overlay-watch') as HTMLAnchorElement | null;
+    const watchLabel = $('overlay-watch-label');
+    const iconPlay = $('icon-watch-play');
+    const iconGlobe = $('icon-watch-globe');
+    const iconClose = $('icon-watch-close');
+
     if (watchEl) {
-      const streamUrl = STREAMS[data.channelId] ?? null;
+      const streamUrl = data.channelId ? STREAMS[data.channelId] : null;
+      const websiteUrl = data.channelId ? WEBSITES[data.channelId] : null;
+
+      // Reset base styling & icons
+      watchEl.className = 'flex-1 flex items-center justify-center gap-2 px-4 py-3 font-bold rounded-2xl transition-colors text-sm shadow-sm';
+      iconPlay?.classList.add('hidden');
+      iconGlobe?.classList.add('hidden');
+      iconClose?.classList.add('hidden');
+
       if (streamUrl) {
+        // 1. Direkter offizieller Live-Stream
         watchEl.href = streamUrl;
         watchEl.setAttribute('target', '_blank');
         watchEl.setAttribute('rel', 'noopener noreferrer');
+        watchEl.title = 'Offiziellen Live-Stream in neuem Tab öffnen';
+        watchEl.onclick = null;
+        watchEl.classList.add('bg-blue-600', 'hover:bg-blue-700', 'active:bg-blue-800', 'text-white');
+        iconPlay?.classList.remove('hidden');
+        if (watchLabel) watchLabel.textContent = 'Live-Stream';
+      } else if (websiteUrl) {
+        // 2. Offizielle Sender-Website
+        watchEl.href = websiteUrl;
+        watchEl.setAttribute('target', '_blank');
+        watchEl.setAttribute('rel', 'noopener noreferrer');
+        watchEl.title = 'Offizielle Website des Senders öffnen';
+        watchEl.onclick = null;
+        watchEl.classList.add('bg-slate-800', 'hover:bg-slate-900', 'dark:bg-slate-700', 'dark:hover:bg-slate-600', 'text-white');
+        iconGlobe?.classList.remove('hidden');
+        if (watchLabel) watchLabel.textContent = 'Sender-Website';
       } else {
-        watchEl.href = data.channelId ? `/${data.channelId}` : '#';
+        // 3. Weder Stream noch Website vorhanden -> Popup schließen
+        watchEl.href = '#';
         watchEl.removeAttribute('target');
         watchEl.removeAttribute('rel');
+        watchEl.title = 'Details schließen';
+        watchEl.onclick = (e) => {
+          e.preventDefault();
+          closeOverlay();
+        };
+        watchEl.classList.add('bg-slate-100', 'hover:bg-slate-200', 'dark:bg-slate-800', 'dark:hover:bg-slate-700', 'text-slate-700', 'dark:text-slate-300');
+        iconClose?.classList.remove('hidden');
+        if (watchLabel) watchLabel.textContent = 'Schließen';
       }
     }
 
