@@ -244,10 +244,9 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
   data-channel-slug="${item.slug}"
   data-program-title="${(item.title || '').toLowerCase()}"
   data-category="${item.catGroup}"
-  data-program='${overlayData.replace(/'/g, "&#39;")}'
 >
   <div class="grid grid-cols-[68px_1fr_auto] sm:grid-cols-[84px_1fr_auto] gap-2.5 sm:gap-4 px-3 py-2.5 sm:px-4 sm:py-3 items-center">
-    <a href="/${item.slug}/" class="flex flex-col items-start gap-1 focus:outline-none" aria-label="Programmübersicht ${item.name}">
+    <a href="/${item.slug}/" class="flex flex-col items-start gap-1 focus:outline-none z-10 hover:opacity-80 transition-opacity" aria-label="Programmübersicht ${item.name}">
       <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs p-1 group-hover:scale-105 transition-transform">
         <img src="${item.logo}" alt="Logo ${item.name}" width="36" height="36" class="w-full h-full object-contain" loading="lazy" onerror="this.style.opacity='0.4';" />
       </div>
@@ -258,7 +257,7 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
         ${item.number > 0 ? `<p class="text-[10px] text-slate-400 dark:text-slate-500">CH ${item.number}</p>` : ''}
       </div>
     </a>
-    <div class="min-w-0 py-0.5 cursor-pointer" role="button" tabindex="0" title="Klicken für Details">
+    <div class="min-w-0 py-0.5 cursor-pointer" role="button" tabindex="0" title="Klicken für Details" data-program='${overlayData.replace(/'/g, "&#39;")}'>
       ${item.title ? `
         <div>
           <p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mb-0.5 flex items-center gap-1.5 flex-wrap">
@@ -281,9 +280,9 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
         <p class="text-xs text-slate-400 dark:text-slate-500 italic">Kein Programm verfügbar</p>
       `}
     </div>
-    <div class="flex items-center gap-2 shrink-0">
+    <div class="flex items-center gap-2 shrink-0 cursor-pointer" data-program='${overlayData.replace(/'/g, "&#39;")}' role="button" tabindex="0" title="${item.title ? item.title + ' — Details ansehen' : ''}">
       ${item.poster ? `
-        <div class="w-16 sm:w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs cursor-pointer group-hover:scale-105 transition-transform" role="button" tabindex="0" title="${item.title} — Details ansehen">
+        <div class="w-16 sm:w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs group-hover:scale-105 transition-transform">
           <img src="${item.poster}" alt="${item.title}" width="96" height="54" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-cover object-top" onerror="this.parentElement.style.display='none'" />
         </div>
       ` : ''}

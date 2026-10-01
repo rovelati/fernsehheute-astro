@@ -502,9 +502,14 @@
 
   // Event delegation: alle [data-program] öffnen das Overlay
   document.addEventListener('click', ev => {
+    // Wenn der Klick auf einem Link <a> (oder darin) liegt (z.B. Sender-Logo/Name), NICHT abfangen!
+    const link = (ev.target as Element).closest?.('a');
+    if (link && !link.closest('#program-overlay')) return;
+
     const trigger = (ev.target as Element).closest?.('[data-program]');
-    if (trigger) {
-      ev.preventDefault(); ev.stopPropagation();
+    if (trigger && (trigger as HTMLElement).dataset.program) {
+      ev.preventDefault();
+      ev.stopPropagation();
       try { openOverlay(JSON.parse((trigger as HTMLElement).dataset.program!)); } catch (err) { console.warn('[overlay]', err); }
       return;
     }

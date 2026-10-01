@@ -78,14 +78,13 @@ const overlayJson = displayProgram ? JSON.stringify({
   data-channel-slug={slug}
   data-program-title={displayProgram?.title?.toLowerCase() ?? ''}
   data-category={catGroup}
-  data-program={overlayJson}
 >
   <div class="grid grid-cols-[68px_1fr_auto] sm:grid-cols-[84px_1fr_auto] gap-2.5 sm:gap-4 px-3 py-2.5 sm:px-4 sm:py-3 items-center">
 
-    <!-- Spalte links: Logo + Name + Link -->
+    <!-- Spalte links: Logo + Name + Link zum Sendeplan -->
     <a
       href={`/${slug}/`}
-      class="flex flex-col items-start gap-1 focus:outline-none"
+      class="flex flex-col items-start gap-1 focus:outline-none z-10 hover:opacity-80 transition-opacity"
       aria-label={`Programmübersicht ${channel.name}`}
     >
       <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs p-1 group-hover:scale-105 transition-transform">
@@ -106,8 +105,14 @@ const overlayJson = displayProgram ? JSON.stringify({
       </div>
     </a>
 
-    <!-- Spalte mitte: Programm -->
-    <div class="min-w-0 py-0.5 cursor-pointer" role="button" tabindex="0" title="Klicken für Details">
+    <!-- Spalte mitte: Programm (Öffnet Modal) -->
+    <div
+      class="min-w-0 py-0.5 cursor-pointer"
+      role="button"
+      tabindex="0"
+      title="Klicken für Details"
+      data-program={overlayJson}
+    >
       {displayProgram ? (
         <div>
           <p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mb-0.5 flex items-center gap-1.5 flex-wrap">
@@ -135,8 +140,14 @@ const overlayJson = displayProgram ? JSON.stringify({
       )}
     </div>
 
-    <!-- Spalte rechts: Poster & Chevron -->
-    <div class="flex items-center gap-2 shrink-0">
+    <!-- Spalte rechts: Poster & Chevron (Öffnet Modal) -->
+    <div
+      class="flex items-center gap-2 shrink-0 cursor-pointer"
+      data-program={overlayJson}
+      role="button"
+      tabindex="0"
+      title={displayProgram ? `${displayProgram.title} — Details ansehen` : undefined}
+    >
       {displayProgram?.poster_url && (
         <div
           class="w-16 sm:w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs cursor-pointer group-hover:scale-105 transition-transform"
