@@ -12,15 +12,8 @@ import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlot
 import { buildHubHomeJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { normCid } from '../utils/channelSlug';
 import { isAdultChannel, isTestChannel, filterRealPrograms } from '../utils/channelFilters';
+import { AGF_ORDER } from '../utils/agfOrder';
 import type { Channel, Program } from '../types';
-
-const AGF_ORDER = [
-  'rtl', 'zdf', 'das-erste', 'sat1', 'prosieben', 'vox', 'rtl2', 'kabel-eins',
-  'sixx', 'super-rtl', 'nitro', 'tele5', 'zdf-neo', 'zdfinfo', '3sat', 'arte',
-  'phoenix', 'one', 'sport1', 'eurosport1', 'eurosport-1', 'dmax', 'tlc', 'n-tv', 'ntv', 'welt',
-  'tagesschau24', 'kika', 'comedy-central', 'disney-channel', 'ard-alpha',
-  'sat1-gold', 'prosieben-maxx', 'kabel-eins-doku', 'mdr', 'ndr', 'wdr', 'br', 'swr', 'hr', 'rbb',
-];
 
 const today = getTodayInBerlin();
 const dateLabel = formatDateDE(today);
@@ -73,7 +66,7 @@ try {
 
 import { serializeChannelForClient } from '../utils/channelSerializer';
 
-const INITIAL_LIMIT = 50;
+const INITIAL_LIMIT = 100;
 const initialChannels = channelsWithPrograms.slice(0, INITIAL_LIMIT);
 const moreChannels    = channelsWithPrograms.slice(INITIAL_LIMIT);
 const moreChannelsJson = JSON.stringify(moreChannels.map(ch => serializeChannelForClient(ch, 'abend')));

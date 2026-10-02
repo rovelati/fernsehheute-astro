@@ -1,0 +1,152 @@
+/**
+ * AGF_ORDER — Rangliste der Top-TV-Sender in Deutschland nach AGF-Marktanteilen und Reichweite.
+ *
+ * 1. Vollprogramme: ZDF (14.6%), Das Erste (12.1%), RTL (7.9%), SAT.1 (4.7%), ProSieben (3.2%), VOX (4.6%), RTL ZWEI (2.5%), Kabel Eins (3.0%)
+ * 2. Dritte Programme (ARD Regionalverbund ~13-15%): WDR, NDR, BR, SWR, MDR, hr, rbb, SR
+ * 3. ÖR-Sparten: ZDFneo (2.8%), ZDFinfo (1.6%), 3sat (1.4%), ARTE (1.2%), ONE, tagesschau24, phoenix, ARD-alpha, KiKA
+ * 4. Privat-Sparten: NITRO, SAT.1 Gold, Super RTL, sixx, DMAX, ProSieben MAXX, Kabel Eins Doku, TLC, Tele 5, VOXup, RTLup, Comedy Central, Disney Channel, TOGGO plus, n-tv, WELT
+ * 5. Sport: SPORT1, Eurosport 1, SPORT1+, Sportdigital, Sky Sport Bundesliga, Sky Sport Top Event, Sky Sport Premier League, Sky Sport F1, Sky Sport Tennis, Sky Sport News, DAZN
+ * 6. Film & Serien: Sky Cinema (Premiere, Action, Blockbuster, Classics), Sky Atlantic, Sky One, Sky Krimi, 13th Street, Universal TV, Warner TV (Serie, Film, Comedy), Kinowelt TV, ANIXE+, RTL Crime, RTL Living, SAT.1 emotions
+ * 7. Doku, Lifestyle, Musik & Regional: Sky Documentaries, Sky Nature, Spiegel Geschichte, Animal Planet, Welt der Wunder, Schlager Deluxe, Volksmusik.TV, GoldStar TV, Heimatkanal, Romance TV, Bibel TV, HSE, QVC, sonnenklar.TV, ServusTV, tv.berlin, münchen.tv, Regio TV, TV8 Int
+ */
+
+export const AGF_ORDER: string[] = [
+  // ── 1. Die großen Vollprogramme (Hauptsender) ───────────────────────────
+  'zdf',
+  'das-erste',
+  'rtl',
+  'sat1',
+  'vox',
+  'prosieben',
+  'kabel-eins',
+  'rtl2',
+
+  // ── 2. Dritte Programme (ARD Regional) ──────────────────────────────────
+  'wdr',
+  'ndr',
+  'br',
+  'swr',
+  'swr-bw',
+  'swrrp',
+  'mdr',
+  'mdr-thueringen',
+  'hr',
+  'rbb',
+  'rbb-berlin',
+  'srfernsehen',
+  'brfernsehensud',
+  'ndr-fernsehen-niedersachsen',
+  'wdrfernsehenkoeln',
+
+  // ── 3. Öffentlich-rechtliche Spartensender ──────────────────────────────
+  'zdf-neo',
+  'zdfinfo',
+  '3sat',
+  'arte',
+  'one',
+  'tagesschau24',
+  'phoenix',
+  'kika',
+  'ard-alpha',
+
+  // ── 4. Große Privatsender der 2. & 3. Generation ────────────────────────
+  'nitro',
+  'sat1-gold',
+  'super-rtl',
+  'sixx',
+  'dmax',
+  'prosieben-maxx',
+  'kabel-eins-doku',
+  'tlc',
+  'tele5',
+  'voxup',
+  'rtlup',
+  'rtlplus',
+  'comedy-central',
+  'disney-channel',
+  'toggoplus',
+  'n-tv',
+  'ntv',
+  'welt',
+
+  // ── 5. Sportkanäle (Free-TV & Premium) ──────────────────────────────────
+  'sport1',
+  'eurosport1',
+  'eurosport-1',
+  'sport1-plus',
+  'sportdigitalfussball',
+  'sportdeutschlandtv',
+  'sky-sport-bundesliga',
+  'skysporttopevent',
+  'skysportpremierleague',
+  'skysportf1',
+  'skysporttennis',
+  'skysportnews',
+  'sky-sport-mix',
+  'skysport1',
+  'skysportgolf',
+  'skysportuhd',
+  'dazn-1-8-live',
+
+  // ── 6. Spielfilme, Serien & Pay-TV Entertainment ────────────────────────
+  'skycinemapremiere',
+  'sky-cinema-action',
+  'skycinemablockbuster',
+  'skycinemaclassics',
+  'skycinemahighlights',
+  'skycinemafeelgood',
+  'skyatlantic',
+  'skyone',
+  'skykrimi',
+  'skyscifi',
+  'skyshowcase',
+  '13thstreet',
+  'universaltv',
+  'warnertvserie',
+  'warnertvfilm',
+  'warnertvcomedy',
+  'kinowelt-tv',
+  'silverline',
+  'anixe-plus',
+  'anixeserie',
+  'rtl-crime',
+  'rtl-living',
+  'rtlpassion',
+  'sat1-emotions',
+  'kabeleinsclassics',
+
+  // ── 7. Doku, Wissen & Lifestyle ─────────────────────────────────────────
+  'skydocumentaries',
+  'skynature',
+  'skycrime',
+  'spiegelgeschichte',
+  'animalplanet',
+  'weltderwunder',
+  'travelxp',
+  'xplore',
+  'bergblick',
+  'waidwerktv',
+
+  // ── 8. Musik, Sparten, Shopping & Regional ──────────────────────────────
+  'schlagerdeluxe',
+  'schlagerparadiestv',
+  'zweimusictelevision',
+  'volksmusiktv',
+  'goldstar-tv',
+  'heimatkanal',
+  'romance-tv',
+  'bibeltv',
+  'hse24',
+  'hse',
+  'qvc',
+  'qvc-zwei',
+  'sonnenklartv',
+  'wettercomtv',
+  'servustv',
+  'servustvmotorsport',
+  'atv',
+  'tvberlin',
+  'munchentv',
+  'regio-tv',
+  'tv8int',
+];
