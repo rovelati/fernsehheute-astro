@@ -881,12 +881,18 @@ def main() -> None:
     except Exception as e:
         logger.error(f'Google Search Analytics failed: {e}')
 
-    # Step 4: IndexNow — submit ALL valid sitemap URLs
+    # Step 4: IndexNow — submit ONLY top 20 priority URLs
     logger.info('[4/5] IndexNow')
     try:
-        sitemap_urls = get_all_sitemap_urls()
-        logger.info(f'IndexNow submitting {len(sitemap_urls)} canonical URLs')
-        submit_indexnow(sitemap_urls)
+        top_20_paths = [
+            '/', '/morgen/', '/film-heute-abend/', '/serien-heute-abend/', '/sport-heute-abend/',
+            '/zdf/', '/das-erste/', '/rtl/', '/sat1/', '/prosieben/',
+            '/vox/', '/kabel-eins/', '/rtl2/', '/zdf-neo/', '/3sat/',
+            '/arte/', '/super-rtl/', '/nitro/', '/sixx/', '/wdr/',
+        ]
+        top_20_urls = [f'{SITE_URL}{p}' for p in top_20_paths]
+        logger.info(f'IndexNow submitting strictly top {len(top_20_urls)} priority URLs')
+        submit_indexnow(top_20_urls)
     except Exception as e:
         logger.error(f'IndexNow failed: {e}')
 
