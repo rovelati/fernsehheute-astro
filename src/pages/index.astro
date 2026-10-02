@@ -178,6 +178,19 @@ const keywords    = 'fernsehprogramm heute, tv programm heute, fernsehprogramm h
     <!-- Senderliste auf Zeilen (Full-Width Rows) -->
     {channelsWithPrograms.length > 0 ? (
       <section aria-label={`${channelsWithPrograms.length} Sender mit Abendsendungen`}>
+        <!-- Diskreter Hinweis auf AGF-Ranking -->
+        <div class="flex items-center justify-between gap-2 mb-2.5 px-1 text-xs text-slate-500 dark:text-slate-400 select-none">
+          <span class="inline-flex items-center gap-1.5 font-medium">
+            <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+            <span>Sortiert nach offizieller AGF-Reichweite &amp; Marktanteilen</span>
+          </span>
+          <span class="hidden sm:inline text-[11px] text-slate-400 dark:text-slate-500">
+            Top 100 TV-Sender im Schnellzugriff
+          </span>
+        </div>
+
         <div id="channels-grid" class="divide-y divide-slate-100 dark:divide-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-900/50 shadow-sm">
           {initialChannels.map(ch => (
             <ChannelCard
