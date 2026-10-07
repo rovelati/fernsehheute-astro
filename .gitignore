@@ -16,6 +16,8 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+*.env
+key-bing*
 
 # macOS-specific files
 .DS_Store
