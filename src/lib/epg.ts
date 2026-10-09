@@ -9,6 +9,7 @@ import pg from 'pg';
 import { getChannelLogo } from '../utils/channelLogos';
 import { HUB_CHANNELS } from '../utils/hubChannels';
 import { normCid } from '../utils/channelSlug';
+import { resolveGermanProgramPoster } from '../utils/programImages';
 import type { Channel, Program } from '../types';
 
 // Import fallback data directly
@@ -158,6 +159,9 @@ function normalizeProgram(row: Record<string, unknown>): RawProgram {
 }
 
 function mapProgram(raw: RawProgram): Program {
+  const cat = raw.genre ?? raw.category ?? '';
+  const resolvedPoster = resolveGermanProgramPoster(raw.poster_url, raw.title, cat, raw.description);
+
   return {
     id: String(raw.id),
     title: raw.title,
@@ -165,9 +169,9 @@ function mapProgram(raw: RawProgram): Program {
     start_time: raw.start_time,
     end_time: raw.end_time,
     date: raw.date,
-    category: raw.genre ?? raw.category ?? '',
+    category: cat,
     description: raw.description ?? '',
-    poster_url: raw.poster_url ?? null,
+    poster_url: resolvedPoster,
     channel_id: normCid(raw.channel_id),
   };
 }

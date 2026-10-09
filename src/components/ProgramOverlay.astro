@@ -391,17 +391,28 @@
     if (bannerLabel) bannerLabel.textContent = bannerText;
     if (bannerFallback) bannerFallback.className = `w-full h-36 sm:h-44 flex items-center justify-center p-6 bg-gradient-to-br ${bannerGradient} border-b border-slate-700/50`;
 
-    if (data.poster_url && posterEl) {
-      posterEl.src = data.poster_url;
+    const catFallbackPhoto = 
+      cat.includes('film') || cat.includes('kino') ? 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80' :
+      cat.includes('serie') ? 'https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=800&q=80' :
+      cat.includes('sport') || cat.includes('fussball') ? 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80' :
+      cat.includes('doku') || cat.includes('wissen') ? 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80' :
+      cat.includes('nachrichten') || cat.includes('news') ? 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80' :
+      cat.includes('show') || cat.includes('unterhaltung') ? 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80' :
+      'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80';
+
+    const posterUrl = data.poster_url || catFallbackPhoto;
+    if (posterEl) {
+      posterEl.src = posterUrl;
       posterEl.style.display = 'block';
       if (bannerFallback) bannerFallback.style.display = 'none';
       posterEl.onerror = () => {
-        posterEl.style.display = 'none';
-        if (bannerFallback) bannerFallback.style.display = 'flex';
+        if (posterEl.src !== catFallbackPhoto) {
+          posterEl.src = catFallbackPhoto;
+        } else {
+          posterEl.style.display = 'none';
+          if (bannerFallback) bannerFallback.style.display = 'flex';
+        }
       };
-    } else {
-      if (posterEl) posterEl.style.display = 'none';
-      if (bannerFallback) bannerFallback.style.display = 'flex';
     }
 
     // Live + Progress
