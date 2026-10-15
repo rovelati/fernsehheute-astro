@@ -1,3 +1,15 @@
+# Domain canonicalization: www to apex
+https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
+
+# Verified legacy Sky channel spellings
+/skycinemaclassics  /sky-cinema-classics/ 301
+/skycinemaclassics/ /sky-cinema-classics/ 301
+/skysportuhd        /sky-sport-uhd/       301
+/skysportuhd/       /sky-sport-uhd/       301
+
+# Legacy spelling of the same Tele 5 channel
+/tele-5             /tele5/              301
+/tele-5/            /tele5/              301
 # ---------------------------------------------------------------------------
 # Cloudflare Pages Redirects & HTTP status codes
 # ---------------------------------------------------------------------------
