@@ -13,3 +13,4 @@ Disallow: /lust-pur*
 Disallow: /lustpur*
 
 Sitemap: https://fernsehheute.de/sitemap-index.xml
+Sitemap: https://fernsehheute.de/sitemap-0.xml

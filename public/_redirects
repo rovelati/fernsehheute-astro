@@ -1,6 +1,9 @@
 # Domain canonicalization: www to apex
 https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 
+# Sitemap canonical alias
+/sitemap.xml /sitemap-index.xml 301
+
 # Verified legacy Sky channel spellings
 /skycinemaclassics  /sky-cinema-classics/ 301
 /skycinemaclassics/ /sky-cinema-classics/ 301
