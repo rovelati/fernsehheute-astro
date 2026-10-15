@@ -118,7 +118,13 @@ const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_E
 
 // ── SEO ───────────────────────────────────────────────────────────────────
 const cleanName   = channel.name.replace(/^DE\s*-\s*/i, '').trim();
-const pageTitle   = `${cleanName} Programm heute & heute Abend – TV-Programm`;
+const auditedTitleSlugs = new Set(["auto-motor-und-sport", "dresden-fernsehen", "folx-music-television", "friesischer-rundfunk", "kabel-eins-classics", "mdr-sachsen-anhalt", "mdr-thuringen", "national-geographic-wild", "ndr-fernsehen-niedersachsen", "ndrfernsehenniedersachsen", "nick-comedy-central-1", "niederbayern-tv-la", "niederbayern-tv-pa", "rbb-brandenburg", "servus-tv-motorsport", "sky-cinema-blockbuster", "sky-documentaries", "sky-sport-austria-1", "sky-sport-bundesliga-uhd", "sky-sport-bundesliga", "skycinemaaction", "skycinemaclassics", "skysportuhd", "sonnenklartv", "sportdigital-fussball", "stingray-classica", "stingray-iconcerts", "tva-ostbayern", "wdr-fernsehen-koln", "welt-der-wunder", "prosiebensat1-uhd"]);
+const fullTitle = `${cleanName} Programm heute & heute Abend – TV-Programm | FernsehHeute`;
+// Keep established titles; remove redundant suffixes only when they exceed 70 characters.
+const conciseTitle = `${cleanName} Programm heute & heute Abend | FernsehHeute`;
+const pageTitle = !auditedTitleSlugs.has(slug) || fullTitle.length <= 70 ? fullTitle
+  : conciseTitle.length <= 70 ? conciseTitle
+  : `${cleanName} Programm heute & heute Abend`;
 const description = `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr auf ${cleanName} im TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`;
 const keywords    = `${cleanName.toLowerCase()} programm heute, ${cleanName.toLowerCase()} heute, ${cleanName.toLowerCase()} programm heute abend, ${cleanName.toLowerCase()} heute abend, ${cleanName.toLowerCase()} programm, was läuft heute auf ${cleanName.toLowerCase()}, ${cleanName.toLowerCase()} sendeplan, ${cleanName.toLowerCase()} fernsehprogramm`;
 const canonicalUrl = `https://fernsehheute.de/${slug}/`;
@@ -150,7 +156,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
 ---
 
 <BaseLayout
-  title={`${pageTitle} | FernsehHeute`}
+  title={pageTitle}
   {description}
   {keywords}
   {canonicalUrl}
