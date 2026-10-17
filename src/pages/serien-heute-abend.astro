@@ -6,6 +6,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ProgramOverlay from '../components/ProgramOverlay.astro';
+import AdSlot, { ADSENSE_SLOTS } from '../components/AdSlot.astro';
 import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { getTodayInBerlin, formatDateDE, formatTime, getBerlinHour } from '../utils/timeSlots';
 import { buildHubCategoryJsonLd } from '../utils/jsonld';
@@ -155,7 +156,7 @@ const moreSeriesJson = JSON.stringify(moreSeries.map(prog => {
     {series.length > 0 ? (
       <div>
         <ul id="series-list" class="divide-y divide-slate-100 dark:divide-slate-800/80" role="list">
-          {initialSeries.map(prog => {
+          {initialSeries.map((prog, idx) => {
             const slug = normCid(prog.channel_id ?? '');
             const name = channelName.get(slug) ?? prog.channel_id ?? '';
             const logo = channelLogo.get(slug) || '';
@@ -167,6 +168,7 @@ const moreSeriesJson = JSON.stringify(moreSeries.map(prog => {
             const overlayJson = getOverlayJson(prog, slug, logo, name);
 
             return (
+              <>
               <li
                 class="flex gap-4 py-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 rounded-2xl px-3 transition-colors group cursor-pointer"
                 data-program={overlayJson}
@@ -265,6 +267,12 @@ const moreSeriesJson = JSON.stringify(moreSeries.map(prog => {
                   </div>
                 )}
               </li>
+              {idx === 5 && (
+                <li role="presentation" class="py-2 list-none">
+                  <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} className="my-2" minHeight={180} />
+                </li>
+              )}
+              </>
             );
           })}
         </ul>
@@ -294,6 +302,8 @@ const moreSeriesJson = JSON.stringify(moreSeries.map(prog => {
         <p class="text-lg font-medium">Keine Serien für heute Abend gefunden</p>
       </div>
     )}
+
+    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-10 mb-2" minHeight={200} />
   </main>
 
   <ProgramOverlay />

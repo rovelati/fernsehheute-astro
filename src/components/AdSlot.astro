@@ -1,0 +1,111 @@
+---
+/**
+ * AdSlot.astro — UX-First Google AdSense Component für FernsehHeute.de
+ *
+ * Grundsätze (analog zu ProntoFarmacie):
+ * - Klare Kennzeichnung als "Anzeige" (DDG / Google AdSense Richtlinien)
+ * - Fester Mindestplatzbedarf (minHeight) zur Vermeidung von Layout Shifts (CLS = 0)
+ * - Sicherheitsabstand zu interaktiven Elementen & CTAs
+ * - Volle Dark-Mode-Unterstützung
+ */
+export const ADSENSE_CLIENT_ID = 'ca-pub-2168172914069272';
+
+export const ADSENSE_SLOTS = {
+  IN_FEED_SENDERLISTE: '3881971380', // FH_InFeed_Senderliste (nach den Top-8-Sendern / Filmen)
+  SENDER_MID_CONTENT:  '4452817027', // FH_Sender_MidContent (Sender-Detailseite nach Prime Time & Overlay)
+  CONTENT_FOOTER_FAQ:  '1255808043', // FH_Content_Footer_FAQ (vor FAQ / Seitenende)
+} as const;
+
+interface Props {
+  slot?: string;
+  format?: string;
+  responsive?: string;
+  minHeight?: number;
+  className?: string;
+  label?: string;
+  inFeedWrapper?: boolean;
+}
+
+const {
+  slot = ADSENSE_SLOTS.IN_FEED_SENDERLISTE,
+  format = 'auto',
+  responsive = 'true',
+  minHeight = 200,
+  className = '',
+  label = 'Anzeige',
+  inFeedWrapper = false,
+} = Astro.props;
+---
+
+<aside
+  aria-label={label}
+  data-ad-container
+  data-infeed-ad={inFeedWrapper ? 'true' : undefined}
+  class:list={[
+    ' fh-ad-slot rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 px-4 py-3 text-center shadow-xs transition-opacity',
+    inFeedWrapper ? 'my-3 mx-2 sm:mx-4' : 'my-6',
+    className,
+  ]}
+>
+  <div class="mb-1.5 text-[10px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500 select-none">
+    {label}
+  </div>
+  <div
+    class="w-full overflow-hidden flex items-center justify-center mx-auto"
+    style={`min-height: ${minHeight}px;`}
+  >
+    <ins
+      class="adsbygoogle block w-full mx-auto"
+      style={`display: block; min-height: ${minHeight}px; width: 100%;`}
+      data-ad-client={ADSENSE_CLIENT_ID}
+      data-ad-slot={slot}
+      data-ad-format={format}
+      data-full-width-responsive={responsive}
+    ></ins>
+  </div>
+</aside>
+
+<script is:inline>
+  (function () {
+    if (window.__fhAdsenseInit) return;
+    window.__fhAdsenseInit = true;
+
+    function pushAd(ins) {
+      if (!ins || ins.getAttribute('data-adsbygoogle-status') || ins.dataset.fhPushed === 'true') return;
+      if (ins.offsetParent === null) return; // hidden element
+      try {
+        ins.dataset.fhPushed = 'true';
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (e) {}
+    }
+
+    function initAds() {
+      var slots = document.querySelectorAll('ins.adsbygoogle:not([data-fh-observed])');
+      for (var i = 0; i < slots.length; i++) {
+        var ins = slots[i];
+        if (ins.closest('#program-overlay')) continue; // Overlay wird beim Öffnen initialisiert
+        ins.setAttribute('data-fh-observed', 'true');
+
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function (entries, obs) {
+            for (var j = 0; j < entries.length; j++) {
+              if (entries[j].isIntersecting) {
+                pushAd(entries[j].target);
+                obs.unobserve(entries[j].target);
+              }
+            }
+          }, { rootMargin: '250px 0px' });
+          io.observe(ins);
+        } else {
+          setTimeout((function (el) { return function () { pushAd(el); }; })(ins), 200);
+        }
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAds);
+    } else {
+      initAds();
+    }
+  })();
+</script>

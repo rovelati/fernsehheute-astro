@@ -13,6 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ProgramRow from '../components/ProgramRow.astro';
+import AdSlot, { ADSENSE_SLOTS } from '../components/AdSlot.astro';
 import { fetchChannels, fetchProgramsForDate, fetchTmdbEnrichment } from '../lib/epg';
 import { getChannelLogo } from '../utils/channelLogos';
 import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
@@ -315,6 +316,13 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
           </section>
         )}
 
+        {/* ── UX-First Mid-Content AdSlot (nach Prime Time & Vorabend) ── */}
+        {(sectionPrimeTime.length > 0 || sectionAbend.length > 0) && (
+          <div class="p-3 bg-slate-50/40 dark:bg-slate-900/40 border-b border-slate-100 dark:border-slate-700/50">
+            <AdSlot slot={ADSENSE_SLOTS.SENDER_MID_CONTENT} className="my-1" minHeight={180} />
+          </div>
+        )}
+
         {/* ── Nacht ── */}
         {sectionNacht.length > 0 && (
           <section aria-label="Nacht">
@@ -359,6 +367,9 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
 
       </div>
     )}
+
+    <!-- ── UX-First Footer AdSlot vor den FAQs ──────────────────────── -->
+    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-8 mb-2" minHeight={200} />
 
     <!-- ── Channel FAQs ─────────────────────────────────────────────── -->
     <section class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Häufige Fragen zu ${channel.name}`}>
