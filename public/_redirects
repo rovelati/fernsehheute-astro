@@ -190,6 +190,52 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /lust-pur           /                    301
 /lust-pur/          /                    301
 
+# Additional Bing & Google Legacy Non-Hyphenated Channel Slugs -> Canonical Slugs
+/rbbbrandenburg          /rbb-brandenburg/          301
+/rbbbrandenburg/         /rbb-brandenburg/          301
+/kabeleinsdoku           /kabel-eins-doku/          301
+/kabeleinsdoku/          /kabel-eins-doku/          301
+/kabeleinsclassics       /kabel-eins-classics/      301
+/kabeleinsclassics/      /kabel-eins-classics/      301
+/ndrschleswig-holstein   /ndr-schleswig-holstein/   301
+/ndrschleswig-holstein/  /ndr-schleswig-holstein/   301
+/ndrhamburg              /ndr-hamburg/              301
+/ndrhamburg/             /ndr-hamburg/              301
+/tvmainfranken           /tv-mainfranken/           301
+/tvmainfranken/          /tv-mainfranken/           301
+/n24doku                 /n24-doku/                 301
+/n24doku/                /n24-doku/                 301
+/weltderwunder           /welt-der-wunder/          301
+/weltderwunder/          /welt-der-wunder/          301
+/brfernsehensud          /br-fernsehen-sud/         301
+/brfernsehensud/         /br-fernsehen-sud/         301
+/brfernsehennord         /br-fernsehen-nord/        301
+/brfernsehennord/        /br-fernsehen-nord/        301
+/romancetv               /romance-tv/               301
+/romancetv/              /romance-tv/               301
+/eurosport2              /eurosport-2/              301
+/eurosport2/             /eurosport-2/              301
+/raiuno                  /rai-uno/                  301
+/raiuno/                 /rai-uno/                  301
+/raidue                  /rai-due/                  301
+/raidue/                 /rai-due/                  301
+/raitre                  /rai-tre/                  301
+/raitre/                 /rai-tre/                  301
+/werderbremen            /werder-bremen/            301
+/werderbremen/           /werder-bremen/            301
+/zdf_neo                 /zdf-neo/                  301
+/zdf_neo/                /zdf-neo/                  301
+/prosiebenmaxx           /prosieben-maxx/           301
+/prosiebenmaxx/          /prosieben-maxx/           301
+/prosiebenfun            /prosieben-fun/            301
+/prosiebenfun/           /prosieben-fun/            301
+/mdrsachsen-anhalt       /mdr-sachsen-anhalt/       301
+/mdrsachsen-anhalt/      /mdr-sachsen-anhalt/       301
+/radiobrementv           /radio-bremen-tv/          301
+/radiobrementv/          /radio-bremen-tv/          301
+/ktv                     /k-tv/                     301
+/ktv/                    /k-tv/                     301
+
 # 301 Redirect for Removed Dummy / No-Data channels -> Hubs
 /actionfilme        /film-heute-abend/   301
 /actionfilme/       /film-heute-abend/   301
@@ -197,8 +243,32 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /artflix/           /film-heute-abend/   301
 /dramafilme         /film-heute-abend/   301
 /dramafilme/        /film-heute-abend/   301
+/drama-filme        /film-heute-abend/   301
+/drama-filme/       /film-heute-abend/   301
 /romantischefilme   /film-heute-abend/   301
 /romantischefilme/  /film-heute-abend/   301
+/romantische-filme  /film-heute-abend/   301
+/romantische-filme/ /film-heute-abend/   301
+/komodien           /film-heute-abend/   301
+/komodien/          /film-heute-abend/   301
+/deutsches-kino     /film-heute-abend/   301
+/deutsches-kino/    /film-heute-abend/   301
+/thriller           /film-heute-abend/   301
+/thriller/          /film-heute-abend/   301
+/sky-sport-1        /sky-sport-top-event/ 301
+/sky-sport-1/       /sky-sport-top-event/ 301
+/sky-sport-2        /sky-sport-top-event/ 301
+/sky-sport-2/       /sky-sport-top-event/ 301
+/sky-sport-3        /sky-sport-top-event/ 301
+/sky-sport-3/       /sky-sport-top-event/ 301
+/sky-sport-5        /sky-sport-top-event/ 301
+/sky-sport-5/       /sky-sport-top-event/ 301
+/sky-sport-6        /sky-sport-top-event/ 301
+/sky-sport-6/       /sky-sport-top-event/ 301
+/sky-sport-7        /sky-sport-top-event/ 301
+/sky-sport-7/       /sky-sport-top-event/ 301
+/channel21          /                    301
+/channel21/         /                    301
 
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410

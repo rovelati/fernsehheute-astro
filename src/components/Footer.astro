@@ -2,10 +2,12 @@
 /**
  * Footer — fernsehheute.de
  */
-import { fetchChannels } from '../lib/epg';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
 import { HUB_CHANNELS } from '../utils/hubChannels';
 import { normCid } from '../utils/channelSlug';
-import { isAdultChannel, isTestChannel } from '../utils/channelFilters';
+import { isAdultChannel, isTestChannel, filterRealPrograms } from '../utils/channelFilters';
+import { getTodayInBerlin } from '../utils/timeSlots';
+import type { Program } from '../types';
 
 const CATEGORY_LINKS = [
   { href: '/',                    label: 'TV Programm heute Abend'  },
@@ -23,14 +25,27 @@ const LEGAL_LINKS = [
 
 let allChannels: { id: string; name: string }[] = [];
 try {
-  const rawChannels = await fetchChannels().catch(() => []);
+  const today = getTodayInBerlin();
+  const [rawChannels, allPrograms] = await Promise.all([
+    fetchChannels().catch(() => []),
+    fetchProgramsForDate(today).catch(() => []),
+  ]);
+  const programsByChannel = new Map<string, Program[]>();
+  for (const prog of allPrograms) {
+    const key = normCid(prog.channel_id ?? '');
+    if (!programsByChannel.has(key)) programsByChannel.set(key, []);
+    programsByChannel.get(key)!.push(prog);
+  }
   const seenSlugs = new Set<string>();
   allChannels = rawChannels
     .filter(ch => {
       const slug = normCid(ch.id);
       if (seenSlugs.has(slug)) return false;
+      if (isAdultChannel(slug, ch.name) || isTestChannel(slug, ch.name)) return false;
+      const progs = programsByChannel.get(slug) ?? [];
+      if (filterRealPrograms(progs).length < 3) return false;
       seenSlugs.add(slug);
-      return !isAdultChannel(slug, ch.name) && !isTestChannel(slug, ch.name);
+      return true;
     })
     .map(ch => ({
       id: normCid(ch.id),
