@@ -36,6 +36,10 @@ export const TEST_PATTERNS: RegExp[] = [
 
 export const INVALID_PROGRAM_TITLES: string[] = [
   'no data',
+  'no match',
+  'no match today',
+  'no event',
+  'no broadcast',
   'momentan kein programm',
   'sendepause',
   'keine informationen',
@@ -76,10 +80,58 @@ export function filterRealPrograms(programs: Program[]): Program[] {
   return programs.filter((p) => isRealProgram(p.title));
 }
 
+export const CLUB_CHANNEL_SLUGS = new Set([
+  'borussia-dortmund',
+  'borussiadortmund',
+  'bayern-muenchen',
+  'bayernmuenchen',
+  'fc-bayern-tv-live',
+  'fcbayerntvlive',
+  '1-fc-heidenheim',
+  'fcheidenheim',
+  'rb-leipzig',
+  'rbleipzig',
+  'sc-freiburg',
+  'scfreiburg',
+  'vfb-stuttgart',
+  'vfbstuttgart',
+  'vfl-bochum',
+  'vflbochum',
+  'vfl-wolfsburg',
+  'vflwolfsburg',
+  'werder-bremen',
+  'werderbremen',
+  '1-fc-union-berlin',
+  'fcunionberlin',
+  'borussia-moenchengladbach',
+  'borussiamoenchengladbach',
+  'fc-augsburg',
+  'fcaugsburg',
+]);
+
+export function isClubChannel(channelId: string, name?: string): boolean {
+  const norm = normCid(channelId);
+  if (CLUB_CHANNEL_SLUGS.has(norm) || CLUB_CHANNEL_SLUGS.has(channelId.toLowerCase())) return true;
+  const str = `${channelId} ${name ?? ''}`.toLowerCase();
+  return (
+    str.includes('borussia dortmund') ||
+    str.includes('fc bayern') ||
+    str.includes('bayern münchen') ||
+    str.includes('bayern muenchen') ||
+    str.includes('heidenheim') ||
+    str.includes('rb leipzig') ||
+    str.includes('sc freiburg') ||
+    str.includes('vfb stuttgart') ||
+    str.includes('vfl bochum') ||
+    str.includes('vfl wolfsburg') ||
+    str.includes('werder bremen')
+  );
+}
+
 export function isValidChannelForSite(channel: Channel, programs: Program[]): boolean {
   if (isAdultChannel(channel.id, channel.name)) return false;
   if (isTestChannel(channel.id, channel.name)) return false;
 
   const realPrograms = filterRealPrograms(programs);
-  return realPrograms.length >= 3;
+  return realPrograms.length >= 3 || isClubChannel(channel.id, channel.name);
 }
