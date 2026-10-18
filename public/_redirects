@@ -270,6 +270,44 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /channel21          /                    301
 /channel21/         /                    301
 
+# 301 Migration: Non-hyphenated club and specialty channels -> canonical slugs
+/alexberlin              /alex-berlin/              301
+/alexberlin/             /alex-berlin/              301
+/fcheidenheim            /1-fc-heidenheim/          301
+/fcheidenheim/           /1-fc-heidenheim/          301
+/fcunionberlin           /1-fc-union-berlin/        301
+/fcunionberlin/          /1-fc-union-berlin/        301
+/borussiadortmund        /borussia-dortmund/        301
+/borussiadortmund/       /borussia-dortmund/        301
+/bayerleverkusen         /bayer-leverkusen/         301
+/bayerleverkusen/        /bayer-leverkusen/         301
+/eintrachtfrankfurt      /eintracht-frankfurt/      301
+/eintrachtfrankfurt/     /eintracht-frankfurt/      301
+/fcaugsburg              /fc-augsburg/              301
+/fcaugsburg/             /fc-augsburg/              301
+/fcstpauli               /fc-st-pauli/              301
+/fcstpauli/              /fc-st-pauli/              301
+/fsvmainz05              /fsv-mainz-05/             301
+/fsvmainz05/             /fsv-mainz-05/             301
+/vfbstuttgart            /vfb-stuttgart/            301
+/vfbstuttgart/           /vfb-stuttgart/            301
+/vflbochum               /vfl-bochum/               301
+/vflbochum/              /vfl-bochum/               301
+/vflwolfsburg            /vfl-wolfsburg/            301
+/vflwolfsburg/           /vfl-wolfsburg/            301
+/scfreiburg              /sc-freiburg/              301
+/scfreiburg/             /sc-freiburg/              301
+/borussiamoenchengladbach /borussia-moenchengladbach/ 301
+/borussiamoenchengladbach/ /borussia-moenchengladbach/ 301
+/1899hoffenheim          /1899-hoffenheim/          301
+/1899hoffenheim/         /1899-hoffenheim/          301
+/fcbayerntvlive          /fc-bayern-tv-live/        301
+/fcbayerntvlive/         /fc-bayern-tv-live/        301
+/bayernmuenchen          /bayern-muenchen/          301
+/bayernmuenchen/         /bayern-muenchen/          301
+/hamburg1                /hamburg-1/                301
+/hamburg1/               /hamburg-1/                301
+
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410
 /programm           410
