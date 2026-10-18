@@ -17,6 +17,10 @@ on:
         type: boolean
         default: true
 
+concurrency:
+  group: contabo-deploy
+  cancel-in-progress: true
+
 jobs:
   # ──────────────────────────────────────────────────────────
   # 1) Enrichment TMDB (su Contabo — Supabase DE non esiste più)

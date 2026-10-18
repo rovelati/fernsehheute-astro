@@ -41,6 +41,7 @@ fi
 
 log "Starting Astro build..."
 npm install 2>&1 | tee -a "$LOG"
+rm -rf dist .astro
 npm run build 2>&1 | tee -a "$LOG"
 
 if [ ! -f dist/index.html ]; then
