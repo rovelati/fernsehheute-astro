@@ -2,6 +2,7 @@
  * Risolve il logo di un canale con priorità ai loghi vettoriali SVG / PNG locali in /channel-logos/.
  * Include normalizzazione automatica dei prefissi "DE -", suffissi ".de", trattini e alias.
  */
+import channelLogosMap from '../data/channel-logos-map.json';
 
 const normalizeKey = (s?: string | null): string => {
   if (!s) return '';
@@ -184,12 +185,15 @@ export const getChannelLogo = (channelId?: string | null, logoUrl?: string | nul
 
   // 1. Cerca nei loghi locali mappati per slug ID
   if (normId && LOCAL_LOGOS[normId]) return LOCAL_LOGOS[normId];
+  if (normId && (channelLogosMap as Record<string, string>)[normId]) return (channelLogosMap as Record<string, string>)[normId];
 
   // 2. Cerca per slug Nome
   if (normName && LOCAL_LOGOS[normName]) return LOCAL_LOGOS[normName];
+  if (normName && (channelLogosMap as Record<string, string>)[normName]) return (channelLogosMap as Record<string, string>)[normName];
 
   // 3. Cerca per raw ID
   if (rawId && LOCAL_LOGOS[rawId]) return LOCAL_LOGOS[rawId];
+  if (rawId && (channelLogosMap as Record<string, string>)[rawId]) return (channelLogosMap as Record<string, string>)[rawId];
 
   // 4. Se nel DB c'è un path che punta a /channel-logos/ locale
   if (logoUrl?.includes('/channel-logos/')) {
@@ -197,8 +201,8 @@ export const getChannelLogo = (channelId?: string | null, logoUrl?: string | nul
     if (filename) return `/channel-logos/${filename}`;
   }
 
-  // 5. Logo remoto valido fornito da EPG
-  if (logoUrl && logoUrl.startsWith('http') && !logoUrl.includes('null')) {
+  // 5. Logo remoto valido fornito da EPG (escludi iptv-epg.org bloccato da robots.txt)
+  if (logoUrl && logoUrl.startsWith('http') && !logoUrl.includes('null') && !logoUrl.includes('iptv-epg.org')) {
     return logoUrl;
   }
 
