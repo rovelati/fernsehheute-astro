@@ -240,6 +240,22 @@ const CHANNEL_SLUGS: Record<string, string> = {
   'bayern-muenchen':           'bayern-muenchen',
   'hamburg1':                  'hamburg-1',
   'hamburg-1':                 'hamburg-1',
+
+  // ANIXE & Entertainment
+  'anixeserie':                'anixe-serie',
+  'anixe-serie':               'anixe-serie',
+  'toggoplus':                 'toggo-plus',
+  'toggo-plus':                'toggo-plus',
+  'skysportnews':              'sky-sport-news',
+  'sky-sport-news':            'sky-sport-news',
+  'skycomedy':                 'sky-comedy',
+  'sky-comedy':                'sky-comedy',
+  'warnertvserie':             'warner-tv-serie',
+  'warner-tv-serie':           'warner-tv-serie',
+  'warnertvcomedy':            'warner-tv-comedy',
+  'warner-tv-comedy':          'warner-tv-comedy',
+  'warnertvfilm':              'warner-tv-film',
+  'warner-tv-film':            'warner-tv-film',
 };
 
 export const normCid = (cid: string): string => {

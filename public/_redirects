@@ -307,6 +307,20 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /bayernmuenchen/         /bayern-muenchen/          301
 /hamburg1                /hamburg-1/                301
 /hamburg1/               /hamburg-1/                301
+/anixeserie              /anixe-serie/              301
+/anixeserie/             /anixe-serie/              301
+/toggoplus               /toggo-plus/               301
+/toggoplus/              /toggo-plus/               301
+/skysportnews            /sky-sport-news/           301
+/skysportnews/           /sky-sport-news/           301
+/skycomedy               /sky-comedy/               301
+/skycomedy/              /sky-comedy/               301
+/warnertvserie           /warner-tv-serie/          301
+/warnertvserie/          /warner-tv-serie/          301
+/warnertvcomedy          /warner-tv-comedy/         301
+/warnertvcomedy/         /warner-tv-comedy/         301
+/warnertvfilm            /warner-tv-film/           301
+/warnertvfilm/           /warner-tv-film/           301
 
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410
