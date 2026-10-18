@@ -363,6 +363,10 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /axnwhite/               /axn-white/                301
 /universaltv             /universal-tv/             301
 /universaltv/            /universal-tv/             301
+/bbcworld                /bbc-world/                301
+/bbcworld/               /bbc-world/                301
+/bbcnews                 /bbc-news/                 301
+/bbcnews/                /bbc-news/                 301
 
 # 410 Gone — programm detail pages were removed permanently
 /programm/*         410

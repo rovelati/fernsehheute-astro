@@ -300,6 +300,14 @@ const CHANNEL_SLUGS: Record<string, string> = {
   'axn-white':                 'axn-white',
   'universaltv':               'universal-tv',
   'universal-tv':              'universal-tv',
+  'bbcworld':                  'bbc-world',
+  'bbc-world':                 'bbc-world',
+  'bbcworld.de':               'bbc-world',
+  'bbc-world.de':              'bbc-world',
+  'bbcnews':                   'bbc-news',
+  'bbc-news':                  'bbc-news',
+  'bbcnews.de':                'bbc-news',
+  'bbc-news.de':               'bbc-news',
 };
 
 export const normCid = (cid: string): string => {

@@ -99,15 +99,12 @@ function extractYear(title?: string | null): string | null {
   return (y >= 1900 && y <= 2030) ? match[1] : null;
 }
 
-/** Bestimmt den schema.org-Typ des Inhalts */
-function workType(program: Program): 'Movie' | 'TVEpisode' | 'Event' {
+/** Bestimmt den schema.org-Typ des Inhalts (CreativeWork für workPerformed) */
+function workType(program: Program): 'Movie' | 'TVEpisode' {
   const cat    = (program.category ?? '').toLowerCase();
-  const title  = (program.title ?? '').toLowerCase();
   const hasYear = !!extractYear(program.title);
 
   if (cat.includes('film') || cat.includes('spielfilm') || cat.includes('kino') || cat.includes('movie') || hasYear) return 'Movie';
-  if (cat.includes('sport') || title.includes('fußball') || title.includes('bundesliga') ||
-      title.includes('formel 1') || title.includes('tennis') || title.includes('handball')) return 'Event';
   return 'TVEpisode';
 }
 
@@ -242,10 +239,8 @@ function broadcastEventEntity(
   const streamUrl  = CHANNEL_STREAM_URL[channel.id];
   const channelUrl = `${siteUrl}/${channel.id}/`;
 
-  const liveUrl = streamUrl ?? channelUrl;
-
   const workPerformed: Record<string, unknown> = {
-    '@type': type === 'Event' ? 'SportsEvent' : type,
+    '@type': type,
     '@id': `${eventId}#work`,
     name: program.title,
     inLanguage: 'de',
@@ -255,12 +250,6 @@ function broadcastEventEntity(
     ...(year                ? { dateCreated: year }                 : {}),
     url: channelUrl,
   };
-
-  if (type === 'Event') {
-    workPerformed['startDate'] = program.start_time;
-    workPerformed['endDate']   = program.end_time;
-    workPerformed['location']  = { '@type': 'VirtualLocation', url: liveUrl };
-  }
 
   if (type === 'TVEpisode') {
     workPerformed['partOfSeries'] = {
@@ -287,14 +276,9 @@ function broadcastEventEntity(
     duration:  isoDuration(program.start_time, program.end_time),
     isLiveBroadcast: false,
     videoFormat: 'HD',
-    eventStatus: 'https://schema.org/EventScheduled',
     inLanguage: 'de',
     url: channelUrl,
     ...(program.poster_url ? { image: program.poster_url } : {}),
-    location: {
-      '@type': 'VirtualLocation',
-      url: liveUrl,
-    },
     publishedOn: { '@id': `${channelUrl}#channel` },
     workPerformed,
   };
