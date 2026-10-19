@@ -98,8 +98,8 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /nick-comedy-central+1/   /nick-comedy-central-1/     301
 /nickjr                   /nick-jr/                   301
 /nickjr/                  /nick-jr/                   301
-/borussia-monchengladbach /borussia-moenchengladbach/ 301
-/borussia-monchengladbach/ /borussia-moenchengladbach/ 301
+/borussia-moenchengladbach /borussia-monchengladbach/ 301
+/borussia-moenchengladbach/ /borussia-monchengladbach/ 301
 /hauptstadttv             /hauptstadt-tv/             301
 /hauptstadttv/            /hauptstadt-tv/             301
 /rtlhessen                /rtl-hessen/                301
@@ -372,8 +372,8 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /vflwolfsburg/           /vfl-wolfsburg/            301
 /scfreiburg              /sc-freiburg/              301
 /scfreiburg/             /sc-freiburg/              301
-/borussiamoenchengladbach /borussia-moenchengladbach/ 301
-/borussiamoenchengladbach/ /borussia-moenchengladbach/ 301
+/borussiamoenchengladbach /borussia-monchengladbach/ 301
+/borussiamoenchengladbach/ /borussia-monchengladbach/ 301
 /1899hoffenheim          /1899-hoffenheim/          301
 /1899hoffenheim/         /1899-hoffenheim/          301
 /fcbayerntvlive          /fc-bayern-tv-live/        301
