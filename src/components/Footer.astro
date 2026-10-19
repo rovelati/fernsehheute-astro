@@ -23,6 +23,15 @@ const LEGAL_LINKS = [
   { href: '/sitemap-index.xml', label: 'Sitemap' },
 ];
 
+const INTERNATIONAL_SITES = [
+  { name: 'inTVstasera.it', flag: '🇮🇹', url: 'https://www.intvstasera.it/' },
+  { name: 'ProgrammeCeSoir.fr', flag: '🇫🇷', url: 'https://programmecesoir.fr/' },
+  { name: 'UKTVTonight.co.uk', flag: '🇬🇧', url: 'https://uktvtonight.co.uk/' },
+  { name: 'AussieTVTonight.com', flag: '🇦🇺', url: 'https://aussietvtonight.com/' },
+  { name: 'TeleEstaNoche.es', flag: '🇪🇸', url: 'https://www.teleestanoche.es/' },
+  { name: 'TVWieczor.pl', flag: '🇵🇱', url: 'https://tvwieczor.pl/' },
+];
+
 let allChannels: { id: string; name: string }[] = [];
 try {
   const today = getTodayInBerlin();
@@ -98,6 +107,19 @@ try {
         {CATEGORY_LINKS.map(cat => (
           <a href={cat.href} class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
             {cat.label}
+          </a>
+        ))}
+      </nav>
+    </div>
+
+    <!-- Internationale TV-Programme -->
+    <div class="mb-8 pt-6 border-t border-slate-100 dark:border-slate-800">
+      <h2 class="text-slate-900 dark:text-slate-100 font-semibold mb-3 text-xs uppercase tracking-wider">Internationale TV-Programme</h2>
+      <nav class="flex flex-wrap gap-x-5 gap-y-2 text-xs" aria-label="Internationale TV-Programme">
+        {INTERNATIONAL_SITES.map(site => (
+          <a href={site.url} class="inline-flex items-center gap-1.5 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+            <span>{site.flag}</span>
+            <span>{site.name}</span>
           </a>
         ))}
       </nav>
