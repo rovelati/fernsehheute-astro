@@ -67,9 +67,7 @@ export async function getStaticPaths() {
     .filter(ch => {
       const slug = normCidLocal(ch.id);
       if (isAdultChannel(slug, ch.name) || isTestChannel(slug, ch.name)) return false;
-      const progs = programsByChannel.get(slug) ?? [];
-      const realProgs = filterRealPrograms(progs);
-      return realProgs.length >= 3 || isClubChannel(slug, ch.name);
+      return true;
     })
     .map(ch => {
       const slug = normCidLocal(ch.id);

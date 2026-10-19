@@ -28,14 +28,89 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /sport/             /sport-heute-abend/  301
 
 # 301 Legacy URL Migration: /live/:channel -> /:channel/
+/live/voxup/        /voxup/              301
 /live/voxup         /voxup/              301
+/live/rtf1/         /rtf1/               301
 /live/rtf1          /rtf1/               301
+/live/of-tv/        /of-tv/              301
 /live/of-tv         /of-tv/              301
+/live/welt/         /welt/               301
 /live/welt          /welt/               301
+/live/:channel/     /:channel/           301
 /live/:channel      /:channel/           301
 
 # 301 Legacy URL Migration: /morgen/:channel -> /:channel/
+/morgen/:channel/   /:channel/           301
 /morgen/:channel    /:channel/           301
+
+# GA4 / Bing 404 Resolution Redirects
+/classica                 /stingray-classica/         301
+/classica/                /stingray-classica/         301
+/stingrayiconcerts        /stingray-iconcerts/        301
+/stingrayiconcerts/       /stingray-iconcerts/        301
+/okweinstrabe             /ok-weinstrasse/            301
+/okweinstrabe/            /ok-weinstrasse/            301
+/ok-weinstrae             /ok-weinstrasse/            301
+/ok-weinstrae/            /ok-weinstrasse/            301
+/okweinstrasse            /ok-weinstrasse/            301
+/okweinstrasse/           /ok-weinstrasse/            301
+/daznrise                 /dazn-rise/                 301
+/daznrise/                /dazn-rise/                 301
+/crime+investigation      /crime-investigation/       301
+/crime+investigation/     /crime-investigation/       301
+/crime-investigation      /crime-investigation/       301
+/crime-investigation/     /crime-investigation/       301
+/crimeinvestigation       /crime-investigation/       301
+/crimeinvestigation/      /crime-investigation/       301
+/wdrfernsehenkoeln        /wdr-fernsehen-koln/        301
+/wdrfernsehenkoeln/       /wdr-fernsehen-koln/        301
+/wdrfernsehenköln         /wdr-fernsehen-koln/        301
+/wdrfernsehenköln/        /wdr-fernsehen-koln/        301
+/wdr-fernsehen-köln       /wdr-fernsehen-koln/        301
+/wdr-fernsehen-köln/      /wdr-fernsehen-koln/        301
+/wdrdortmund              /wdr-dortmund/              301
+/wdrdortmund/             /wdr-dortmund/              301
+/skynature                /sky-nature/                301
+/skynature/               /sky-nature/                301
+/skycrime                 /sky-crime/                 301
+/skycrime/                /sky-crime/                 301
+/skyreplay                /sky-replay/                301
+/skyreplay/               /sky-replay/                301
+/skysportpremierleague    /sky-sport-premier-league/  301
+/skysportpremierleague/   /sky-sport-premier-league/  301
+/skysporttennis           /sky-sport-tennis/          301
+/skysporttennis/          /sky-sport-tennis/          301
+/skycinemafeelgood        /sky-cinema-feelgood/       301
+/skycinemafeelgood/       /sky-cinema-feelgood/       301
+/niederbayerntv-pa        /niederbayern-tv-pa/        301
+/niederbayerntv-pa/       /niederbayern-tv-pa/        301
+/niederbayerntv-deg       /niederbayern-tv-deg/       301
+/niederbayerntv-deg/      /niederbayern-tv-deg/       301
+/niederbayerntv-la        /niederbayern-tv-la/        301
+/niederbayerntv-la/       /niederbayern-tv-la/        301
+/clipmyhorsetv            /clip-my-horsetv/           301
+/clipmyhorsetv/           /clip-my-horsetv/           301
+/clip-my-horse-tv         /clip-my-horsetv/           301
+/clip-my-horse-tv/        /clip-my-horsetv/           301
+/nickcomedycentral+1      /nick-comedy-central-1/     301
+/nickcomedycentral+1/     /nick-comedy-central-1/     301
+/nick-comedy-central+1    /nick-comedy-central-1/     301
+/nick-comedy-central+1/   /nick-comedy-central-1/     301
+/nickjr                   /nick-jr/                   301
+/nickjr/                  /nick-jr/                   301
+/borussia-monchengladbach /borussia-moenchengladbach/ 301
+/borussia-monchengladbach/ /borussia-moenchengladbach/ 301
+/hauptstadttv             /hauptstadt-tv/             301
+/hauptstadttv/            /hauptstadt-tv/             301
+/rtlhessen                /rtl-hessen/                301
+/rtlhessen/               /rtl-hessen/                301
+/romantischefilme         /film-heute-abend/          301
+/romantischefilme/        /film-heute-abend/          301
+/penthousepassion         /                           301
+/penthousepassion/        /                           301
+/meine-aufnahmen          /                           301
+/meine-aufnahmen/         /                           301
+
 
 # 301 Channel Slug Aliases & Normalization (Bing / Google / Direct Navigation)
 /hse-24             /hse24/              301

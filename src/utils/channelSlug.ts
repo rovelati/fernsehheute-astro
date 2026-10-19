@@ -308,6 +308,64 @@ const CHANNEL_SLUGS: Record<string, string> = {
   'bbc-news':                  'bbc-news',
   'bbcnews.de':                'bbc-news',
   'bbc-news.de':               'bbc-news',
+
+  // OK Weinstraße & regional variations
+  'okweinstrabe':              'ok-weinstrasse',
+  'ok-weinstrabe':             'ok-weinstrasse',
+  'okweinstrasse':             'ok-weinstrasse',
+  'ok-weinstrasse':            'ok-weinstrasse',
+  'okweinstrae':               'ok-weinstrasse',
+  'ok-weinstrae':              'ok-weinstrasse',
+
+  // Music & Specialty
+  'classica':                  'stingray-classica',
+  'stingrayclassica':          'stingray-classica',
+  'stingray-classica':         'stingray-classica',
+  'stingrayiconcerts':         'stingray-iconcerts',
+  'stingray-iconcerts':        'stingray-iconcerts',
+
+  // DAZN & Sports
+  'daznrise':                  'dazn-rise',
+  'dazn-rise':                 'dazn-rise',
+
+  // Sky specialty channels
+  'skynature':                 'sky-nature',
+  'sky-nature':                'sky-nature',
+  'skycrime':                  'sky-crime',
+  'sky-crime':                 'sky-crime',
+  'skyreplay':                 'sky-replay',
+  'sky-replay':                'sky-replay',
+  'skysportpremierleague':     'sky-sport-premier-league',
+  'sky-sport-premier-league':  'sky-sport-premier-league',
+  'skysporttennis':            'sky-sport-tennis',
+  'sky-sport-tennis':          'sky-sport-tennis',
+  'skycinemafeelgood':         'sky-cinema-feelgood',
+  'sky-cinema-feelgood':       'sky-cinema-feelgood',
+  'sky-cinema-premieren-24':   'sky-cinema-premieren-24',
+
+  // WDR Regional
+  'wdrdortmund':               'wdr-dortmund',
+  'wdr-dortmund':              'wdr-dortmund',
+  'wdrfernsehenkoeln':         'wdr-fernsehen-koln',
+  'wdr-fernsehen-koln':        'wdr-fernsehen-koln',
+
+  // Regional & Specialty from GA4 404 audit
+  'niederbayerntvpa':          'niederbayern-tv-pa',
+  'niederbayerntv-pa':         'niederbayern-tv-pa',
+  'niederbayerntvla':          'niederbayern-tv-la',
+  'niederbayerntv-la':         'niederbayern-tv-la',
+  'niederbayerntvdeg':         'niederbayern-tv-deg',
+  'niederbayerntv-deg':        'niederbayern-tv-deg',
+  'hauptstadttv':              'hauptstadt-tv',
+  'hauptstadt-tv':             'hauptstadt-tv',
+  'clipmyhorsetv':             'clip-my-horsetv',
+  'clip-my-horsetv':           'clip-my-horsetv',
+  'nickjr':                    'nick-jr',
+  'nick-jr':                   'nick-jr',
+  'borussiamonchengladbach':   'borussia-moenchengladbach',
+  'borussia-monchengladbach':  'borussia-moenchengladbach',
+  'crimeinvestigation':        'crime-investigation',
+  'crime-investigation':       'crime-investigation',
 };
 
 export const normCid = (cid: string): string => {
