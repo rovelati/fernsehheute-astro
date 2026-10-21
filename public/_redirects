@@ -443,6 +443,6 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 /bbcnews                 /bbc-news/                 301
 /bbcnews/                /bbc-news/                 301
 
-# 410 Gone — programm detail pages were removed permanently
-/programm/*         410
-/programm           410
+# SearchAction placeholder & legacy search redirects (301 to home)
+/suche/*            /               301
+/suche              /               301
