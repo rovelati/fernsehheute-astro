@@ -17,6 +17,10 @@ https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
 # Cloudflare Pages Redirects & HTTP status codes
 # ---------------------------------------------------------------------------
 
+# Legacy root hub: /heute-abend -> /
+/heute-abend        /                    301
+/heute-abend/       /                    301
+
 # 301 Permanent Redirects for shortcuts and aliases
 /spielfilme         /film-heute-abend/   301
 /spielfilme/        /film-heute-abend/   301
