@@ -393,13 +393,13 @@ export function buildHubHomeJsonLd({
       '@context': 'https://schema.org',
       '@type': 'ItemList',
       '@id': `${siteUrl}/#list`,
-      name: 'Fernsehprogramm heute – Alle Sender & TV Programm heute Abend',
+      name: 'TV Programm heute – Alle Sender & Sendezeiten',
       url: `${siteUrl}/`,
       numberOfItems: channels.length,
       itemListElement: channels.slice(0, 15).map((ch, i) => ({
         '@type': 'ListItem',
         position: i + 1,
-        name: `${ch.name} heute Abend — Fernsehprogramm & TV Programm`,
+        name: `${ch.name} heute Abend — TV Programm`,
         url: `${siteUrl}/${ch.id}/`,
       })),
     },
@@ -408,15 +408,15 @@ export function buildHubHomeJsonLd({
       '@type': 'BreadcrumbList',
       '@id': `${siteUrl}/#breadcrumb`,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Fernsehprogramm heute', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 1, name: 'TV Programm heute', item: `${siteUrl}/` },
       ],
     },
     {
       '@context': 'https://schema.org',
       ...webPageEntity(
         `${siteUrl}/`,
-        'Fernsehprogramm heute – Alle Sender & TV Programm heute Abend',
-        'Aktuelles Fernsehprogramm heute und TV Programm heute Abend: alle Sendungen auf Das Erste, ZDF, RTL, SAT.1, ProSieben und weiteren Sendern mit genauen Sendezeiten.',
+        'TV Programm heute – Alle Sender & Sendezeiten',
+        'Deutsches TV Programm heute: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten.',
       ),
     },
   ];
