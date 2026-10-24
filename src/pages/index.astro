@@ -68,7 +68,7 @@ try {
 
 import { serializeChannelForClient } from '../utils/channelSerializer';
 
-const INITIAL_LIMIT = 100;
+const INITIAL_LIMIT = 150;
 const initialChannels = channelsWithPrograms.slice(0, INITIAL_LIMIT);
 const moreChannels    = channelsWithPrograms.slice(INITIAL_LIMIT);
 const moreChannelsJson = JSON.stringify(moreChannels.map(ch => serializeChannelForClient(ch, 'abend')));
@@ -189,7 +189,7 @@ const keywords    = 'fernsehprogramm heute, tv programm heute, fernsehprogramm h
             <span>Sortiert nach offizieller AGF-Reichweite &amp; Marktanteilen</span>
           </span>
           <span class="hidden sm:inline text-[11px] text-slate-400 dark:text-slate-500">
-            Top 100 TV-Sender im Schnellzugriff
+            Top 150 TV-Sender im Schnellzugriff
           </span>
         </div>
 
