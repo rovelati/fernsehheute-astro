@@ -68,7 +68,7 @@ GOOGLE_SEARCH_ANALYTICS_TOP_QUERIES = max(5, int(os.getenv('GOOGLE_SEARCH_ANALYT
 INDEXNOW_ENABLED = os.getenv('INDEXNOW_ENABLED', '1') in ('1', 'true', 'yes', 'on')
 INDEXNOW_KEY = os.getenv('INDEXNOW_KEY', '').strip()
 INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
-INDEXNOW_BATCH_SIZE = max(1, min(10000, int(os.getenv('INDEXNOW_BATCH_SIZE', '25'))))
+INDEXNOW_BATCH_SIZE = max(1, min(10000, int(os.getenv('INDEXNOW_BATCH_SIZE', '200'))))
 INDEXNOW_TIMEOUT = int(os.getenv('INDEXNOW_TIMEOUT', '20'))
 INDEXNOW_MAX_RETRIES = max(1, int(os.getenv('INDEXNOW_MAX_RETRIES', '3')))
 INDEXNOW_REQUEST_DELAY_MS = max(0, int(os.getenv('INDEXNOW_REQUEST_DELAY_MS', '250')))
@@ -159,6 +159,69 @@ def get_all_sitemap_urls() -> List[str]:
         logger.warning(f'Could not fetch remote sitemap: {e}')
 
     return build_absolute_urls(SHORT_TAIL_PATHS)
+
+
+def get_top_200_urls() -> List[str]:
+    """Build top 200 priority canonical URLs (Hubs -> Top Free-to-Air -> Regional -> Sitemap/Fallback)."""
+    hubs = [
+        '/', '/morgen/', '/film-heute-abend/', '/serien-heute-abend/', '/sport-heute-abend/',
+    ]
+    top_channels = [
+        '/das-erste/', '/zdf/', '/sat1/', '/prosieben/', '/rtl/', '/vox/', '/rtl2/',
+        '/kabel-eins/', '/3sat/', '/arte/', '/nitro/', '/super-rtl/', '/tele5/',
+        '/zdf-neo/', '/zdfinfo/', '/one/', '/sixx/', '/phoenix/', '/tagesschau24/',
+        '/n-tv/', '/welt/', '/sport1/', '/dmax/', '/kika/', '/ard-alpha/',
+        '/wdr/', '/ndr/', '/br/', '/swr-bw/', '/swrrp/', '/hr/', '/rbb-berlin/',
+        '/mdr-thueringen/', '/srfernsehen/',
+    ]
+    redirect_sources = set()
+    redirects_file = os.path.abspath(os.path.join(PUBLIC_DIR, '_redirects'))
+    if os.path.exists(redirects_file):
+        try:
+            with open(redirects_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        parts = line.split()
+                        if parts:
+                            redirect_sources.add(parts[0].rstrip('/'))
+        except Exception as e:
+            logger.warning(f'Could not parse _redirects: {e}')
+
+    def is_valid(path_or_url: str) -> bool:
+        norm = path_or_url.replace(SITE_URL, '').rstrip('/')
+        return norm not in redirect_sources
+
+    ordered: List[str] = []
+    for p in hubs + top_channels:
+        u = f"{SITE_URL}{p if p.startswith('/') else '/' + p}"
+        if is_valid(u) and u not in ordered:
+            ordered.append(u)
+
+    sitemap_urls = get_all_sitemap_urls()
+    for u in sitemap_urls:
+        if is_valid(u) and u not in ordered:
+            ordered.append(u)
+        if len(ordered) >= 200:
+            break
+
+    # If still under 200, check top-200-paths.json
+    if len(ordered) < 200:
+        json_path = os.path.abspath(os.path.join(_SCRIPT_DIR, '..', 'top-200-paths.json'))
+        if os.path.exists(json_path):
+            try:
+                with open(json_path, 'r', encoding='utf-8') as f:
+                    paths = json.load(f)
+                for p in paths:
+                    u = f"{SITE_URL}{p if p.startswith('/') else '/' + p}"
+                    if is_valid(u) and u not in ordered:
+                        ordered.append(u)
+                    if len(ordered) >= 200:
+                        break
+            except Exception as e:
+                logger.warning(f'Could not load top-200-paths.json: {e}')
+
+    return ordered[:200]
 
 
 def get_site_host() -> str:
@@ -881,18 +944,12 @@ def main() -> None:
     except Exception as e:
         logger.error(f'Google Search Analytics failed: {e}')
 
-    # Step 4: IndexNow — submit ONLY top 20 priority URLs
+    # Step 4: IndexNow — submit top 200 priority URLs
     logger.info('[4/5] IndexNow')
     try:
-        top_20_paths = [
-            '/', '/morgen/', '/film-heute-abend/', '/serien-heute-abend/', '/sport-heute-abend/',
-            '/zdf/', '/das-erste/', '/rtl/', '/sat1/', '/prosieben/',
-            '/vox/', '/kabel-eins/', '/rtl2/', '/zdf-neo/', '/3sat/',
-            '/arte/', '/super-rtl/', '/nitro/', '/sixx/', '/wdr/',
-        ]
-        top_20_urls = [f'{SITE_URL}{p}' for p in top_20_paths]
-        logger.info(f'IndexNow submitting strictly top {len(top_20_urls)} priority URLs')
-        submit_indexnow(top_20_urls)
+        top_200_urls = get_top_200_urls()
+        logger.info(f'IndexNow submitting strictly top {len(top_200_urls)} priority URLs')
+        submit_indexnow(top_200_urls)
     except Exception as e:
         logger.error(f'IndexNow failed: {e}')
 

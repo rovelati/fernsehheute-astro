@@ -26,3 +26,6 @@ key-bing*
 .idea/
 
 .wrangler/
+__pycache__/
+*.pyc
+
