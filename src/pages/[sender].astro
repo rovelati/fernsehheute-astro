@@ -63,7 +63,7 @@ export async function getStaticPaths() {
     }
   }
 
-  return channels
+  const paths = channels
     .filter(ch => {
       const slug = normCidLocal(ch.id);
       if (isAdultChannel(slug, ch.name) || isTestChannel(slug, ch.name)) return false;
@@ -78,6 +78,22 @@ export async function getStaticPaths() {
         props: { channel: { ...ch, programs: realProgs } as Channel, today, slug },
       };
     });
+
+  // Write slugs with no EPG so sitemap and IndexNow can exclude them
+  try {
+    const { writeFileSync, mkdirSync } = await import('node:fs');
+    const { resolve } = await import('node:path');
+    const emptySlugs = paths
+      .filter(p => (p.props.channel.programs ?? []).length === 0)
+      .map(p => p.params.sender);
+    const outDir = resolve(process.cwd(), '.astro');
+    mkdirSync(outDir, { recursive: true });
+    writeFileSync(resolve(outDir, 'empty-channels.json'), JSON.stringify(emptySlugs));
+  } catch (e) {
+    console.warn('[getStaticPaths] Could not write empty-channels.json:', e);
+  }
+
+  return paths;
 }
 
 interface Props { channel: Channel; today: string; slug: string; }

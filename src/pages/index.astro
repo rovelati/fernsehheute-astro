@@ -96,9 +96,9 @@ const homeSchemas = buildHubHomeJsonLd({ channels: channelsWithPrograms, today }
 const faqSchema   = buildFaqJsonLd(FAQS);
 const jsonLd      = [...homeSchemas, faqSchema];
 
-const pageTitle   = 'Fernsehprogramm heute – TV Programm heute Abend & 20:15 Uhr | FernsehHeute';
-const description = 'Aktuelles Fernsehprogramm heute und TV Programm heute Abend: Was läuft heute im TV um 20:15 Uhr? Alle Sendungen, Spielfilme & Serien auf Das Erste, ZDF, RTL & allen Sendern im Überblick.';
-const keywords    = 'fernsehprogramm heute, tv programm heute, fernsehprogramm heute abend, tv heute abend 20 uhr 15, fernsehen heute abend, tv programm heute abend, fernsehen heute, was läuft heute im tv, tv heute, programm heute';
+const pageTitle   = 'Fernsehprogramm heute – TV Programm aller Sender | FernsehHeute';
+const description = 'Aktuelles Fernsehprogramm heute und TV Programm: Was läuft heute im Fernsehen? Alle Sendungen, Spielfilme & Serien auf Das Erste, ZDF, RTL, ProSieben & allen Sendern im Überblick.';
+const keywords    = 'fernsehprogramm heute, tv programm heute, tv programm, fernsehen heute, was läuft heute im tv, tv heute, programm heute, fernsehprogramm heute abend, tv programm 20:15';
 ---
 
 <BaseLayout
@@ -114,18 +114,41 @@ const keywords    = 'fernsehprogramm heute, tv programm heute, fernsehprogramm h
   <section class="bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-b border-slate-200/80 dark:border-slate-800 py-6 sm:py-9">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <div class="flex items-center gap-2 mb-2.5">
-        <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 px-2.5 py-1 rounded-full shadow-xs">
-          <span class="w-2 h-2 bg-rose-500 rounded-full animate-pulse inline-block"></span>
-          Live & Prime Time 20:15
+        <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 px-2.5 py-1 rounded-full shadow-xs">
+          <span>📺</span>
+          TV-Programm Übersicht
         </span>
       </div>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-        Fernsehprogramm heute &amp; <span class="text-blue-600 dark:text-blue-400">TV Programm heute Abend</span>
+        Fernsehprogramm heute &amp; <span class="text-blue-600 dark:text-blue-400">TV Programm aller Sender</span>
       </h1>
       <p class="text-slate-600 dark:text-slate-400 mt-2.5 text-sm sm:text-base max-w-3xl leading-relaxed">
-        <span class="font-semibold text-slate-800 dark:text-slate-200" data-live-date>{dateLabel}</span> &mdash; <strong>Was läuft heute im TV um 20:15 Uhr?</strong> 
+        <span class="font-semibold text-slate-800 dark:text-slate-200" data-live-date>{dateLabel}</span> &mdash; <strong>Was läuft heute im Fernsehen?</strong> 
         Das vollständige Fernsehprogramm von heute mit allen Hauptsendern und Spartenkanälen im Überblick: Spielfilme, Serien, Nachrichten und Live-Sport.
       </p>
+
+      <!-- Quick Switcher Navigation Pills -->
+      <div class="mt-5 flex flex-wrap items-center gap-2">
+        <span class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-xs">
+          📺 Heute Abend
+        </span>
+        <a href="/jetzt/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-rose-400 hover:text-rose-600 transition-colors flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse"></span>
+          ⚡ Jetzt live im TV
+        </a>
+        <a href="/20-15/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:text-amber-600 transition-colors">
+          🌙 20:15 Prime Time
+        </a>
+        <a href="/film-heute-abend/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:text-blue-600 transition-colors">
+          🎬 Spielfilme
+        </a>
+        <a href="/serien-heute-abend/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:text-blue-600 transition-colors">
+          📺 Serien
+        </a>
+        <a href="/morgen/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:text-blue-600 transition-colors">
+          📅 Morgen
+        </a>
+      </div>
 
       <!-- Search & Category Quick-Filter Bar -->
       <div class="mt-6 pt-4 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">

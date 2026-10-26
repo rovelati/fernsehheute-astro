@@ -51,8 +51,21 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   <!-- RSS / Microsoft Start Feed -->
   <link rel="alternate" type="application/rss+xml" title="FernsehHeute — TV Highlights heute Abend" href="https://fernsehheute.de/feed/heute-abend.xml" />
 
-  <!-- UniConsent CMP (Consent Management Platform) -->
-  <script src="https://cmp.uniconsent.com/v2/cmp.js" data-license="b039ba7539"></script>
+  <!-- UniConsent CMP — skip for search engine bots (Googlebot, Bingbot, …) -->
+  <!-- NOTE: enable also the Googlebot bypass in the UniConsent dashboard -->
+  <script is:inline>
+    (function () {
+      var ua = navigator.userAgent || '';
+      var isBot = /bot|googlebot|bingbot|crawler|spider|slurp|facebookexternalhit|linkedinbot|twitterbot/i.test(ua);
+      if (!isBot) {
+        var s = document.createElement('script');
+        s.src = 'https://cmp.uniconsent.com/v2/cmp.js';
+        s.setAttribute('data-license', 'b039ba7539');
+        s.async = true;
+        document.head.appendChild(s);
+      }
+    })();
+  </script>
 
   <!-- Google Analytics (GA4) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEQCS4CCVP"></script>

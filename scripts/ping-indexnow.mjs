@@ -24,6 +24,8 @@ const ENDPOINTS = [
 // High-priority hub pages
 const HUB_PATHS = [
   '/',
+  '/jetzt/',
+  '/20-15/',
   '/morgen/',
   '/film-heute-abend/',
   '/serien-heute-abend/',
@@ -67,6 +69,14 @@ const TOP_CHANNEL_PATHS = [
   '/mdr-thueringen/',
   '/srfernsehen/',
 ];
+
+function loadEmptyChannels() {
+  const p = path.resolve(__dirname, '../.astro/empty-channels.json');
+  if (fs.existsSync(p)) {
+    try { return new Set(JSON.parse(fs.readFileSync(p, 'utf8'))); } catch {}
+  }
+  return new Set();
+}
 
 function loadRedirects() {
   const redirectsSet = new Set();
@@ -141,9 +151,13 @@ async function extractSitemapUrls() {
 
 async function getTop200Urls() {
   const redirectsSet = loadRedirects();
+  const emptyChannels = loadEmptyChannels();
   const isValidPath = (p) => {
     const norm = p.replace(/\/+$/, '');
-    return norm === '' || !redirectsSet.has(norm);
+    if (norm !== '' && redirectsSet.has(norm)) return false;
+    const slug = norm.replace(/^\//, '');
+    if (slug && emptyChannels.has(slug)) return false;
+    return true;
   };
 
   const sitemapUrls = await extractSitemapUrls();

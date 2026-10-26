@@ -73,6 +73,20 @@ export const getBerlinHour = (isoString: string): number => {
   return parseInt(formatter.format(new Date(isoString)));
 };
 
+/** Returns the minutes from midnight (Berlin time) of an ISO timestamp */
+export const getBerlinMinutes = (isoString: string): number => {
+  const d = new Date(isoString);
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Berlin',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+  }).formatToParts(d);
+  const hour = parseInt(parts.find(p => p.type === 'hour')?.value ?? '0', 10);
+  const minute = parseInt(parts.find(p => p.type === 'minute')?.value ?? '0', 10);
+  return hour * 60 + minute;
+};
+
 /** Returns true if the program is in prime time (20:00–23:00 Berlin) */
 export const isPrimeTime = (startTime: string): boolean => {
   const h = getBerlinHour(startTime);

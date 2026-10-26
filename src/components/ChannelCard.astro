@@ -12,7 +12,7 @@ interface Props {
   channel: Channel;
   programs: Program[];
   slug: string;
-  mode?: 'abend' | 'morgen';
+  mode?: 'abend' | 'morgen' | '20-15' | 'jetzt';
 }
 
 const { channel, programs, slug, mode = 'abend' } = Astro.props;
@@ -31,9 +31,20 @@ const primeProgram   = programs.find(p => { const m = toUTCMin(p.start_time); re
 const eveningProgram = programs.find(p => toUTCMin(p.start_time) >= EVENING_START) ?? null;
 const morningFirst   = programs.find(p => toUTCMin(p.start_time) >= MORNING_START) ?? null;
 
+const nowMs = Date.now();
+const liveProgram = programs.find(p => {
+  const s = new Date(p.start_time).getTime();
+  const e = new Date(p.end_time).getTime();
+  return s <= nowMs && nowMs < e;
+}) ?? null;
+
 const displayProgram: Program | null = mode === 'morgen'
   ? (primeProgram ?? morningFirst ?? programs[0] ?? null)
-  : (primeProgram ?? eveningProgram ?? programs[0] ?? null);
+  : mode === '20-15'
+    ? (primeProgram ?? eveningProgram ?? programs[0] ?? null)
+    : mode === 'jetzt'
+      ? (liveProgram ?? programs[0] ?? null)
+      : (primeProgram ?? eveningProgram ?? programs[0] ?? null);
 
 const nextProgram = displayProgram
   ? programs.find(p => new Date(p.start_time) > new Date(displayProgram!.end_time)) ?? null
@@ -72,12 +83,17 @@ const overlayJson = displayProgram ? JSON.stringify({
 ---
 
 <div
-  class="channel-card-item block group border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+  class:list={[
+    'channel-card-item block group border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors',
+    mode === 'jetzt' && 'jetzt-card',
+  ]}
   data-channel-card
   data-channel-name={channel.name.toLowerCase()}
   data-channel-slug={slug}
+  data-channel-logo={resolvedLogo}
   data-program-title={displayProgram?.title?.toLowerCase() ?? ''}
   data-category={catGroup}
+  data-mode={mode}
 >
   <div class="grid grid-cols-[68px_1fr_auto] sm:grid-cols-[84px_1fr_auto] gap-2.5 sm:gap-4 px-3 py-2.5 sm:px-4 sm:py-3 items-center">
 
@@ -107,7 +123,7 @@ const overlayJson = displayProgram ? JSON.stringify({
 
     <!-- Spalte mitte: Programm (Öffnet Modal) -->
     <div
-      class="min-w-0 py-0.5 cursor-pointer"
+      class:list={['min-w-0 py-0.5 cursor-pointer', mode === 'jetzt' && 'jetzt-program-content']}
       role="button"
       tabindex="0"
       title="Klicken für Details"
@@ -116,6 +132,17 @@ const overlayJson = displayProgram ? JSON.stringify({
       {displayProgram ? (
         <div>
           <p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mb-0.5 flex items-center gap-1.5 flex-wrap">
+            {mode === 'jetzt' && (
+              <span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 px-1.5 py-0.5 rounded-full">
+                <span class="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse inline-block"></span>
+                Live
+              </span>
+            )}
+            {mode === '20-15' && (
+              <span class="inline-flex items-center text-[9px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 px-1.5 py-0.5 rounded-full">
+                20:15 Prime Time
+              </span>
+            )}
             <span class="tabular-nums font-semibold text-slate-700 dark:text-slate-300">{formatTime(displayProgram.start_time)} – {formatTime(displayProgram.end_time)}</span>
             {displayProgram.category && (
               <span class="uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500">{displayProgram.category}</span>

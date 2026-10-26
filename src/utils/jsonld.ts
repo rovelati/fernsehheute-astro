@@ -423,6 +423,102 @@ export function buildHubHomeJsonLd({
 }
 
 // ---------------------------------------------------------------------------
+// Hub Jetzt im TV (/jetzt/)
+// ---------------------------------------------------------------------------
+export function buildHubJetztJsonLd({
+  channels,
+  siteUrl = SITE_URL,
+}: {
+  channels: Channel[];
+  siteUrl?: string;
+}): object[] {
+  const pageUrl = `${siteUrl}/jetzt/`;
+  return [
+    { '@context': 'https://schema.org', ...websiteEntity() },
+    { '@context': 'https://schema.org', ...orgEntity() },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#list`,
+      name: 'Was läuft jetzt im TV? – Live-Programm aller Sender',
+      url: pageUrl,
+      numberOfItems: channels.length,
+      itemListElement: channels.slice(0, 20).map((ch, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${ch.name} jetzt live im TV`,
+        url: `${siteUrl}/${ch.id}/`,
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'TV Programm heute', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: 'Jetzt im TV', item: pageUrl },
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      ...webPageEntity(
+        pageUrl,
+        'Was läuft jetzt im TV? – TV-Programm aktuell im Fernsehen',
+        'Das aktuelle Fernsehprogramm live: Was läuft jetzt im TV auf ARD, ZDF, RTL, SAT.1, ProSieben und allen Sendern mit Live-Fortschritt.',
+      ),
+    },
+  ];
+}
+
+// ---------------------------------------------------------------------------
+// Hub 20:15 Prime Time (/20-15/)
+// ---------------------------------------------------------------------------
+export function buildHub2015JsonLd({
+  channels,
+  siteUrl = SITE_URL,
+}: {
+  channels: Channel[];
+  siteUrl?: string;
+}): object[] {
+  const pageUrl = `${siteUrl}/20-15/`;
+  return [
+    { '@context': 'https://schema.org', ...websiteEntity() },
+    { '@context': 'https://schema.org', ...orgEntity() },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      '@id': `${pageUrl}#list`,
+      name: 'TV Programm heute um 20:15 Uhr – Prime Time',
+      url: pageUrl,
+      numberOfItems: channels.length,
+      itemListElement: channels.slice(0, 20).map((ch, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: `${ch.name} heute um 20:15 Uhr`,
+        url: `${siteUrl}/${ch.id}/`,
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      '@id': `${pageUrl}#breadcrumb`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'TV Programm heute', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: '20:15 Uhr Prime Time', item: pageUrl },
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      ...webPageEntity(
+        pageUrl,
+        'TV Programm 20:15 Uhr heute – Was läuft heute Abend um 20:15 im TV?',
+        'Alle Filme, Serien und Shows um 20:15 Uhr im deutschen Fernsehen auf ARD, ZDF, RTL, ProSieben, SAT.1 und allen Sendern zur Prime Time.',
+      ),
+    },
+  ];
+}
+
+// ---------------------------------------------------------------------------
 // Hub Kategorie (/film-heute-abend, /serien-heute-abend, /sport-heute-abend)
 // ---------------------------------------------------------------------------
 export function buildHubCategoryJsonLd({

@@ -1,16 +1,4 @@
 User-agent: *
 Allow: /
 
-# Kein Indexieren von Testkanälen und Adult-Kanälen
-Disallow: /testkanal*
-Disallow: /testkanal-*
-Disallow: /beate-uhse*
-Disallow: /blue-hustler*
-Disallow: /bluehustler*
-Disallow: /playboy*
-Disallow: /penthouse*
-Disallow: /lust-pur*
-Disallow: /lustpur*
-
 Sitemap: https://fernsehheute.de/sitemap-index.xml
-Sitemap: https://fernsehheute.de/sitemap-0.xml

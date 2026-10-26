@@ -1,6 +1,14 @@
 import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
 import tailwindcss from '@tailwindcss/vite'
+import { readFileSync, existsSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+function loadEmptyChannels() {
+  const p = resolve(process.cwd(), '.astro/empty-channels.json');
+  if (!existsSync(p)) return new Set();
+  try { return new Set(JSON.parse(readFileSync(p, 'utf8'))); } catch { return new Set(); }
+}
 
 export default defineConfig({
   site: 'https://fernsehheute.de',
@@ -29,13 +37,21 @@ export default defineConfig({
         if (url.includes('%20') || url.includes('+') || url.includes(' ') || url.includes('/programm/')) {
           return false;
         }
+        // Exclude channel pages with no EPG data (soft 404 prevention)
+        const slugMatch = page.match(/https?:\/\/[^/]+\/([^/]+)\/?$/);
+        if (slugMatch) {
+          const emptyChannels = loadEmptyChannels();
+          if (emptyChannels.has(slugMatch[1])) return false;
+        }
         return true;
       },
       serialize(item) {
         const now = new Date();
+        // Midnight Berlin time — stable within the day, no per-build jitter
+        const todayMidnight = new Date(now.toLocaleDateString('en-CA', { timeZone: 'Europe/Berlin' }));
         const url = item.url.replace(/\/$/, '') + '/';
 
-        // Homepage
+        // Homepage — genuinely changes every hour
         if (url === 'https://fernsehheute.de/' || item.url === 'https://fernsehheute.de') {
           return {
             ...item,
@@ -45,30 +61,30 @@ export default defineConfig({
           };
         }
 
-        // Top Category Hubs
-        if (/\/(film-heute-abend|serien-heute-abend|sport-heute-abend|morgen)\/?$/.test(item.url)) {
+        // Top Category Hubs — change once per day, use stable midnight timestamp
+        if (/\/(film-heute-abend|serien-heute-abend|sport-heute-abend|morgen|jetzt|20-15)\/?$/.test(item.url)) {
           return {
             ...item,
-            lastmod: now,
+            lastmod: todayMidnight,
             priority: 0.9,
             changefreq: 'daily',
           };
         }
 
-        // Top Free-To-Air German Channels
+        // Top Free-To-Air German Channels — stable midnight timestamp
         if (/\/(das-erste|zdf|sat1|prosieben|rtl|vox|rtl2|kabel-eins|3sat|arte|nitro|super-rtl|tele5|zdf-neo|zdfinfo|one|sixx|phoenix|tagesschau24|n-tv|welt|sport1|dmax|kika|ard-alpha)\/?$/.test(item.url)) {
           return {
             ...item,
-            lastmod: now,
+            lastmod: todayMidnight,
             priority: 0.85,
             changefreq: 'daily',
           };
         }
 
-        // Other valid channels
+        // Other channels — stable midnight timestamp, don't signal "changed this second"
         return {
           ...item,
-          lastmod: now,
+          lastmod: todayMidnight,
           priority: 0.7,
           changefreq: 'daily',
         };

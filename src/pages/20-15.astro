@@ -1,0 +1,233 @@
+---
+/**
+ * /20-15/ — TV Programm 20:15 Uhr heute
+ * Intercetta: "tv programm 20 15", "tv programm heute 20 15", "fernsehprogramm 20 15" (1.100.000 ric./mese)
+ * Focalizzato al 100% sulla fascia Prime Time d'oro delle 20:15 su tutti i canali tedeschi.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ChannelCard from '../components/ChannelCard.astro';
+import AdSlot from '../components/AdSlot.astro';
+import { ADSENSE_SLOTS } from '../lib/adsense';
+import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
+import { getTodayInBerlin, formatDateDE, getBerlinMinutes } from '../utils/timeSlots';
+import { buildHub2015JsonLd, buildFaqJsonLd } from '../utils/jsonld';
+import { normCid } from '../utils/channelSlug';
+import { isAdultChannel, isTestChannel, filterRealPrograms } from '../utils/channelFilters';
+import { AGF_ORDER } from '../utils/agfOrder';
+import type { Channel, Program } from '../types';
+
+const today = getTodayInBerlin();
+const dateLabel = formatDateDE(today);
+
+type ChannelWithSlug = Channel & { slug: string; programs: Program[] };
+let channelsWithPrograms: ChannelWithSlug[] = [];
+let fetchError: string | null = null;
+
+try {
+  const [channels, allPrograms] = await Promise.all([
+    fetchChannels(),
+    fetchProgramsForDate(today),
+  ]);
+
+  const programsByChannel = new Map<string, Program[]>();
+  for (const prog of allPrograms) {
+    const key = normCid(prog.channel_id ?? '');
+    if (!programsByChannel.has(key)) programsByChannel.set(key, []);
+    programsByChannel.get(key)!.push(prog);
+  }
+
+  for (const ch of channels) {
+    const slug = normCid(ch.id);
+    if (isAdultChannel(slug, ch.name) || isTestChannel(slug, ch.name)) continue;
+
+    const allChPrograms = programsByChannel.get(slug) ?? [];
+    const realChPrograms = filterRealPrograms(allChPrograms);
+    if (realChPrograms.length < 3) continue;
+
+    // Ordina e seleziona i programmi per la Prime Time (intorno alle 20:15)
+    const sortedPrograms = realChPrograms
+      .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+    // Verifica se ha programmi della serata
+    const eveningPrograms = sortedPrograms.filter(p => {
+      const m = getBerlinMinutes(p.start_time);
+      return m >= 17 * 60;
+    });
+
+    if (eveningPrograms.length > 0) {
+      channelsWithPrograms.push({ ...ch, programs: sortedPrograms, slug });
+    }
+  }
+
+  channelsWithPrograms.sort((a, b) => {
+    const ai = AGF_ORDER.indexOf(a.slug), bi = AGF_ORDER.indexOf(b.slug);
+    if (ai === -1 && bi === -1) return 0;
+    if (ai === -1) return 1;
+    if (bi === -1) return -1;
+    return ai - bi;
+  });
+} catch (err) {
+  fetchError = err instanceof Error ? err.message : JSON.stringify(err);
+  console.error('[20-15] fetch error:', fetchError);
+}
+
+const FAQS = [
+  {
+    question: 'Was läuft heute um 20:15 Uhr im Fernsehen?',
+    answer: 'Um 20:15 Uhr beginnt im deutschen Fernsehen die Prime Time (Hauptabendprogramm). Auf dieser Seite findest du auf einen Blick alle Blockbuster-Filme, Krimis (wie Tatort oder Polizeiruf), Shows und Serien auf Das Erste (ARD), ZDF, RTL, ProSieben, SAT.1, VOX und weiteren über 40 Sendern.',
+  },
+  {
+    question: 'Warum beginnt das Abendprogramm in Deutschland um 20:15 Uhr?',
+    answer: 'Die Sendezeit 20:15 Uhr ist eine deutsche Fernsehtradition. Sie entstand durch die ARD-Nachrichtensendung Tagesschau, die täglich exakt um 20:00 Uhr beginnt und 15 Minuten dauert. Alle Partnersender und Privatkanäle haben ihren Hauptabend seither auf 20:15 Uhr synchronisiert.',
+  },
+  {
+    question: 'Welche Filme laufen heute um 20:15 Uhr zur Prime Time?',
+    answer: 'Über unsere dedizierte Spielfilm-Übersicht (Filme heute Abend) kannst du dir gezielt alle Spielfilme ab 20:15 Uhr anzeigen lassen, gefiltert nach Genre wie Thriller, Komödie, Drama oder Actionfilm.',
+  },
+  {
+    question: 'Gibt es die 20:15-Uhr-Sendungen auch in der Mediathek?',
+    answer: 'Ja, die meisten Sendungen der öffentlich-rechtlichen Sender (ARD, ZDF, Arte, 3sat) sowie vieler Privatsender stehen zeitgleich zum Sendestart oder direkt im Anschluss als Video-on-Demand in der ARD Mediathek, ZDFmediathek, Joyn oder RTL+ bereit.',
+  },
+];
+
+const primeSchemas = buildHub2015JsonLd({ channels: channelsWithPrograms });
+const faqSchema    = buildFaqJsonLd(FAQS);
+const jsonLd       = [...primeSchemas, faqSchema];
+
+const pageTitle   = 'TV Programm 20:15 Uhr heute – Was läuft heute Abend um 20:15 im TV? | FernsehHeute';
+const description = 'Was läuft heute um 20:15 Uhr im Fernsehen? Alle Spielfilme, Serien, Shows und Sport zur Prime Time auf Das Erste (ARD), ZDF, RTL, ProSieben, SAT.1 und allen Sendern.';
+const keywords    = 'tv programm 20 15, tv programm heute 20 15, fernsehprogramm 20 15, was läuft heute um 20 15, tv heute 20 uhr 15, prime time heute, 20 15 uhr im tv, fernsehprogramm heute 20 15';
+---
+
+<BaseLayout
+  title={pageTitle}
+  {description}
+  {keywords}
+  canonicalUrl="https://fernsehheute.de/20-15/"
+  {jsonLd}
+>
+  <Header />
+
+  <!-- ── Hero Section ─────────────────────────────────────────────────────── -->
+  <section class="bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 border-b border-slate-200/80 dark:border-slate-800 py-6 sm:py-9">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center gap-2 mb-2.5">
+        <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 px-2.5 py-1 rounded-full shadow-xs">
+          <span>🌙</span>
+          Prime Time 20:15 Uhr
+        </span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white">
+        TV Programm 20:15 Uhr heute &mdash; <span class="text-blue-600 dark:text-blue-400">Prime Time aller Sender</span>
+      </h1>
+      <p class="text-slate-600 dark:text-slate-400 mt-2.5 text-sm sm:text-base max-w-3xl leading-relaxed">
+        <span class="font-semibold text-slate-800 dark:text-slate-200">{dateLabel}</span> &mdash; 
+        <strong>Was läuft heute um 20:15 Uhr im TV?</strong> Das komplette Hauptabendprogramm im deutschen Fernsehen: 
+        Die besten Spielfilme, Serien, Unterhaltungsshows und Sportübertragungen zur besten Sendezeit.
+      </p>
+
+      <!-- Quick Switcher Navigation Pills -->
+      <div class="mt-5 flex flex-wrap items-center gap-2">
+        <span class="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-600 text-white shadow-xs flex items-center gap-1.5">
+          🌙 20:15 Prime Time
+        </span>
+        <a href="/jetzt/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-rose-400 hover:text-rose-600 transition-colors flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse"></span>
+          ⚡ Jetzt live im TV
+        </a>
+        <a href="/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:text-blue-600 transition-colors">
+          📺 Heute Abend
+        </a>
+        <a href="/film-heute-abend/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:text-blue-600 transition-colors">
+          🎬 Spielfilme
+        </a>
+        <a href="/morgen/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:text-blue-600 transition-colors">
+          📅 Morgen
+        </a>
+      </div>
+
+      <!-- Search Filter Bar -->
+      <div class="mt-6 pt-4 border-t border-slate-200/60 dark:border-slate-800/60 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        <div class="relative flex-1 max-w-md">
+          <input
+            id="channel-search-input"
+            type="search"
+            placeholder="🔍 Sender oder Prime-Time-Sendung suchen (z.B. Tatort, RTL)..."
+            class="w-full px-4 py-2.5 pl-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs placeholder:text-slate-400"
+            aria-label="Sender oder Sendung suchen"
+          />
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <p class="text-xs text-slate-500 dark:text-slate-400">
+          <strong class="text-slate-800 dark:text-slate-200">{channelsWithPrograms.length} Sender</strong> zur Prime Time ab 20:15 Uhr
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Main Grid ─────────────────────────────────────────────────────────── -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
+      {channelsWithPrograms.slice(0, 10).map(ch => (
+        <ChannelCard channel={ch} programs={ch.programs} slug={ch.slug} mode="20-15" />
+      ))}
+    </div>
+
+    <!-- AdSlot In-Feed -->
+    <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={160} />
+
+    {channelsWithPrograms.length > 10 && (
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800 mt-6">
+        {channelsWithPrograms.slice(10).map(ch => (
+          <ChannelCard channel={ch} programs={ch.programs} slug={ch.slug} mode="20-15" />
+        ))}
+      </div>
+    )}
+
+    <!-- FAQ Section -->
+    <section class="mt-12 bg-slate-50 dark:bg-slate-900/60 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8">
+      <h2 class="text-xl sm:text-2xl font-bold text-slate-950 dark:text-white mb-6 flex items-center gap-2">
+        <span>❓</span> Häufige Fragen zum TV-Programm um 20:15 Uhr (FAQ)
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {FAQS.map(faq => (
+          <div class="bg-white dark:bg-slate-800/80 rounded-xl p-5 border border-slate-200/60 dark:border-slate-700/60">
+            <h3 class="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 mb-2">
+              {faq.question}
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              {faq.answer}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- AdSlot Pre-Footer -->
+    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} minHeight={200} />
+  </main>
+
+  <Footer />
+
+  <!-- Client-side Search Filter Script -->
+  <script is:inline>
+    (function () {
+      var searchInput = document.getElementById('channel-search-input');
+      if (searchInput) {
+        searchInput.addEventListener('input', function (e) {
+          var q = (e.target.value || '').toLowerCase().trim();
+          document.querySelectorAll('.channel-card-item').forEach(function (el) {
+            var name = el.getAttribute('data-channel-name') || '';
+            var title = el.getAttribute('data-program-title') || '';
+            var match = !q || name.indexOf(q) !== -1 || title.indexOf(q) !== -1;
+            el.style.display = match ? '' : 'none';
+          });
+        });
+      }
+    })();
+  </script>
+</BaseLayout>
