@@ -11,7 +11,7 @@ import ChannelCard from '../components/ChannelCard.astro';
 import AdSlot from '../components/AdSlot.astro';
 import { ADSENSE_SLOTS } from '../lib/adsense';
 import { fetchChannels, fetchProgramsForDate } from '../lib/epg';
-import { getTodayInBerlin, formatDateDE, getBerlinMinutes } from '../utils/timeSlots';
+import { getTodayInBerlin, formatDateDE, getPrimeTimeProgram } from '../utils/timeSlots';
 import { buildHub2015JsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { normCid } from '../utils/channelSlug';
 import { isAdultChannel, isTestChannel, filterRealPrograms } from '../utils/channelFilters';
@@ -46,17 +46,13 @@ try {
     const realChPrograms = filterRealPrograms(allChPrograms);
     if (realChPrograms.length < 3) continue;
 
-    // Ordina e seleziona i programmi per la Prime Time (intorno alle 20:15)
+    // Ordina i programmi della giornata
     const sortedPrograms = realChPrograms
       .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
-    // Verifica se ha programmi della serata
-    const eveningPrograms = sortedPrograms.filter(p => {
-      const m = getBerlinMinutes(p.start_time);
-      return m >= 17 * 60;
-    });
-
-    if (eveningPrograms.length > 0) {
+    // Seleziona canali con vero programma Prime Time (in onda alle 20:15 o inizio alle 20:15)
+    const primeProg = getPrimeTimeProgram(sortedPrograms);
+    if (primeProg) {
       channelsWithPrograms.push({ ...ch, programs: sortedPrograms, slug });
     }
   }
@@ -166,6 +162,59 @@ const keywords    = 'tv programm 20 15, tv programm heute 20 15, fernsehprogramm
           <strong class="text-slate-800 dark:text-slate-200">{channelsWithPrograms.length} Sender</strong> zur Prime Time ab 20:15 Uhr
         </p>
       </div>
+
+      <!-- Quick Filter Chips by Genre -->
+      <div id="genre-filter-chips" class="mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <button
+          type="button"
+          data-filter="all"
+          class="genre-chip active px-3 py-1 rounded-xl text-xs font-bold bg-amber-600 text-white shadow-xs cursor-pointer transition-colors"
+        >
+          Alle ({channelsWithPrograms.length})
+        </button>
+        <button
+          type="button"
+          data-filter="film"
+          class="genre-chip px-3 py-1 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:text-amber-600 cursor-pointer transition-colors"
+        >
+          🎬 Spielfilme
+        </button>
+        <button
+          type="button"
+          data-filter="serie"
+          class="genre-chip px-3 py-1 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:text-amber-600 cursor-pointer transition-colors"
+        >
+          📺 Serien & Krimis
+        </button>
+        <button
+          type="button"
+          data-filter="show"
+          class="genre-chip px-3 py-1 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:text-amber-600 cursor-pointer transition-colors"
+        >
+          🎭 Shows & Unterhaltung
+        </button>
+        <button
+          type="button"
+          data-filter="sport"
+          class="genre-chip px-3 py-1 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:text-amber-600 cursor-pointer transition-colors"
+        >
+          ⚽ Sport
+        </button>
+        <button
+          type="button"
+          data-filter="doku"
+          class="genre-chip px-3 py-1 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:text-amber-600 cursor-pointer transition-colors"
+        >
+          🔍 Dokus
+        </button>
+        <button
+          type="button"
+          data-filter="news"
+          class="genre-chip px-3 py-1 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-amber-400 hover:text-amber-600 cursor-pointer transition-colors"
+        >
+          📰 Nachrichten
+        </button>
+      </div>
     </div>
   </section>
 
@@ -213,19 +262,51 @@ const keywords    = 'tv programm 20 15, tv programm heute 20 15, fernsehprogramm
 
   <Footer />
 
-  <!-- Client-side Search Filter Script -->
+  <!-- Client-side Search & Category Filter Script -->
   <script is:inline>
     (function () {
+      var currentCategory = 'all';
+      var currentQuery = '';
+
+      function applyFilters() {
+        var cards = document.querySelectorAll('.channel-card-item');
+        cards.forEach(function (card) {
+          var name = (card.getAttribute('data-channel-name') || '').toLowerCase();
+          var title = (card.getAttribute('data-program-title') || '').toLowerCase();
+          var cat = card.getAttribute('data-category') || 'sonstiges';
+
+          var matchesQuery = !currentQuery || name.indexOf(currentQuery) !== -1 || title.indexOf(currentQuery) !== -1;
+          var matchesCategory = currentCategory === 'all' || cat === currentCategory;
+
+          card.style.display = (matchesQuery && matchesCategory) ? '' : 'none';
+        });
+      }
+
       var searchInput = document.getElementById('channel-search-input');
       if (searchInput) {
         searchInput.addEventListener('input', function (e) {
-          var q = (e.target.value || '').toLowerCase().trim();
-          document.querySelectorAll('.channel-card-item').forEach(function (el) {
-            var name = el.getAttribute('data-channel-name') || '';
-            var title = el.getAttribute('data-program-title') || '';
-            var match = !q || name.indexOf(q) !== -1 || title.indexOf(q) !== -1;
-            el.style.display = match ? '' : 'none';
+          currentQuery = (e.target.value || '').toLowerCase().trim();
+          applyFilters();
+        });
+      }
+
+      var chipContainer = document.getElementById('genre-filter-chips');
+      if (chipContainer) {
+        chipContainer.addEventListener('click', function (e) {
+          var btn = e.target.closest('.genre-chip');
+          if (!btn) return;
+          var filter = btn.getAttribute('data-filter');
+          if (!filter) return;
+          currentCategory = filter;
+
+          chipContainer.querySelectorAll('.genre-chip').forEach(function (b) {
+            b.classList.remove('active', 'bg-amber-600', 'text-white');
+            b.classList.add('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
           });
+          btn.classList.add('active', 'bg-amber-600', 'text-white');
+          btn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+
+          applyFilters();
         });
       }
     })();

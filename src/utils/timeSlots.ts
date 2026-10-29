@@ -92,3 +92,86 @@ export const isPrimeTime = (startTime: string): boolean => {
   const h = getBerlinHour(startTime);
   return h >= 20 && h <= 22;
 };
+
+/**
+ * Trova il vero programma di Prime Time (20:15) per un canale.
+ * Regole rigorose per la TV tedesca:
+ * 1. Il programma DEVE essere in onda alle 20:15 (start <= 20:15 AND end > 20:15).
+ *    NON deve finire alle o prima delle 20:15 (es. Wetter 19:20-19:25 o GZSZ 19:40-20:15 NON sono il programma 20:15!).
+ *    Se ce ne sono più di uno (es. show iniziato alle 19:30 o 20:00), preferisce quello iniziato più vicino alle 20:15.
+ * 2. Un programma che inizia attorno alle 20:15 (finestra 20:00 - 20:45), il più vicino possibile alle 20:15.
+ * 3. Fallback: primo programma che inizia dopo le 20:15 nella prima serata (tra 20:15 e 22:00).
+ */
+export function getPrimeTimeProgram(programs: { start_time: string; end_time: string; [key: string]: any }[]): any {
+  if (!programs || programs.length === 0) return null;
+  const TARGET_MIN = 20 * 60 + 15; // 1215 min = 20:15 Berlin
+
+  // 1. Program on air AT 20:15 (must start <= 20:15 AND end > 20:15)
+  // Strict condition: end > TARGET_MIN (program must NOT have already ended!)
+  const covering = programs.filter(p => {
+    const s = getBerlinMinutes(p.start_time);
+    let e = getBerlinMinutes(p.end_time);
+    if (e < s) e += 1440; // crosses midnight
+    // Avoid daytime shows that started before 18:00 unless nothing else exists
+    return s <= TARGET_MIN && e > TARGET_MIN && s >= 18 * 60;
+  });
+
+  if (covering.length > 0) {
+    // Pick the one starting closest to 20:15 (highest start timestamp)
+    covering.sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
+    return covering[0];
+  }
+
+  // 2. Program starting around 20:15 (window 20:00 - 20:45) closest to 20:15
+  const window2015 = programs.filter(p => {
+    const s = getBerlinMinutes(p.start_time);
+    return s >= 20 * 60 && s <= 20 * 60 + 45;
+  });
+  if (window2015.length > 0) {
+    window2015.sort((a, b) => {
+      const diffA = Math.abs(getBerlinMinutes(a.start_time) - TARGET_MIN);
+      const diffB = Math.abs(getBerlinMinutes(b.start_time) - TARGET_MIN);
+      return diffA - diffB;
+    });
+    return window2015[0];
+  }
+
+  // 3. Fallback: any show covering 20:15 even if started before 18:00 (e.g. sports marathon)
+  const anyCovering = programs.filter(p => {
+    const s = getBerlinMinutes(p.start_time);
+    let e = getBerlinMinutes(p.end_time);
+    if (e < s) e += 1440;
+    return s <= TARGET_MIN && e > TARGET_MIN;
+  });
+  if (anyCovering.length > 0) {
+    anyCovering.sort((a, b) => new Date(b.start_time).getTime() - new Date(a.start_time).getTime());
+    return anyCovering[0];
+  }
+
+  // 4. Closest evening show starting after 20:15 (20:15 - 22:00)
+  const after2015 = programs.filter(p => {
+    const s = getBerlinMinutes(p.start_time);
+    return s > TARGET_MIN && s <= 22 * 60;
+  });
+  if (after2015.length > 0) {
+    after2015.sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+    return after2015[0];
+  }
+
+  return null;
+}
+
+/**
+ * Trova il programma serale per la Homepage "Heute Abend" (fascia serale dalle 18:00 in poi).
+ */
+export function getEveningProgram(programs: { start_time: string; end_time: string; [key: string]: any }[]): any {
+  if (!programs || programs.length === 0) return null;
+  const eveningProgs = programs.filter(p => {
+    const s = getBerlinMinutes(p.start_time);
+    return s >= 18 * 60 && s < 23 * 60;
+  });
+  if (eveningProgs.length > 0) {
+    return eveningProgs[0];
+  }
+  return programs[0] ?? null;
+}

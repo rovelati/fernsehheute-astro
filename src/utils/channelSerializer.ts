@@ -1,4 +1,4 @@
-import { formatTime } from './timeSlots';
+import { formatTime, getPrimeTimeProgram, getEveningProgram, getBerlinMinutes } from './timeSlots';
 import { getChannelLogo } from './channelLogos';
 import type { Channel, Program } from '../types';
 
@@ -24,31 +24,22 @@ export interface SerializedChannelCard {
 
 export function serializeChannelForClient(
   channel: Channel & { slug: string; programs: Program[] },
-  mode: 'abend' | 'morgen' = 'abend'
+  mode: 'abend' | 'morgen' | '20-15' = 'abend'
 ): SerializedChannelCard {
   const resolvedLogo = getChannelLogo(channel.id, channel.logo, channel.name);
-  const toUTCMin = (t: string) => {
-    const d = new Date(t);
-    return d.getUTCHours() * 60 + d.getUTCMinutes();
-  };
-  const PRIME_START   = 18 * 60 + 15;
-  const PRIME_END     = 21 * 60;
-  const EVENING_START = 15 * 60;
-  const MORNING_START =  4 * 60;
 
-  const primeProgram   = channel.programs.find(p => {
-    const m = toUTCMin(p.start_time);
-    return m >= PRIME_START && m < PRIME_END;
-  }) ?? null;
-  const eveningProgram = channel.programs.find(p => toUTCMin(p.start_time) >= EVENING_START) ?? null;
-  const morningFirst   = channel.programs.find(p => toUTCMin(p.start_time) >= MORNING_START) ?? null;
+  const morningFirst = channel.programs.find(p => getBerlinMinutes(p.start_time) >= 6 * 60) ?? null;
+  const prime2015Program = getPrimeTimeProgram(channel.programs);
+  const eveningProgram = getEveningProgram(channel.programs);
 
   const displayProgram: Program | null = mode === 'morgen'
-    ? (primeProgram ?? morningFirst ?? channel.programs[0] ?? null)
-    : (primeProgram ?? eveningProgram ?? channel.programs[0] ?? null);
+    ? (prime2015Program ?? morningFirst ?? channel.programs[0] ?? null)
+    : mode === '20-15'
+      ? (prime2015Program ?? channel.programs[0] ?? null)
+      : (eveningProgram ?? prime2015Program ?? channel.programs[0] ?? null);
 
   const nextProgram = displayProgram
-    ? channel.programs.find(p => new Date(p.start_time) > new Date(displayProgram!.end_time)) ?? null
+    ? channel.programs.find(p => new Date(p.start_time) >= new Date(displayProgram!.end_time)) ?? null
     : null;
 
   const rawCat = (displayProgram?.category || '').toLowerCase();
