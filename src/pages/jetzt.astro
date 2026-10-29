@@ -64,9 +64,9 @@ try {
   console.error('[jetzt] fetch error:', fetchError);
 }
 
-// Compact JSON for real-time client-side live tracking
-// [id, title, startSec, endSec, category, poster_url, description]
-const liveEpgData: Record<string, [string, string, number, number, string, string | null, string][]> = {};
+// Compact lightweight JSON for real-time client-side live tracking:
+// [id, title, startSec, endSec, category, poster_url]
+const liveEpgData: Record<string, [string, string, number, number, string, string | null][]> = {};
 for (const ch of channelsWithPrograms) {
   liveEpgData[ch.slug] = ch.programs.map(p => [
     p.id,
@@ -75,7 +75,6 @@ for (const ch of channelsWithPrograms) {
     Math.floor(new Date(p.end_time).getTime() / 1000),
     p.category ?? '',
     p.poster_url ?? null,
-    p.description ? p.description.slice(0, 240) : '',
   ]);
 }
 const liveEpgJson = JSON.stringify(liveEpgData);
@@ -228,8 +227,25 @@ const keywords    = 'was läuft jetzt im tv, tv programm jetzt, fernsehprogramm 
   <!-- Client-side Real-time Live Engine -->
   <script is:inline>
     (function () {
+      var berlinFmt;
+      try {
+        berlinFmt = new Intl.DateTimeFormat('de-DE', {
+          timeZone: 'Europe/Berlin',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+      } catch (e) {
+        berlinFmt = null;
+      }
+
       function fmtTime(sec) {
         var d = new Date(sec * 1000);
+        if (berlinFmt) {
+          try {
+            return berlinFmt.format(d);
+          } catch (e) {}
+        }
         return d.toLocaleTimeString('de-DE', {
           timeZone: 'Europe/Berlin',
           hour: '2-digit',
@@ -259,6 +275,12 @@ const keywords    = 'was läuft jetzt im tv, tv programm jetzt, fernsehprogramm 
         var clockEl = document.getElementById('clock-display');
         if (clockEl) {
           var now = new Date();
+          if (berlinFmt) {
+            try {
+              clockEl.textContent = berlinFmt.format(now);
+              return;
+            } catch (e) {}
+          }
           clockEl.textContent = now.toLocaleTimeString('de-DE', {
             timeZone: 'Europe/Berlin',
             hour: '2-digit',
@@ -273,98 +295,137 @@ const keywords    = 'was läuft jetzt im tv, tv programm jetzt, fernsehprogramm 
         var cards = document.querySelectorAll('.jetzt-card');
 
         cards.forEach(function (card) {
-          var slug = card.getAttribute('data-channel-slug');
-          var logo = card.getAttribute('data-channel-logo') || '';
-          var chName = card.getAttribute('data-channel-name') || slug;
-          var progs = liveEpg[slug];
-          if (!progs || !progs.length) return;
+          try {
+            var slug = card.getAttribute('data-channel-slug');
+            var logo = card.getAttribute('data-channel-logo') || '';
+            var chName = card.getAttribute('data-channel-name') || slug;
+            var progs = liveEpg[slug];
+            if (!progs || !progs.length) return;
 
-          // Find current live program
-          var currentProg = null;
-          var nextProg = null;
-          for (var i = 0; i < progs.length; i++) {
-            var p = progs[i];
-            if (p[2] <= nowSec && nowSec < p[3]) {
-              currentProg = p;
-              nextProg = progs[i + 1] || null;
-              break;
-            }
-          }
-
-          // Fallback to closest future or last past
-          if (!currentProg) {
-            for (var j = 0; j < progs.length; j++) {
-              if (progs[j][2] > nowSec) {
-                currentProg = progs[j];
-                nextProg = progs[j + 1] || null;
+            // Find current live program
+            var currentProg = null;
+            var nextProg = null;
+            for (var i = 0; i < progs.length; i++) {
+              var p = progs[i];
+              if (p[2] <= nowSec && nowSec < p[3]) {
+                currentProg = p;
+                nextProg = progs[i + 1] || null;
                 break;
               }
             }
-            if (!currentProg) currentProg = progs[progs.length - 1];
+
+            // Fallback to closest future or last past
+            if (!currentProg) {
+              for (var j = 0; j < progs.length; j++) {
+                if (progs[j][2] > nowSec) {
+                  currentProg = progs[j];
+                  nextProg = progs[j + 1] || null;
+                  break;
+                }
+              }
+              if (!currentProg) currentProg = progs[progs.length - 1];
+            }
+
+            if (!currentProg) return;
+
+            // Update card search attribute
+            card.setAttribute('data-program-title', (currentProg[1] || '').toLowerCase());
+
+            var isLive = currentProg[2] <= nowSec && nowSec < currentProg[3];
+            var durSec = Math.max(1, currentProg[3] - currentProg[2]);
+            var elapsedSec = Math.max(0, nowSec - currentProg[2]);
+            var pct = isLive ? Math.min(100, Math.max(0, Math.round((elapsedSec / durSec) * 100))) : 0;
+            var remainMin = isLive ? Math.max(1, Math.round((currentProg[3] - nowSec) / 60)) : 0;
+
+            var overlayData = {
+              id: currentProg[0],
+              title: currentProg[1],
+              startTime: new Date(currentProg[2] * 1000).toISOString(),
+              endTime: new Date(currentProg[3] * 1000).toISOString(),
+              category: currentProg[4] || '',
+              poster_url: currentProg[5] || null,
+              description: '',
+              channelId: slug,
+              channelLogo: logo,
+              channelName: chName,
+            };
+            var overlayStr = JSON.stringify(overlayData);
+
+            // 1. Center column: content
+            var contentEl = card.querySelector('.jetzt-program-content');
+            if (contentEl) {
+              contentEl.setAttribute('data-program', overlayStr);
+
+              var badgeHTML = isLive
+                ? '<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 px-1.5 py-0.5 rounded-full"><span class="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse inline-block"></span>Live</span>'
+                : '<span class="inline-flex items-center text-[9px] font-semibold uppercase tracking-wider text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-full">Demnächst</span>';
+
+              var remainHTML = isLive
+                ? '<span class="text-blue-600 dark:text-blue-400 font-semibold text-[10px]">noch ' + remainMin + ' Min.</span>'
+                : '';
+
+              var catHTML = currentProg[4]
+                ? '<span class="uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500">' + esc(currentProg[4]) + '</span>'
+                : '';
+
+              var nextHTML = nextProg
+                ? '<p class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 truncate"><span class="tabular-nums font-semibold">' + fmtTime(nextProg[2]) + '</span> — <span class="text-slate-600 dark:text-slate-400">' + esc(nextProg[1]) + '</span></p>'
+                : '';
+
+              contentEl.innerHTML =
+                '<div>' +
+                  '<p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mb-0.5 flex items-center gap-1.5 flex-wrap">' +
+                    badgeHTML +
+                    '<span class="tabular-nums font-semibold text-slate-700 dark:text-slate-300">' + fmtTime(currentProg[2]) + ' – ' + fmtTime(currentProg[3]) + '</span>' +
+                    remainHTML +
+                    catHTML +
+                  '</p>' +
+                  '<p class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug mb-1.5 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">' +
+                    esc(currentProg[1]) +
+                  '</p>' +
+                  '<div class="h-[3px] w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700 mb-1.5">' +
+                    '<div class="h-full rounded-full bg-blue-500 dark:bg-blue-400 transition-all" style="width:' + pct + '%"></div>' +
+                  '</div>' +
+                  nextHTML +
+                '</div>';
+            }
+
+            // 2. Right column: poster & modal trigger
+            var rightCol = card.querySelector('.jetzt-right-col');
+            if (rightCol) {
+              rightCol.setAttribute('data-program', overlayStr);
+              rightCol.setAttribute('title', esc(currentProg[1]) + ' — Details ansehen');
+            }
+
+            var posterWrap = card.querySelector('.jetzt-poster-wrap');
+            var posterImg = card.querySelector('.jetzt-poster-img');
+            if (posterImg && posterWrap) {
+              if (currentProg[5]) {
+                posterImg.src = currentProg[5];
+                posterImg.alt = currentProg[1];
+                posterWrap.classList.remove('hidden');
+                posterWrap.setAttribute('title', esc(currentProg[1]) + ' — Details ansehen');
+              } else {
+                posterWrap.classList.add('hidden');
+              }
+            }
+          } catch (errCard) {
+            // Isolates each card
           }
-
-          var contentEl = card.querySelector('.jetzt-program-content');
-          if (!contentEl || !currentProg) return;
-
-          var isLive = currentProg[2] <= nowSec && nowSec < currentProg[3];
-          var durSec = Math.max(1, currentProg[3] - currentProg[2]);
-          var elapsedSec = Math.max(0, nowSec - currentProg[2]);
-          var pct = isLive ? Math.min(100, Math.max(0, Math.round((elapsedSec / durSec) * 100))) : 0;
-          var remainMin = isLive ? Math.max(1, Math.round((currentProg[3] - nowSec) / 60)) : 0;
-
-          var overlayData = {
-            id: currentProg[0],
-            title: currentProg[1],
-            startTime: new Date(currentProg[2] * 1000).toISOString(),
-            endTime: new Date(currentProg[3] * 1000).toISOString(),
-            category: currentProg[4] || '',
-            poster_url: currentProg[5] || null,
-            description: currentProg[6] || '',
-            channelId: slug,
-            channelLogo: logo,
-            channelName: chName,
-          };
-
-          contentEl.setAttribute('data-program', JSON.stringify(overlayData));
-
-          var badgeHTML = isLive
-            ? '<span class="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 px-1.5 py-0.5 rounded-full"><span class="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse inline-block"></span>Live</span>'
-            : '<span class="inline-flex items-center text-[9px] font-semibold uppercase tracking-wider text-slate-500 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-full">Demnächst</span>';
-
-          var remainHTML = isLive
-            ? '<span class="text-blue-600 dark:text-blue-400 font-semibold text-[10px]">noch ' + remainMin + ' Min.</span>'
-            : '';
-
-          var catHTML = currentProg[4]
-            ? '<span class="uppercase tracking-wide font-semibold text-slate-400 dark:text-slate-500">' + esc(currentProg[4]) + '</span>'
-            : '';
-
-          var nextHTML = nextProg
-            ? '<p class="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 truncate"><span class="tabular-nums font-semibold">' + fmtTime(nextProg[2]) + '</span> — <span class="text-slate-600 dark:text-slate-400">' + esc(nextProg[1]) + '</span></p>'
-            : '';
-
-          contentEl.innerHTML =
-            '<div>' +
-              '<p class="text-[10px] sm:text-[11px] text-slate-400 dark:text-slate-500 mb-0.5 flex items-center gap-1.5 flex-wrap">' +
-                badgeHTML +
-                '<span class="tabular-nums font-semibold text-slate-700 dark:text-slate-300">' + fmtTime(currentProg[2]) + ' – ' + fmtTime(currentProg[3]) + '</span>' +
-                remainHTML +
-                catHTML +
-              '</p>' +
-              '<p class="text-[13px] sm:text-sm font-bold text-slate-900 dark:text-slate-100 leading-snug mb-1.5 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">' +
-                esc(currentProg[1]) +
-              '</p>' +
-              '<div class="h-[3px] w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700 mb-1.5">' +
-                '<div class="h-full rounded-full bg-blue-500 dark:bg-blue-400 transition-all" style="width:' + pct + '%"></div>' +
-              '</div>' +
-              nextHTML +
-            '</div>';
         });
       }
 
-      // Initial execution + interval
-      updateClock();
-      updateLiveCards();
+      function initLive() {
+        updateClock();
+        updateLiveCards();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initLive);
+      } else {
+        initLive();
+      }
+
       setInterval(function () {
         updateClock();
         updateLiveCards();

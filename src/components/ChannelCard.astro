@@ -169,32 +169,37 @@ const overlayJson = displayProgram ? JSON.stringify({
 
     <!-- Spalte rechts: Poster & Chevron (Öffnet Modal) -->
     <div
-      class="flex items-center gap-2 shrink-0 cursor-pointer"
+      class:list={[
+        'flex items-center gap-2 shrink-0 cursor-pointer',
+        mode === 'jetzt' && 'jetzt-right-col',
+      ]}
       data-program={overlayJson}
       role="button"
       tabindex="0"
       title={displayProgram ? `${displayProgram.title} — Details ansehen` : undefined}
     >
-      {displayProgram?.poster_url && (
-        <div
-          class="w-16 sm:w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs cursor-pointer group-hover:scale-105 transition-transform"
-          role="button"
-          tabindex="0"
-          title={`${displayProgram.title} — Details ansehen`}
-        >
-          <img
-            src={displayProgram.poster_url}
-            alt={displayProgram.title}
-            width="96"
-            height="54"
-            loading="lazy"
-            decoding="async"
-            referrerpolicy="no-referrer"
-            class="w-full h-full object-cover object-top"
-            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80';"
-          />
-        </div>
-      )}
+      <div
+        class:list={[
+          'w-16 sm:w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs cursor-pointer group-hover:scale-105 transition-transform',
+          !displayProgram?.poster_url && 'hidden',
+          mode === 'jetzt' && 'jetzt-poster-wrap',
+        ]}
+        role="button"
+        tabindex="0"
+        title={displayProgram ? `${displayProgram.title} — Details ansehen` : undefined}
+      >
+        <img
+          src={displayProgram?.poster_url ?? ''}
+          alt={displayProgram?.title ?? ''}
+          width="96"
+          height="54"
+          loading="lazy"
+          decoding="async"
+          referrerpolicy="no-referrer"
+          class:list={['w-full h-full object-cover object-top', mode === 'jetzt' && 'jetzt-poster-img']}
+          onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80';"
+        />
+      </div>
 
       <!-- Chevron (nur Desktop) -->
       <div class="hidden sm:flex items-center justify-center pl-1">
