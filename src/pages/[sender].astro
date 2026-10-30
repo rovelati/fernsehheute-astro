@@ -23,6 +23,7 @@ import { getChannelStream } from '../utils/channelStreams';
 import { HUB_CHANNELS } from '../utils/hubChannels';
 import { normCid } from '../utils/channelSlug';
 import { isAdultChannel, isTestChannel, filterRealPrograms, isClubChannel } from '../utils/channelFilters';
+import { isSwissExclusiveChannel } from '../utils/swissOrder';
 import type { Channel, Program } from '../types';
 import type { ProgramEnrichment } from '../lib/epg';
 
@@ -133,9 +134,14 @@ const sectionPrimeTime  = programs.filter(p => { const m = toUTCMin(p.start_time
 const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_END);
 
 // ── SEO ───────────────────────────────────────────────────────────────────
-const cleanName   = channel.name.replace(/^DE\s*-\s*/i, '').trim();
-const pageTitle   = `${cleanName} Programm heute & heute Abend – TV-Programm`;
-const description = `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr auf ${cleanName} im TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`;
+const cleanName   = channel.name.replace(/^(DE|CH)\s*-\s*/i, '').trim();
+const isSwiss     = isSwissExclusiveChannel(slug, channel.category);
+const pageTitle   = isSwiss
+  ? `${cleanName} Programm heute & heute Abend – TV-Programm Schweiz`
+  : `${cleanName} Programm heute & heute Abend – TV-Programm`;
+const description = isSwiss
+  ? `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien im Schweizer TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`
+  : `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr auf ${cleanName} im TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`;
 const keywords    = `${cleanName.toLowerCase()} programm heute, ${cleanName.toLowerCase()} heute, ${cleanName.toLowerCase()} programm heute abend, ${cleanName.toLowerCase()} heute abend, ${cleanName.toLowerCase()} programm, was läuft heute auf ${cleanName.toLowerCase()}, ${cleanName.toLowerCase()} sendeplan, ${cleanName.toLowerCase()} fernsehprogramm`;
 const canonicalUrl = `https://fernsehheute.de/${slug}/`;
 const ogImage      = resolvedLogo.startsWith('http') || resolvedLogo.startsWith('/') ? resolvedLogo : undefined;
@@ -197,7 +203,13 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
   <!-- ── Breadcrumb ──────────────────────────────────────────────────────── -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-3">
     <nav class="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500" aria-label="Breadcrumb">
-      <a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Fernsehprogramm heute</a>
+      <a href="/" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Startseite</a>
+      {isSwiss && (
+        <>
+          <span aria-hidden="true">›</span>
+          <a href="/schweiz/" class="hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium text-slate-500 dark:text-slate-400">🇨🇭 Schweiz</a>
+        </>
+      )}
       <span aria-hidden="true">›</span>
       <span class="text-slate-600 dark:text-slate-300 font-medium">{cleanName}</span>
     </nav>

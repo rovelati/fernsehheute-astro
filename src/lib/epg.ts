@@ -66,6 +66,7 @@ function mapChannel(raw: RawChannel): Channel {
     position: raw.channel_number ?? 999,
     streamUrl: raw.stream_url ?? undefined,
     website: raw.website_url ?? undefined,
+    category: raw.category ?? undefined,
   };
 }
 

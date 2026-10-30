@@ -25,6 +25,20 @@ const GERMANY_ID = 'https://www.wikidata.org/wiki/Q183';
 // Wikidata entity disambiguation per i canali principali tedeschi
 // ---------------------------------------------------------------------------
 const CHANNEL_WIKIDATA: Record<string, string> = {
+  // Schweiz (SRG SSR & Privat)
+  'srf-1':        'https://www.wikidata.org/wiki/Q670695',
+  'srf-zwei':     'https://www.wikidata.org/wiki/Q670701',
+  'srf-info':     'https://www.wikidata.org/wiki/Q670698',
+  '3plus':        'https://www.wikidata.org/wiki/Q229566',
+  '4plus':        'https://www.wikidata.org/wiki/Q238711',
+  'tv24':         'https://www.wikidata.org/wiki/Q16654950',
+  'tv25':         'https://www.wikidata.org/wiki/Q23899538',
+  'telezueri':    'https://www.wikidata.org/wiki/Q675549',
+  'tele-baern':   'https://www.wikidata.org/wiki/Q689718',
+  'telebasel':    'https://www.wikidata.org/wiki/Q674483',
+  'swiss-1':      'https://www.wikidata.org/wiki/Q42308115',
+
+  // Deutschland
   'das-erste':    'https://www.wikidata.org/wiki/Q7465',
   'zdf':          'https://www.wikidata.org/wiki/Q62562',
   'rtl':          'https://www.wikidata.org/wiki/Q170447',
@@ -53,6 +67,17 @@ const CHANNEL_WIKIDATA: Record<string, string> = {
 
 // URL streaming ufficiali — usati in WatchAction
 const CHANNEL_STREAM_URL: Record<string, string> = {
+  // Schweiz
+  'srf-1':        'https://www.srf.ch/play/tv/live/srf-1',
+  'srf-zwei':     'https://www.srf.ch/play/tv/live/srf-zwei',
+  'srf-info':     'https://www.srf.ch/play/tv/live/srf-info',
+  '3plus':        'https://www.oneplus.ch',
+  'tv24':         'https://tv24.ch',
+  'telezueri':    'https://www.telezueri.ch/live',
+  'tele-baern':   'https://www.telebaern.tv/live',
+  'telebasel':    'https://telebasel.ch/live',
+
+  // Deutschland
   'das-erste':  'https://www.daserste.de/live/index.html',
   'zdf':        'https://www.zdf.de/live-tv',
   'rtl':        'https://plus.rtl.de/',

@@ -26,6 +26,7 @@ export interface Channel {
   isRadio?: boolean;
   streamUrl?: string;
   website?: string;
+  category?: string;
   visible?: boolean;
   position?: number;
   source?: string;

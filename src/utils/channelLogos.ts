@@ -17,6 +17,29 @@ const normalizeKey = (s?: string | null): string => {
 };
 
 const LOCAL_LOGOS: Record<string, string> = {
+  // ── Schweizer Sender (SRG SSR & Privat) ────────────────────────────────────
+  'srf-1':                  '/channel-logos/srf-1.svg',
+  'srf1':                   '/channel-logos/srf-1.svg',
+  'srf-zwei':               '/channel-logos/srf-zwei.svg',
+  'srfzwei':                '/channel-logos/srf-zwei.svg',
+  'srf-info':               '/channel-logos/srf-info.svg',
+  'srfinfo':                '/channel-logos/srf-info.svg',
+  '3plus':                  '/channel-logos/3plus.svg',
+  '4plus':                  '/channel-logos/4plus.svg',
+  '5plus':                  '/channel-logos/3plus.svg',
+  '6plus':                  '/channel-logos/3plus.svg',
+  '7plus':                  '/channel-logos/3plus.svg',
+  'tv24':                   '/channel-logos/tv24.svg',
+  'tv25':                   '/channel-logos/tv25.svg',
+  'puls-8':                 '/channel-logos/puls-8.svg',
+  'puls8':                  '/channel-logos/puls-8.svg',
+  'swiss-1':                '/channel-logos/swiss-1.svg',
+  'swiss1':                 '/channel-logos/swiss-1.svg',
+  'telezueri':              '/channel-logos/telezueri.svg',
+  'tele-baern':             '/channel-logos/tele-baern.svg',
+  'telebaern':              '/channel-logos/tele-baern.svg',
+  'telebasel':              '/channel-logos/telebasel.svg',
+
   // ── ARD / ZDF / ÖR ──────────────────────────────────────────────────────────
   'das-erste':              '/channel-logos/das-erste.svg',
   'daserste':               '/channel-logos/das-erste.svg',

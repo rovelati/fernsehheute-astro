@@ -14,6 +14,7 @@ import { getTomorrowInBerlin, formatDateDE, getBerlinHour } from '../utils/timeS
 import { buildHubMorgenJsonLd } from '../utils/jsonld';
 import { normCid } from '../utils/channelSlug';
 import { isAdultChannel, isTestChannel, filterRealPrograms } from '../utils/channelFilters';
+import { isSwissExclusiveChannel } from '../utils/swissOrder';
 import { AGF_ORDER } from '../utils/agfOrder';
 import type { Channel, Program } from '../types';
 
@@ -40,6 +41,7 @@ try {
   for (const ch of channels) {
     const slug = normCid(ch.id);
     if (isAdultChannel(slug, ch.name) || isTestChannel(slug, ch.name)) continue;
+    if (isSwissExclusiveChannel(slug, ch.category)) continue;
 
     const allChPrograms = programsByChannel.get(slug) ?? [];
     const realChPrograms = filterRealPrograms(allChPrograms);
