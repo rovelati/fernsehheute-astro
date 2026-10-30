@@ -24,6 +24,7 @@ const ENDPOINTS = [
 // High-priority hub pages
 const HUB_PATHS = [
   '/',
+  '/schweiz/',
   '/jetzt/',
   '/20-15/',
   '/morgen/',
@@ -32,7 +33,7 @@ const HUB_PATHS = [
   '/sport-heute-abend/',
 ];
 
-// Major Free-to-Air and ARD Regional Channels
+// Major Free-to-Air, Swiss, and Regional Channels
 const TOP_CHANNEL_PATHS = [
   '/das-erste/',
   '/zdf/',
@@ -42,6 +43,20 @@ const TOP_CHANNEL_PATHS = [
   '/vox/',
   '/rtl2/',
   '/kabel-eins/',
+  '/srf-1/',
+  '/srf-zwei/',
+  '/srf-info/',
+  '/3plus/',
+  '/4plus/',
+  '/tv24/',
+  '/tv25/',
+  '/puls-8/',
+  '/swiss-1/',
+  '/telezueri/',
+  '/tele-baern/',
+  '/telebasel/',
+  '/muenchen-tv/',
+  '/tv-ingolstadt/',
   '/3sat/',
   '/arte/',
   '/nitro/',
@@ -149,7 +164,7 @@ async function extractSitemapUrls() {
   return null;
 }
 
-async function getTop200Urls() {
+async function getAllCanonicalUrls() {
   const redirectsSet = loadRedirects();
   const emptyChannels = loadEmptyChannels();
   const isValidPath = (p) => {
@@ -174,46 +189,56 @@ async function getTop200Urls() {
   // 1. Hubs first
   for (const h of HUB_PATHS) addPath(h);
 
-  // 2. Top channels second
+  // 2. Top channels second (including Swiss channels, muenchen-tv, tv-ingolstadt, etc.)
   for (const c of TOP_CHANNEL_PATHS) addPath(c);
 
-  // 3. Sitemap remaining canonical URLs up to 200
+  // 3. All remaining canonical URLs from sitemap (up to IndexNow max limit of 10,000)
   if (sitemapUrls && sitemapUrls.length > 0) {
     for (const u of sitemapUrls) {
       const pathPart = u.replace(SITE_URL, '');
       if (isValidPath(pathPart) && !orderedUrls.includes(u)) {
         orderedUrls.push(u);
       }
-      if (orderedUrls.length >= 200) break;
+      if (orderedUrls.length >= 10000) break;
     }
   }
 
-  // 4. If still under 200, fill from top-200-paths.json
-  if (orderedUrls.length < 200) {
-    const fallbackPaths = loadFallbackPaths();
-    for (const p of fallbackPaths) {
-      addPath(p);
-      if (orderedUrls.length >= 200) break;
-    }
+  // 4. Fill from top-200-paths.json if any are missing
+  const fallbackPaths = loadFallbackPaths();
+  for (const p of fallbackPaths) {
+    addPath(p);
+    if (orderedUrls.length >= 10000) break;
   }
 
-  return orderedUrls.slice(0, 200);
+  return orderedUrls;
 }
 
 async function pingIndexNow() {
   console.log(`[IndexNow] Preparing Bing/Microsoft IndexNow notification for ${HOST}...`);
-  const topUrls = await getTop200Urls();
-  console.log(`[IndexNow] Submitting top ${topUrls.length} priority URLs:`);
-  console.log(`  First URL (#1):   ${topUrls[0]}`);
-  console.log(`  50th URL (#50):   ${topUrls[49] || '-'}`);
-  console.log(`  100th URL (#100): ${topUrls[99] || '-'}`);
-  console.log(`  Last URL (#${topUrls.length}):  ${topUrls[topUrls.length - 1]}`);
+  const allUrls = await getAllCanonicalUrls();
+  console.log(`[IndexNow] Submitting all ${allUrls.length} canonical URLs to IndexNow:`);
+  console.log(`  First URL (#1):   ${allUrls[0]}`);
+  console.log(`  50th URL (#50):   ${allUrls[49] || '-'}`);
+  console.log(`  100th URL (#100): ${allUrls[99] || '-'}`);
+  console.log(`  Last URL (#${allUrls.length}):  ${allUrls[allUrls.length - 1]}`);
+
+  // Specifically verify muenchen-tv, tv-ingolstadt and Swiss channels are included
+  const checkUrls = [
+    'https://fernsehheute.de/muenchen-tv/',
+    'https://fernsehheute.de/tv-ingolstadt/',
+    'https://fernsehheute.de/schweiz/',
+    'https://fernsehheute.de/srf-1/',
+    'https://fernsehheute.de/3plus/',
+  ];
+  for (const cu of checkUrls) {
+    console.log(`  [Check] ${cu} -> ${allUrls.includes(cu) ? 'INCLUDED' : 'MISSING'}`);
+  }
 
   const payload = {
     host: HOST,
     key: KEY,
     keyLocation: KEY_LOCATION,
-    urlList: topUrls,
+    urlList: allUrls,
   };
 
   for (const endpoint of ENDPOINTS) {
@@ -228,7 +253,7 @@ async function pingIndexNow() {
       });
 
       if (response.status === 200 || response.status === 202) {
-        console.log(`[IndexNow] SUCCESS! (${endpoint}) Status ${response.status}: Submitted top ${topUrls.length} priority URLs.`);
+        console.log(`[IndexNow] SUCCESS! (${endpoint}) Status ${response.status}: Submitted all ${allUrls.length} canonical URLs.`);
       } else {
         const txt = await response.text();
         console.warn(`[IndexNow] WARN (${endpoint}): Status ${response.status} - ${txt}`);
