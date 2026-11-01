@@ -24,6 +24,7 @@ import { HUB_CHANNELS } from '../utils/hubChannels';
 import { normCid } from '../utils/channelSlug';
 import { isAdultChannel, isTestChannel, filterRealPrograms, isClubChannel } from '../utils/channelFilters';
 import { isSwissExclusiveChannel } from '../utils/swissOrder';
+import { isAustriaExclusiveChannel } from '../utils/austriaOrder';
 import type { Channel, Program } from '../types';
 import type { ProgramEnrichment } from '../lib/epg';
 
@@ -134,13 +135,18 @@ const sectionPrimeTime  = programs.filter(p => { const m = toUTCMin(p.start_time
 const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_END);
 
 // ── SEO ───────────────────────────────────────────────────────────────────
-const cleanName   = channel.name.replace(/^(DE|CH)\s*-\s*/i, '').trim();
+const cleanName   = channel.name.replace(/^(DE|CH|AT)\s*-\s*/i, '').trim();
 const isSwiss     = isSwissExclusiveChannel(slug, channel.category);
+const isAustria   = isAustriaExclusiveChannel(slug, channel.category);
 const pageTitle   = isSwiss
   ? `${cleanName} Programm heute & heute Abend – TV-Programm Schweiz`
+  : isAustria
+  ? `${cleanName} Programm heute & heute Abend – TV-Programm Österreich`
   : `${cleanName} Programm heute & heute Abend – TV-Programm`;
 const description = isSwiss
   ? `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien im Schweizer TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`
+  : isAustria
+  ? `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien im TV-Programm Österreich mit genauen Sendezeiten und Mediathek-Infos.`
   : `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr auf ${cleanName} im TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`;
 const keywords    = `${cleanName.toLowerCase()} programm heute, ${cleanName.toLowerCase()} heute, ${cleanName.toLowerCase()} programm heute abend, ${cleanName.toLowerCase()} heute abend, ${cleanName.toLowerCase()} programm, was läuft heute auf ${cleanName.toLowerCase()}, ${cleanName.toLowerCase()} sendeplan, ${cleanName.toLowerCase()} fernsehprogramm`;
 const canonicalUrl = `https://fernsehheute.de/${slug}/`;
@@ -208,6 +214,12 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
         <>
           <span aria-hidden="true">›</span>
           <a href="/schweiz/" class="hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium text-slate-500 dark:text-slate-400">🇨🇭 Schweiz</a>
+        </>
+      )}
+      {isAustria && (
+        <>
+          <span aria-hidden="true">›</span>
+          <a href="/oesterreich/" class="hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium text-slate-500 dark:text-slate-400">🇦🇹 Österreich</a>
         </>
       )}
       <span aria-hidden="true">›</span>

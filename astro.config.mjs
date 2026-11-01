@@ -30,7 +30,7 @@ export default defineConfig({
           return false;
         }
         // Exclude redirect alias pages (they 301 to hub pages)
-        if (url.endsWith('/filme/') || url.endsWith('/spielfilme/') || url.endsWith('/serien/') || url.endsWith('/sport/')) {
+        if (url.endsWith('/austria/') || url.endsWith('/filme/') || url.endsWith('/spielfilme/') || url.endsWith('/serien/') || url.endsWith('/sport/')) {
           return false;
         }
         // Exclude URLs with spaces or illegal characters
@@ -61,8 +61,8 @@ export default defineConfig({
           };
         }
 
-        // Top Category Hubs — change once per day, use stable midnight timestamp
-        if (/\/(film-heute-abend|serien-heute-abend|sport-heute-abend|morgen|jetzt|20-15)\/?$/.test(item.url)) {
+        // Top Category & Country Hubs — change once per day, use stable midnight timestamp
+        if (/\/(film-heute-abend|serien-heute-abend|sport-heute-abend|morgen|jetzt|20-15|oesterreich|schweiz)\/?$/.test(item.url)) {
           return {
             ...item,
             lastmod: todayMidnight,
@@ -71,8 +71,8 @@ export default defineConfig({
           };
         }
 
-        // Top Free-To-Air German Channels — stable midnight timestamp
-        if (/\/(das-erste|zdf|sat1|prosieben|rtl|vox|rtl2|kabel-eins|3sat|arte|nitro|super-rtl|tele5|zdf-neo|zdfinfo|one|sixx|phoenix|tagesschau24|n-tv|welt|sport1|dmax|kika|ard-alpha)\/?$/.test(item.url)) {
+        // Top Free-To-Air Channels (DE, AT, CH) — stable midnight timestamp
+        if (/\/(das-erste|zdf|sat1|prosieben|rtl|vox|rtl2|kabel-eins|3sat|arte|nitro|super-rtl|tele5|zdf-neo|zdfinfo|one|sixx|phoenix|tagesschau24|n-tv|welt|sport1|dmax|kika|ard-alpha|orf-1|orf-2|orf-iii|servus-tv|atv|puls-4|srf-1|srf-zwei|3plus)\/?$/.test(item.url)) {
           return {
             ...item,
             lastmod: todayMidnight,

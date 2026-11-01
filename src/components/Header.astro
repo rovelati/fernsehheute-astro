@@ -6,6 +6,7 @@
  */
 import { HUB_CHANNELS } from '../utils/hubChannels';
 import { SWISS_HUB_CHANNELS, isSwissExclusiveChannel } from '../utils/swissOrder';
+import { AUSTRIA_HUB_CHANNELS, isAustriaExclusiveChannel } from '../utils/austriaOrder';
 import BookmarkButton from './BookmarkButton.astro';
 
 const CATEGORY_LINKS = [
@@ -16,12 +17,17 @@ const CATEGORY_LINKS = [
 
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isSchweiz = pathname === '/schweiz' || (pathname.length > 1 && isSwissExclusiveChannel(pathname.slice(1)));
-const isHeute  = pathname === '/' && !isSchweiz;
+const isOesterreich = pathname === '/oesterreich' || (pathname.length > 1 && isAustriaExclusiveChannel(pathname.slice(1)));
+const isHeute  = pathname === '/' && !isSchweiz && !isOesterreich;
 const isJetzt  = pathname === '/jetzt';
 const is2015   = pathname === '/20-15';
 const isMorgen = pathname === '/morgen';
 
-const currentHubChannels = isSchweiz ? SWISS_HUB_CHANNELS : HUB_CHANNELS;
+const currentHubChannels = isSchweiz
+  ? SWISS_HUB_CHANNELS
+  : isOesterreich
+  ? AUSTRIA_HUB_CHANNELS
+  : HUB_CHANNELS;
 ---
 
 <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 shadow-sm">
@@ -43,8 +49,8 @@ const currentHubChannels = isSchweiz ? SWISS_HUB_CHANNELS : HUB_CHANNELS;
           </svg>
         </div>
         <div class="hidden sm:flex flex-col -space-y-1.5">
-          <span class:list={['text-[10px] font-black tracking-[0.3em] uppercase', isSchweiz ? 'text-red-600' : 'text-blue-600']}>
-            {isSchweiz ? 'Schweiz' : 'Deutschland'}
+          <span class:list={['text-[10px] font-black tracking-[0.3em] uppercase', isSchweiz || isOesterreich ? 'text-red-600' : 'text-blue-600']}>
+            {isSchweiz ? 'Schweiz' : isOesterreich ? 'Österreich' : 'Deutschland'}
           </span>
           <span class="text-xl font-light tracking-tighter text-slate-800 dark:text-slate-200">
             FERNSEH <span class="font-black text-slate-950 dark:text-white">HEUTE</span>
@@ -63,6 +69,9 @@ const currentHubChannels = isSchweiz ? SWISS_HUB_CHANNELS : HUB_CHANNELS;
         </a>
         <a href="/20-15/" class:list={['px-3 py-1.5 rounded-lg font-semibold transition-colors', is2015 ? 'bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']}>
           20:15 Prime Time
+        </a>
+        <a href="/oesterreich/" class:list={['px-3 py-1.5 rounded-lg font-semibold transition-colors flex items-center gap-1', isOesterreich ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']}>
+          <span>🇦🇹</span> Österreich
         </a>
         <a href="/schweiz/" class:list={['px-3 py-1.5 rounded-lg font-semibold transition-colors flex items-center gap-1', isSchweiz ? 'bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800']}>
           <span>🇨🇭</span> Schweiz
@@ -95,7 +104,7 @@ const currentHubChannels = isSchweiz ? SWISS_HUB_CHANNELS : HUB_CHANNELS;
             href="/"
             class:list={[
               'px-2 py-0.5 rounded-full transition-all flex items-center gap-1 text-[11px]',
-              !isSchweiz
+              !isSchweiz && !isOesterreich
                 ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-white shadow-xs'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
             ]}
@@ -103,6 +112,19 @@ const currentHubChannels = isSchweiz ? SWISS_HUB_CHANNELS : HUB_CHANNELS;
           >
             <span>🇩🇪</span>
             <span class="hidden sm:inline">DE</span>
+          </a>
+          <a
+            href="/oesterreich/"
+            class:list={[
+              'px-2 py-0.5 rounded-full transition-all flex items-center gap-1 text-[11px]',
+              isOesterreich
+                ? 'bg-red-600 text-white shadow-xs'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+            ]}
+            title="TV-Programm Österreich"
+          >
+            <span>🇦🇹</span>
+            <span class="hidden sm:inline">AT</span>
           </a>
           <a
             href="/schweiz/"
@@ -121,7 +143,7 @@ const currentHubChannels = isSchweiz ? SWISS_HUB_CHANNELS : HUB_CHANNELS;
 
         <BookmarkButton />
 
-        <!-- Mobile: JETZT / 20:15 / CH / HEUTE -->
+        <!-- Mobile: JETZT / 20:15 / AT / CH / HEUTE -->
         <div class="flex md:hidden items-center gap-0.5 bg-slate-100 dark:bg-slate-800 rounded-full p-0.5 overflow-x-auto max-w-[210px] scrollbar-none">
           <a href="/jetzt/" class:list={['px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-colors whitespace-nowrap flex items-center gap-1', isJetzt ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white']}>
             <span class="w-1.5 h-1.5 bg-rose-400 rounded-full animate-pulse inline-block"></span>
@@ -129,6 +151,9 @@ const currentHubChannels = isSchweiz ? SWISS_HUB_CHANNELS : HUB_CHANNELS;
           </a>
           <a href="/20-15/" class:list={['px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-colors whitespace-nowrap', is2015 ? 'bg-amber-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white']}>
             20:15
+          </a>
+          <a href="/oesterreich/" class:list={['px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-colors whitespace-nowrap', isOesterreich ? 'bg-red-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white']}>
+            🇦🇹 AT
           </a>
           <a href="/schweiz/" class:list={['px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-colors whitespace-nowrap', isSchweiz ? 'bg-red-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white']}>
             🇨🇭 CH
@@ -165,7 +190,7 @@ const currentHubChannels = isSchweiz ? SWISS_HUB_CHANNELS : HUB_CHANNELS;
           href={`/${ch.id}/`}
           class:list={[
             'flex-shrink-0 px-2.5 py-1 rounded-full transition-colors font-medium whitespace-nowrap',
-            isSchweiz
+            isSchweiz || isOesterreich
               ? 'bg-slate-100 dark:bg-slate-800 hover:bg-red-600 hover:text-white dark:hover:bg-red-600 text-slate-600 dark:text-slate-400'
               : 'bg-slate-100 dark:bg-slate-800 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-600 dark:text-slate-400'
           ]}

@@ -40,6 +40,11 @@ const LOCAL_LOGOS: Record<string, string> = {
   'telebaern':              '/channel-logos/tele-baern.svg',
   'telebasel':              '/channel-logos/telebasel.svg',
 
+  // ── Österreichische Sender ────────────────────────────────────────────────
+  'servus-tv':              '/channel-logos/servus-tv-osterreich.png',
+  'servustv':               '/channel-logos/servus-tv-osterreich.png',
+  'atv':                    '/channel-logos/atv.png',
+
   // ── ARD / ZDF / ÖR ──────────────────────────────────────────────────────────
   'das-erste':              '/channel-logos/das-erste.svg',
   'daserste':               '/channel-logos/das-erste.svg',

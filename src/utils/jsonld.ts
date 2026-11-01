@@ -38,6 +38,22 @@ const CHANNEL_WIKIDATA: Record<string, string> = {
   'telebasel':    'https://www.wikidata.org/wiki/Q674483',
   'swiss-1':      'https://www.wikidata.org/wiki/Q42308115',
 
+  // Österreich (ORF, Privat & Regional)
+  'orf-1':          'https://www.wikidata.org/wiki/Q264103',
+  'orf-2':          'https://www.wikidata.org/wiki/Q264105',
+  'orf-2-europe':   'https://www.wikidata.org/wiki/Q689791',
+  'orf-iii':        'https://www.wikidata.org/wiki/Q264109',
+  'orf-sport-plus': 'https://www.wikidata.org/wiki/Q532135',
+  'servus-tv':      'https://www.wikidata.org/wiki/Q694165',
+  'atv':            'https://www.wikidata.org/wiki/Q298894',
+  'atv2':           'https://www.wikidata.org/wiki/Q298896',
+  'puls-4':         'https://www.wikidata.org/wiki/Q689729',
+  'puls-24':        'https://www.wikidata.org/wiki/Q66005747',
+  'oe24-tv':        'https://www.wikidata.org/wiki/Q26961444',
+  'krone-tv':       'https://www.wikidata.org/wiki/Q99538350',
+  'w24':            'https://www.wikidata.org/wiki/Q2536894',
+  'r9':             'https://www.wikidata.org/wiki/Q21287950',
+
   // Deutschland
   'das-erste':    'https://www.wikidata.org/wiki/Q7465',
   'zdf':          'https://www.wikidata.org/wiki/Q62562',
@@ -76,6 +92,22 @@ const CHANNEL_STREAM_URL: Record<string, string> = {
   'telezueri':    'https://www.telezueri.ch/live',
   'tele-baern':   'https://www.telebaern.tv/live',
   'telebasel':    'https://telebasel.ch/live',
+
+  // Österreich (ORF, Privat & Regional)
+  'orf-1':          'https://on.orf.at/live',
+  'orf-2':          'https://on.orf.at/live',
+  'orf-2-europe':   'https://on.orf.at/live',
+  'orf-iii':        'https://on.orf.at/live',
+  'orf-sport-plus': 'https://on.orf.at/live',
+  'servus-tv':      'https://www.servustv.com/live/',
+  'atv':            'https://www.joyn.at/live/atv',
+  'atv2':           'https://www.joyn.at/live/atv2',
+  'puls-4':         'https://www.joyn.at/live/puls-4',
+  'puls-24':        'https://www.joyn.at/live/puls-24',
+  'oe24-tv':        'https://www.oe24.at/video/live',
+  'krone-tv':       'https://www.krone.at/krone-tv',
+  'w24':            'https://www.w24.at/Livestream',
+  'r9':             'https://www.r9oesterreich.at',
 
   // Deutschland
   'das-erste':  'https://www.daserste.de/live/index.html',
