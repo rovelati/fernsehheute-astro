@@ -11,11 +11,12 @@ import type { Channel, Program } from '../types';
 interface Props {
   channel: Channel;
   programs: Program[];
-  slug: string;
+  slug?: string;
   mode?: 'abend' | 'morgen' | '20-15' | 'jetzt';
 }
 
-const { channel, programs, slug, mode = 'abend' } = Astro.props;
+const { channel, programs, mode = 'abend' } = Astro.props;
+const slug = Astro.props.slug || (channel as any).slug || channel.id;
 
 // Risolve logo locale ad alta definizione con fallback automatico
 const resolvedLogo = getChannelLogo(channel.id, channel.logo, channel.name);

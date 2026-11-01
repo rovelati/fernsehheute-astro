@@ -24,6 +24,7 @@ const ENDPOINTS = [
 // High-priority hub pages
 const HUB_PATHS = [
   '/',
+  '/oesterreich/',
   '/schweiz/',
   '/jetzt/',
   '/20-15/',
@@ -33,8 +34,18 @@ const HUB_PATHS = [
   '/sport-heute-abend/',
 ];
 
-// Major Free-to-Air, Swiss, and Regional Channels
+// Major Free-to-Air, Austrian, Swiss, and Regional Channels
 const TOP_CHANNEL_PATHS = [
+  '/orf-1/',
+  '/orf-2/',
+  '/orf-iii/',
+  '/orf-sport-plus/',
+  '/servus-tv/',
+  '/atv/',
+  '/puls-4/',
+  '/puls-24/',
+  '/krone-tv/',
+  '/oe24-tv/',
   '/das-erste/',
   '/zdf/',
   '/sat1/',
