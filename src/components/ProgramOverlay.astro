@@ -187,6 +187,22 @@
       transform: scale(1);
     }
   }
+
+  /* Kontrast-Garantie für Aktions-Buttons: Text & Icon immer 100% lesbar */
+  #overlay-watch.action-primary,
+  #overlay-watch.action-primary *,
+  #overlay-watch.action-primary font {
+    color: #ffffff !important;
+  }
+  #overlay-watch.action-primary svg {
+    color: #ffffff !important;
+    fill: currentColor !important;
+    stroke: currentColor !important;
+  }
+  #overlay-watch.action-primary #icon-watch-play {
+    stroke: none !important;
+    fill: #ffffff !important;
+  }
 </style>
 
 <!-- ─── Client-side Script ───────────────────────────────────────────────── -->
@@ -221,6 +237,32 @@
     'welt':        'https://www.welt.de/tv-programm-live-stream/',
     'sport1':      'https://www.sport1.de/liveticker/livestream',
     'tele5':       'https://tele5.de/',
+    // Dritte Programme & Regional (ARD)
+    'br':          'https://www.br.de/mediathek/live',
+    'br-fernsehen': 'https://www.br.de/mediathek/live',
+    'br-fernsehen-nord': 'https://www.br.de/mediathek/live',
+    'br-fernsehen-sud': 'https://www.br.de/mediathek/live',
+    'wdr':         'https://www1.wdr.de/fernsehen/live/index.html',
+    'wdr-fernsehen-koln': 'https://www1.wdr.de/fernsehen/live/index.html',
+    'ndr':         'https://www.ndr.de/fernsehen/livestream/index.html',
+    'ndr-fernsehen-niedersachsen': 'https://www.ndr.de/fernsehen/livestream/index.html',
+    'swr':         'https://www.swrfernsehen.de/live/index.html',
+    'swr-bw':      'https://www.swrfernsehen.de/live/index.html',
+    'swr-rp':      'https://www.swrfernsehen.de/live/index.html',
+    'mdr':         'https://www.mdr.de/video/livestreams/fernsehen/index.html',
+    'mdr-sachsen': 'https://www.mdr.de/video/livestreams/fernsehen/index.html',
+    'mdr-thueringen': 'https://www.mdr.de/video/livestreams/fernsehen/index.html',
+    'hr':          'https://www.hr-fernsehen.de/livestream/index.html',
+    'hr-fernsehen': 'https://www.hr-fernsehen.de/livestream/index.html',
+    'rbb':         'https://www.rbb-online.de/fernsehen/live/index.html',
+    'rbb-berlin':  'https://www.rbb-online.de/fernsehen/live/index.html',
+    'sr':          'https://www.sr.de/sr/home/fernsehen/livestream/index.html',
+    'sr-fernsehen': 'https://www.sr.de/sr/home/fernsehen/livestream/index.html',
+    // ORF & SRF
+    'orf-1':       'https://on.orf.at/live',
+    'orf-2':       'https://on.orf.at/live',
+    'srf-1':       'https://www.srf.ch/play/tv/live',
+    'srf-zwei':    'https://www.srf.ch/play/tv/live',
   };
 
   /** channel_id → offizielle Sender-Website (Fallback wenn kein Live-Stream) */
@@ -479,7 +521,9 @@
       const websiteUrl = data.channelId ? WEBSITES[data.channelId] : null;
 
       // Reset base styling & icons
-      watchEl.className = 'flex-1 flex items-center justify-center gap-2 px-4 py-3 font-bold rounded-2xl transition-colors text-sm shadow-sm';
+      watchEl.className = 'flex-1 flex items-center justify-center gap-2 px-4 py-3 font-bold rounded-xl transition-colors text-sm shadow-sm cursor-pointer';
+      watchEl.style.color = '#ffffff';
+      if (watchLabel) watchLabel.style.color = '#ffffff';
       iconPlay?.classList.add('hidden');
       iconGlobe?.classList.add('hidden');
       iconClose?.classList.add('hidden');
@@ -491,17 +535,17 @@
         watchEl.setAttribute('rel', 'noopener noreferrer');
         watchEl.title = 'Offiziellen Live-Stream in neuem Tab öffnen';
         watchEl.onclick = null;
-        watchEl.classList.add('bg-blue-600', 'hover:bg-blue-700', 'active:bg-blue-800', 'text-white');
+        watchEl.classList.add('bg-blue-600', 'hover:bg-blue-700', 'active:bg-blue-800', 'text-white', 'action-primary');
         iconPlay?.classList.remove('hidden');
         if (watchLabel) watchLabel.textContent = 'Live-Stream';
       } else if (websiteUrl) {
-        // 2. Offizielle Sender-Website
+        // 2. Offizielle Sender-Website (immer mit starkem Kontrast in Blau/Weiss)
         watchEl.href = websiteUrl;
         watchEl.setAttribute('target', '_blank');
         watchEl.setAttribute('rel', 'noopener noreferrer');
         watchEl.title = 'Offizielle Website des Senders öffnen';
         watchEl.onclick = null;
-        watchEl.classList.add('bg-slate-800', 'hover:bg-slate-900', 'dark:bg-slate-700', 'dark:hover:bg-slate-600', 'text-white');
+        watchEl.classList.add('bg-blue-600', 'hover:bg-blue-700', 'active:bg-blue-800', 'text-white', 'action-primary');
         iconGlobe?.classList.remove('hidden');
         if (watchLabel) watchLabel.textContent = 'Sender-Website';
       } else {
@@ -514,7 +558,9 @@
           e.preventDefault();
           closeOverlay();
         };
-        watchEl.classList.add('bg-slate-100', 'hover:bg-slate-200', 'dark:bg-slate-800', 'dark:hover:bg-slate-700', 'text-slate-700', 'dark:text-slate-300');
+        watchEl.className = 'flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl transition-colors text-sm cursor-pointer';
+        watchEl.style.color = '';
+        if (watchLabel) watchLabel.style.color = '';
         iconClose?.classList.remove('hidden');
         if (watchLabel) watchLabel.textContent = 'Schließen';
       }
