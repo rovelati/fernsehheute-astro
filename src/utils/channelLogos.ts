@@ -42,7 +42,6 @@ const LOCAL_LOGOS: Record<string, string> = {
 
   // ── Österreichische Sender ────────────────────────────────────────────────
   'servus-tv':              '/channel-logos/servus-tv-osterreich.png',
-  'servustv':               '/channel-logos/servus-tv-osterreich.png',
   'atv':                    '/channel-logos/atv.png',
 
   // ── ARD / ZDF / ÖR ──────────────────────────────────────────────────────────
