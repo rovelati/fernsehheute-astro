@@ -7,7 +7,7 @@
 <!-- ─── Overlay Root ──────────────────────────────────────────────────────── -->
 <div
   id="program-overlay"
-  class="fixed inset-0 z-[200] flex items-end md:items-center justify-center"
+  class="fixed inset-0 z-[2147483640] flex items-end md:items-center justify-center p-0 md:p-6 pb-20 md:pb-6"
   aria-modal="true"
   role="dialog"
   aria-labelledby="overlay-title-el"
@@ -16,10 +16,10 @@
   <!-- Backdrop -->
   <div id="overlay-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
 
-  <!-- Panel: Bottom-Sheet auf Mobile, zentriertes Modal auf Desktop -->
+  <!-- Panel: Bottom-Sheet auf Mobile, zentriertes breites Modal auf Desktop -->
   <div
     id="overlay-panel"
-    class="relative w-full md:max-w-[520px] mx-auto max-h-[92dvh] overflow-y-auto bg-white dark:bg-slate-900 rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col"
+    class="relative w-full md:max-w-2xl lg:max-w-3xl mx-auto max-h-[92dvh] md:max-h-[86vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col"
   >
     <!-- Drag Handle (nur Mobile) -->
     <div class="md:hidden flex justify-center pt-3 pb-0 flex-shrink-0" aria-hidden="true">
@@ -32,12 +32,12 @@
         <div class="w-9 h-9 flex-shrink-0 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shadow-sm">
           <img id="overlay-channel-logo" src="" alt="" width="32" height="32" class="w-8 h-8 object-contain" />
         </div>
-        <span id="overlay-channel-name" class="text-sm font-bold text-slate-500 dark:text-slate-400 truncate"></span>
+        <span id="overlay-channel-name" class="text-sm font-bold text-slate-700 dark:text-slate-300 truncate"></span>
       </div>
       <button
         id="overlay-close"
         aria-label="Schließen"
-        class="ml-2 w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-400 dark:text-slate-500"
+        class="ml-2 w-9 h-9 flex-shrink-0 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-400 dark:text-slate-500 cursor-pointer"
       >
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M14 4L4 14M4 4l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -46,108 +46,112 @@
     </div>
 
     <!-- Scrollbarer Body -->
-    <div class="flex-1 overflow-y-auto">
+    <div class="flex-1 overflow-y-auto p-4 sm:p-6">
 
-      <!-- Poster o Banner categoria fallback -->
-      <div id="overlay-poster-wrap" class="overflow-hidden relative">
-        <img id="overlay-poster" src="" alt="" class="w-full h-52 sm:h-64 object-cover" loading="lazy" referrerpolicy="no-referrer" />
-        <div id="overlay-banner-fallback" class="w-full h-36 sm:h-44 flex items-center justify-center p-6 bg-gradient-to-br from-slate-800 to-slate-900 border-b border-slate-700/50">
-          <div class="text-center">
-            <span id="overlay-banner-icon" class="text-4xl sm:text-5xl mb-1.5 block">📺</span>
-            <span id="overlay-banner-label" class="text-xs uppercase font-bold tracking-widest text-slate-300">TV-Programm</span>
+      <!-- Grid auf Desktop: Linke Spalte (Poster + Buttons), Rechte Spalte (Info) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5 items-start">
+
+        <!-- Linke Spalte / Medien & Aktionen -->
+        <div class="md:col-span-5 flex flex-col gap-3">
+          <!-- Poster o Banner categoria fallback -->
+          <div id="overlay-poster-wrap" class="overflow-hidden rounded-2xl relative bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm aspect-video">
+            <img id="overlay-poster" src="" alt="" class="w-full h-full object-cover" loading="lazy" referrerpolicy="no-referrer" />
+            <div id="overlay-banner-fallback" class="w-full h-full min-h-[140px] flex items-center justify-center p-6 bg-gradient-to-br from-slate-800 to-slate-900">
+              <div class="text-center">
+                <span id="overlay-banner-icon" class="text-4xl mb-1 block">📺</span>
+                <span id="overlay-banner-label" class="text-xs uppercase font-bold tracking-widest text-slate-300">TV-Programm</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Aktions-Buttons: SOFORT sichtbar und oben erreichbar -->
+          <div class="flex flex-col sm:flex-row md:flex-col gap-2.5 pt-1">
+            <a
+              id="overlay-watch"
+              href="#"
+              class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-xl transition-colors text-sm shadow-sm cursor-pointer"
+            >
+              <svg id="icon-watch-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="5,3 19,12 5,21"/>
+              </svg>
+              <svg id="icon-watch-globe" class="hidden" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
+              </svg>
+              <svg id="icon-watch-close" class="hidden" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18M6 6l12 12"/>
+              </svg>
+              <span id="overlay-watch-label">Jetzt ansehen</span>
+            </a>
+            <button
+              id="overlay-calendar"
+              class="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 text-slate-700 dark:text-slate-200 font-bold rounded-xl transition-all text-sm cursor-pointer"
+              aria-label="Zum Kalender hinzufügen"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              <span id="overlay-cal-label">Kalender</span>
+            </button>
           </div>
         </div>
-      </div>
 
-      <!-- Hauptinhalt -->
-      <div class="px-5 pt-5 pb-8 space-y-4">
-
-        <!-- LIVE-Badge + Fortschrittsbalken -->
-        <div id="overlay-live-section" class="hidden space-y-2">
-          <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/50 px-2.5 py-1 rounded-full">
-            <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
-            Läuft gerade
-          </span>
-          <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-            <div id="overlay-progress" class="h-full bg-blue-500 rounded-full transition-[width] duration-300" style="width:0%"></div>
+        <!-- Rechte Spalte / Details -->
+        <div class="md:col-span-7 flex flex-col gap-3">
+          <!-- LIVE-Badge + Fortschrittsbalken -->
+          <div id="overlay-live-section" class="hidden space-y-1.5">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/50 px-2.5 py-0.5 rounded-full">
+              <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
+              Läuft gerade
+            </span>
+            <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div id="overlay-progress" class="h-full bg-blue-500 rounded-full transition-[width] duration-300" style="width:0%"></div>
+            </div>
           </div>
-        </div>
 
-        <!-- Programmtitel -->
-        <h2 id="overlay-title-el" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 leading-tight tracking-tight"></h2>
+          <!-- Programmtitel -->
+          <h2 id="overlay-title-el" class="text-xl sm:text-2xl md:text-2xl font-extrabold text-slate-900 dark:text-slate-100 leading-tight tracking-tight"></h2>
 
-        <!-- Uhrzeit + Kategorie -->
-        <div class="flex items-center gap-3 flex-wrap">
-          <div class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-            </svg>
-            <span id="overlay-time" class="text-sm font-bold tabular-nums"></span>
+          <!-- Uhrzeit + Kategorie -->
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+              </svg>
+              <span id="overlay-time" class="text-sm font-bold tabular-nums"></span>
+            </div>
+            <span id="overlay-category" class="hidden text-xs px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold uppercase tracking-wide"></span>
           </div>
-          <span id="overlay-category" class="hidden text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold uppercase tracking-wide"></span>
-        </div>
 
-        <!-- Beschreibung -->
-        <p id="overlay-description" class="hidden text-sm text-slate-600 dark:text-slate-400 leading-relaxed"></p>
+          <!-- Beschreibung -->
+          <p id="overlay-description" class="hidden text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-h-48 overflow-y-auto pr-1"></p>
 
-        <!-- Cast / Besetzung -->
-        <p id="overlay-cast" class="hidden text-xs text-slate-500 dark:text-slate-400"></p>
-
-        <!-- Trennlinie -->
-        <div class="h-px bg-slate-100 dark:bg-slate-800" aria-hidden="true"></div>
-
-        <!-- Aktions-Buttons -->
-        <div class="flex gap-3">
-          <a
-            id="overlay-watch"
-            href="#"
-            class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold rounded-2xl transition-colors text-sm shadow-sm"
-          >
-            <svg id="icon-watch-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <polygon points="5,3 19,12 5,21"/>
-            </svg>
-            <svg id="icon-watch-globe" class="hidden" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>
-            </svg>
-            <svg id="icon-watch-close" class="hidden" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M18 6 6 18M6 6l12 12"/>
-            </svg>
-            <span id="overlay-watch-label">Jetzt ansehen</span>
-          </a>
-          <button
-            id="overlay-calendar"
-            class="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 text-slate-700 dark:text-slate-200 font-bold rounded-2xl transition-all text-sm"
-            aria-label="Zum Kalender hinzufügen"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            <span id="overlay-cal-label">Kalender</span>
-          </button>
-        </div>
-
-        <!-- Diskrete Anzeige unterhalb der primären Aktionen (analog zu ProntoFarmacie NavigationModal) -->
-        <div id="overlay-ad-container" class="pt-4 mt-2 border-t border-slate-100 dark:border-slate-800 text-center">
-          <div class="mb-1.5 text-[10px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500 select-none">
-            Anzeige
-          </div>
-          <div class="w-full overflow-hidden flex items-center justify-center mx-auto rounded-xl bg-slate-50/60 dark:bg-slate-800/40" style="min-height: 180px;">
-            <ins
-              id="overlay-ad-ins"
-              class="adsbygoogle block w-full mx-auto"
-              style="display: block; min-height: 180px; width: 100%;"
-              data-ad-client="ca-pub-2168172914069272"
-              data-ad-slot="4452817027"
-              data-ad-format="auto"
-              data-full-width-responsive="true"
-            ></ins>
-          </div>
+          <!-- Cast / Besetzung -->
+          <p id="overlay-cast" class="hidden text-xs text-slate-500 dark:text-slate-400"></p>
         </div>
 
       </div>
+
+      <!-- Diskrete Anzeige unterhalb der primären Aktionen -->
+      <div id="overlay-ad-container" class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 text-center">
+        <div class="mb-1.5 text-[10px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500 select-none">
+          Anzeige
+        </div>
+        <div class="w-full overflow-hidden flex items-center justify-center mx-auto rounded-xl bg-slate-50/60 dark:bg-slate-800/40" style="min-height: 140px;">
+          <ins
+            id="overlay-ad-ins"
+            class="adsbygoogle block w-full mx-auto"
+            style="display: block; min-height: 140px; width: 100%;"
+            data-ad-client="ca-pub-2168172914069272"
+            data-ad-slot="4452817027"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

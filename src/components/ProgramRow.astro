@@ -96,7 +96,7 @@ const overlayData = JSON.stringify({
   data-program={overlayData}
   role="button"
   tabindex="0"
-  class="grid grid-cols-[48px_1fr_auto] sm:grid-cols-[56px_1fr_auto] gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset items-center"
+  class="group grid grid-cols-[48px_1fr_auto] sm:grid-cols-[56px_1fr_auto] gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset items-center border-b border-slate-200/90 dark:border-slate-800/90"
   aria-label={`${program.title} — ${startLabel}`}
 >
   <!-- Uhrzeit -->
@@ -152,22 +152,12 @@ const overlayData = JSON.stringify({
     )}
   </div>
 
-  <!-- Poster (Mobile & Desktop) -->
-  {program.poster_url && (
-    <div class="flex items-center justify-end shrink-0 pl-1">
-      <div class="w-16 sm:w-24 aspect-video rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs">
-        <img
-          src={program.poster_url}
-          alt={program.title}
-          width="96"
-          height="54"
-          loading="lazy"
-          decoding="async"
-          referrerpolicy="no-referrer"
-          class="w-full h-full object-cover object-top"
-          onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=800&q=80';"
-        />
-      </div>
+  <!-- Chevron (Öffnet Modal) -->
+  <div class="flex items-center justify-center shrink-0 pl-1">
+    <div class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-all">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
     </div>
-  )}
+  </div>
 </li>

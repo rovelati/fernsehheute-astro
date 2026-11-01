@@ -258,23 +258,23 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
           });
           html += `
 <div
-  class="channel-card-item block group border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+  class="channel-card-item block group border-b border-slate-200/90 dark:border-slate-800/90 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-colors"
   data-channel-card
   data-channel-name="${item.name.toLowerCase()}"
   data-channel-slug="${item.slug}"
   data-program-title="${(item.title || '').toLowerCase()}"
   data-category="${item.catGroup}"
 >
-  <div class="grid grid-cols-[68px_1fr_auto] sm:grid-cols-[84px_1fr_auto] gap-2.5 sm:gap-4 px-3 py-2.5 sm:px-4 sm:py-3 items-center">
+  <div class="grid grid-cols-[76px_1fr_auto] sm:grid-cols-[100px_1fr_auto] gap-3 sm:gap-4 px-3 py-3 sm:px-4 sm:py-3.5 items-center">
     <a href="/${item.slug}/" class="flex flex-col items-start gap-1 focus:outline-none z-10 hover:opacity-80 transition-opacity" aria-label="Programmübersicht ${item.name}">
-      <div class="w-8 h-8 sm:w-9 sm:h-9 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs p-1 group-hover:scale-105 transition-transform">
-        <img src="${item.logo}" alt="Logo ${item.name}" width="36" height="36" class="w-full h-full object-contain" loading="lazy" onerror="this.style.opacity='0.4';" />
+      <div class="w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0 flex items-center justify-center overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-xs p-1 group-hover:scale-105 transition-transform">
+        <img src="${item.logo}" alt="Logo ${item.name}" width="44" height="44" class="w-full h-full object-contain" loading="lazy" onerror="this.style.opacity='0.4';" />
       </div>
       <div class="min-w-0 w-full">
-        <p class="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+        <p class="text-xs sm:text-[13px] font-bold text-slate-900 dark:text-slate-100 leading-tight truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
           ${item.displayName}
         </p>
-        ${item.number > 0 ? `<p class="text-[10px] text-slate-400 dark:text-slate-500">CH ${item.number}</p>` : ''}
+        ${item.number > 0 ? `<p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium">CH ${item.number}</p>` : ''}
       </div>
     </a>
     <div class="min-w-0 py-0.5 cursor-pointer" role="button" tabindex="0" title="Klicken für Details" data-program='${overlayData.replace(/'/g, "&#39;")}'>
@@ -300,15 +300,10 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
         <p class="text-xs text-slate-400 dark:text-slate-500 italic">Kein Programm verfügbar</p>
       `}
     </div>
-    <div class="flex items-center gap-2 shrink-0 cursor-pointer" data-program='${overlayData.replace(/'/g, "&#39;")}' role="button" tabindex="0" title="${item.title ? item.title + ' — Details ansehen' : ''}">
-      ${item.poster ? `
-        <div class="w-16 sm:w-24 aspect-video shrink-0 rounded-lg overflow-hidden bg-slate-900 border border-slate-200 dark:border-slate-700/80 shadow-xs group-hover:scale-105 transition-transform">
-          <img src="${item.poster}" alt="${item.title}" width="96" height="54" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="w-full h-full object-cover object-top" onerror="this.parentElement.style.display='none'" />
-        </div>
-      ` : ''}
-      <div class="hidden sm:flex items-center justify-center pl-1">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-slate-300 dark:text-slate-600 group-hover:text-blue-400 transition-colors">
-          <path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+    <div class="flex items-center justify-center shrink-0 cursor-pointer pl-1" data-program='${overlayData.replace(/'/g, "&#39;")}' role="button" tabindex="0" title="${item.title ? item.title + ' — Details ansehen' : ''}">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/30 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-all">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </div>
     </div>
