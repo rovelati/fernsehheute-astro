@@ -182,6 +182,10 @@ function orgEntity(): Record<string, unknown> {
       { '@type': 'Country', name: 'Austria', sameAs: 'https://www.wikidata.org/wiki/Q40', identifier: 'AT' },
       { '@type': 'Country', name: 'Switzerland', sameAs: 'https://www.wikidata.org/wiki/Q39', identifier: 'CH' },
     ],
+    sameAs: [
+      'https://github.com/rovelati/fernsehheute-astro',
+      'https://alternativeto.net/software/fernsehheute/',
+    ],
     logo: {
       '@type': 'ImageObject',
       url: `${SITE_URL}/favicon/apple-touch-icon.png`,
