@@ -362,8 +362,11 @@ export const CHANNEL_SLUGS = {
   'clipmyhorsetv':             'clip-my-horsetv',
   'clip-my-horsetv':           'clip-my-horsetv',
   'nickjr':                    'nick-jr',
-  'crimeinvestigation':        'crime-investigation',
-  'crime-investigation':       'crime-investigation',
+  'crimeinvestigation':        'crimeplusinvestigation',
+  'crime-investigation':       'crimeplusinvestigation',
+  'crime+investigation':       'crimeplusinvestigation',
+  'crimeplusinvestigation':    'crimeplusinvestigation',
+  'crime-plus-investigation':  'crimeplusinvestigation',
 };
 
 export const normCid = (cid) => {

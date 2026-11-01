@@ -22,6 +22,7 @@ import { buildHubChannelJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { getChannelStream } from '../utils/channelStreams';
 import { HUB_CHANNELS } from '../utils/hubChannels';
 import { normCid } from '../utils/channelSlug';
+import { getChannelEditorial } from '../utils/channelEditorial';
 import { isAdultChannel, isTestChannel, filterRealPrograms, isClubChannel } from '../utils/channelFilters';
 import { isSwissExclusiveChannel } from '../utils/swissOrder';
 import { isAustriaExclusiveChannel } from '../utils/austriaOrder';
@@ -154,22 +155,7 @@ const ogImage      = resolvedLogo.startsWith('http') || resolvedLogo.startsWith(
 
 const isClub = isClubChannel(slug, channel.name);
 
-const defaultFaqs = [
-  {
-    question: `Was läuft heute auf ${cleanName}?`,
-    answer: `Hier findest du das vollständige heutige Fernsehprogramm von ${cleanName} mit allen Sendungen, Spielfilmen, Serien und Magazinen im Tages- und Abendverlauf inklusive genauer Beginnzeiten.`,
-  },
-  {
-    question: `Wann beginnt das Hauptabendprogramm (Prime Time) auf ${cleanName}?`,
-    answer: `Das Hauptabendprogramm auf ${cleanName} startet regulär um 20:15 Uhr mit den besten Filmen, Shows oder Serien des Tages.`,
-  },
-  {
-    question: `Wo kann man ${cleanName} live im Internet streamen?`,
-    answer: streamUrl
-      ? `${cleanName} kann online über den offiziellen Livestream bzw. die Mediathek geschaut werden.`
-      : `Sendungen von ${cleanName} sind in den offiziellen Mediatheken und Streaming-Angeboten des Senders abrufbar.`,
-  },
-];
+const editorial = getChannelEditorial(slug, channel.name);
 
 const clubFaqs = [
   {
@@ -186,7 +172,7 @@ const clubFaqs = [
   },
 ];
 
-const channelFaqs = isClub ? clubFaqs : defaultFaqs;
+const channelFaqs = isClub ? clubFaqs : editorial.faqs;
 
 const channelSchemas = buildHubChannelJsonLd({ channel: { ...channel, name: cleanName, logo: resolvedLogo }, programs, today });
 const faqSchema      = buildFaqJsonLd(channelFaqs);
@@ -513,6 +499,27 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
 
     <!-- ── UX-First Footer AdSlot vor den FAQs ──────────────────────── -->
     <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-8 mb-2" minHeight={200} />
+
+    <!-- ── Senderprofil / Über den Sender ────────────────────────── -->
+    <section class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Über ${cleanName}`}>
+      <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60 rounded-2xl p-5 sm:p-6">
+        <h2 class="text-base font-bold text-slate-900 dark:text-slate-100 mb-2">
+          Über {cleanName} &amp; das heutige Programm
+        </h2>
+        <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed mb-3">
+          {editorial.summary}
+        </p>
+        <div class="flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-500 dark:text-slate-400">
+          <div><strong class="text-slate-700 dark:text-slate-300">Schwerpunkt:</strong> {editorial.focus}</div>
+          {editorial.broadcaster && (
+            <div><strong class="text-slate-700 dark:text-slate-300">Veranstalter:</strong> {editorial.broadcaster}</div>
+          )}
+          {editorial.signatureShows && editorial.signatureShows.length > 0 && (
+            <div><strong class="text-slate-700 dark:text-slate-300">Bekannte Sendungen:</strong> {editorial.signatureShows.join(', ')}</div>
+          )}
+        </div>
+      </div>
+    </section>
 
     <!-- ── Channel FAQs ─────────────────────────────────────────────── -->
     <section class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Häufige Fragen zu ${channel.name}`}>
