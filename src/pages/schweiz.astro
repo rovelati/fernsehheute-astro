@@ -78,16 +78,16 @@ try {
 
 const FAQS = [
   {
-    question: 'Was läuft heute im Schweizer Fernsehen?',
-    answer: 'Auf FernsehHeute Schweiz finden Sie das komplette Fernsehprogramm für heute Abend auf allen Schweizer Sendern wie SRF 1, SRF zwei, SRF info, 3+, 4+, TV24, TeleZüri, Tele Bärn sowie den in der Schweiz empfangbaren Sendern aus Deutschland und Österreich.',
+    question: 'Was läuft heute im TV in der Schweiz?',
+    answer: 'Auf FernsehHeute finden Sie das komplette Fernsehprogramm für heute Abend auf allen beliebten Sendern in der Schweiz: SRF 1, SRF zwei, SRF info, 3+, 4+, TV24, TeleZüri, Tele Bärn sowie den beliebten Partnersendern aus Deutschland und Österreich.',
   },
   {
     question: 'Wann beginnt die Prime Time in der Schweiz?',
     answer: 'Bei SRF 1 beginnt der Hauptabend bereits um 20:05 Uhr direkt im Anschluss an die Tagesschau (19:30 Uhr) und Meteo (19:55 Uhr). Private Schweizer Sender wie 3+, 4+ und TV24 sowie die deutschen Sender starten ihre Hauptabend-Spielfilme und Shows wie gewohnt um 20:15 Uhr.',
   },
   {
-    question: 'Welche Schweizer Sender sind heute im TV-Programm verfügbar?',
-    answer: 'Das Programm umfasst die öffentlich-rechtlichen Sender der SRG SSR (SRF 1, SRF zwei, SRF info), die nationalen Privatsender von CH Media und Entertainment Media (3+, 4+, 5+, 6+, 7+, TV24, TV25, Puls 8, SWISS 1, Star TV) sowie alle großen Deutschschweizer Regionalsender (TeleZüri, Tele Bärn, Tele 1, Tele M1, Telebasel, Tele Top).',
+    question: 'Welche Sender sind heute im TV-Programm für die Schweiz verfügbar?',
+    answer: 'Das Programm umfasst die öffentlich-rechtlichen Sender der SRG SSR (SRF 1, SRF zwei, SRF info), die nationalen Privatsender von CH Media und Entertainment Media (3+, 4+, 5+, 6+, 7+, TV24, TV25, Puls 8, SWISS 1, Star TV) sowie alle grossen Deutschschweizer Regionalsender (TeleZüri, Tele Bärn, Tele 1, Tele M1, Telebasel, Tele Top).',
   },
   {
     question: 'Wo kann ich Schweizer Sender live im Internet schauen?',
@@ -95,9 +95,9 @@ const FAQS = [
   },
 ];
 
-const pageTitle   = 'TV-Programm Schweiz heute – Was läuft im Schweizer Fernsehen? | FernsehHeute';
-const description = 'Aktuelles TV-Programm Schweiz: Was läuft heute im Schweizer Fernsehen? Alle Sendungen auf SRF 1, SRF zwei, 3+, 4+, TV24, TeleZüri & den beliebtesten Sendern heute Abend im Überblick.';
-const keywords    = 'tv programm schweiz, fernsehprogramm schweiz, srf 1 programm heute, srf zwei programm, 3+ programm, tv24 programm, telezüri programm, fernsehen schweiz heute, was läuft heute srf';
+const pageTitle   = 'TV-Programm Schweiz heute – SRF 1, SRF zwei & 3+ | FernsehHeute';
+const description = 'Was läuft heute im TV? Das TV-Programm für die Schweiz: SRF 1, SRF zwei, 3+, TV24 & TeleZüri heute Abend und ab 20:05 Uhr im schnellen Überblick.';
+const keywords    = 'tv programm schweiz, fernsehprogramm schweiz, srf 1 programm heute, srf zwei programm heute abend, 3+ programm, tv24 programm, telezüri programm, was läuft heute im tv schweiz, prime time schweiz';
 
 // JSON-LD Structured Data
 const jsonLd = [
@@ -166,18 +166,17 @@ const jsonLd = [
       <div class="flex items-center gap-2 mb-2.5">
         <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-red-700 dark:text-red-400 bg-red-100/70 dark:bg-red-950/50 border border-red-200 dark:border-red-800/60 px-3 py-1 rounded-full shadow-xs">
           <span>🇨🇭</span>
-          Schweiz &bull; Deutschschweizer TV-Programm
+          Schweiz &bull; TV-Programm Deutschschweiz
         </span>
       </div>
 
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-        TV-Programm Schweiz heute &amp; <span class="text-red-600 dark:text-red-400">Schweizer Fernsehen</span>
+        TV-Programm heute in der Schweiz – <span class="text-red-600 dark:text-red-400">Was läuft im TV?</span>
       </h1>
       
       <p class="text-slate-600 dark:text-slate-400 mt-2.5 text-sm sm:text-base max-w-3xl leading-relaxed">
         <span class="font-semibold text-slate-800 dark:text-slate-200" data-live-date>{dateLabel}</span> &mdash; 
-        <strong>Was läuft heute im Schweizer Fernsehen?</strong> 
-        Aktuelle Sendezeiten und Programmvorschau für <strong>SRF 1, SRF zwei, SRF info, 3+, 4+, TV24, TV25, TeleZüri</strong> sowie alle Partnersender in der Schweiz.
+        Aktuelle Sendezeiten und Programmvorschau für heute Abend auf <strong>SRF 1, SRF zwei, SRF info, 3+, 4+, TV24, TV25, TeleZüri</strong> und allen Partnersendern in der Schweiz.
       </p>
 
       <!-- Quick Switcher Navigation Pills -->
@@ -187,6 +186,9 @@ const jsonLd = [
         </span>
         <a href="/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-blue-400 hover:text-blue-600 transition-colors flex items-center gap-1.5">
           <span>🇩🇪</span> Deutschland
+        </a>
+        <a href="/oesterreich/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-red-400 hover:text-red-600 transition-colors flex items-center gap-1.5">
+          <span>🇦🇹</span> Österreich
         </a>
         <a href="/jetzt/" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-rose-400 hover:text-rose-600 transition-colors flex items-center gap-1.5">
           <span class="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse"></span>
@@ -210,7 +212,7 @@ const jsonLd = [
           <input
             id="channel-search-input"
             type="text"
-            placeholder="Schweizer Sender oder Sendung suchen..."
+            placeholder="Sender oder Sendung suchen (z. B. SRF 1, Tatort, 3+)..."
             class="w-full pl-9 pr-4 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-red-500 text-slate-900 dark:text-white placeholder-slate-400"
             autocomplete="off"
           />
@@ -293,10 +295,10 @@ const jsonLd = [
       <!-- Textual Guide -->
       <div class="lg:col-span-7 space-y-4 text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
         <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Schweizer Fernsehen heute Abend: Ihr zuverlässiger TV-Guide
+          TV-Programm heute Abend in der Schweiz: SRF &amp; Privatsender im Hauptabend
         </h2>
         <p>
-          Mit <strong>FernsehHeute Schweiz</strong> verpassen Sie kein Highlight im Deutschschweizer Programm. 
+          Mit <strong>FernsehHeute</strong> verpassen Sie kein Highlight im Deutschschweizer Programm. 
           Vom traditionsreichen Informationsabend auf <strong>SRF 1</strong> («Schweiz aktuell» um 19:00, «Tagesschau» um 19:30, 
           «Meteo» um 19:55 und packende Dokumentationen oder Unterhaltungsshows ab 20:05 Uhr) über Live-Sport, 
           UEFA Champions League und Serien auf <strong>SRF zwei</strong> bis hin zu Blockbustern auf <strong>3+</strong> und <strong>TV24</strong>.

@@ -78,15 +78,15 @@ try {
 
 const FAQS = [
   {
-    question: 'Was läuft heute im österreichischen Fernsehen?',
-    answer: 'Auf FernsehHeute Österreich finden Sie das tagesaktuelle Fernsehprogramm für heute Abend auf allen österreichischen Sendern wie ORF 1, ORF 2, ORF III, ServusTV, ATV, PULS 4, PULS 24, krone.tv sowie den beliebtesten Partnersendern aus Deutschland und der Schweiz.',
+    question: 'Was spielt es heute im Fernsehen in Österreich?',
+    answer: 'Auf FernsehHeute finden Sie das tagesaktuelle Fernsehprogramm für den Hauptabend auf allen beliebten Sendern in Österreich: ORF 1, ORF 2, ORF III, ServusTV, ATV, PULS 4, PULS 24 sowie den Partnersendern 3sat, Das Erste, ZDF, RTL und ProSieben.',
   },
   {
-    question: 'Wann beginnt der Hauptabend (Prime Time) in Österreich?',
-    answer: 'Im österreichischen Fernsehen beginnt die Prime Time traditionell um 20:15 Uhr. Auf ORF 1 und ORF 2 startet das Abendprogramm direkt nach der ZIB 1 (19:30 Uhr), Sport aktuell (19:55 Uhr) und dem Wetter (20:05 Uhr). Private Sender wie ServusTV, ATV und PULS 4 beginnen ihre Spielfilme und Shows ebenfalls um 20:15 Uhr.',
+    question: 'Wann beginnt der Hauptabend in Österreich?',
+    answer: 'Im österreichischen Fernsehen beginnt der Hauptabend (die Prime Time) traditionell um 20:15 Uhr. Auf ORF 1 und ORF 2 startet das Abendprogramm direkt nach der ZIB 1 (19:30 Uhr), Sport aktuell (19:55 Uhr) und dem Wetter (20:05 Uhr). Private Sender wie ServusTV, ATV und PULS 4 beginnen ihre Spielfilme und Shows ebenfalls um 20:15 Uhr.',
   },
   {
-    question: 'Welche österreichischen TV-Sender sind im Programm vertreten?',
+    question: 'Welche Sender sind im TV-Programm für Österreich vertreten?',
     answer: 'Das Programm umfasst die öffentlich-rechtlichen Kanäle des ORF (ORF 1, ORF 2, ORF III, ORF Sport+), die großen Privatsender (ServusTV von Red Bull Media House, ATV, ATV2, PULS 4 und den 24-Stunden-Nachrichtensender PULS 24 der ProSiebenSat.1 PULS 4 Gruppe, oe24.TV, krone.tv) sowie regionale Stationen wie W24, R9, Tirol TV und Ländle TV.',
   },
   {
@@ -95,9 +95,9 @@ const FAQS = [
   },
 ];
 
-const pageTitle   = 'TV-Programm Österreich heute – Was läuft im Fernsehen? | FernsehHeute';
-const description = 'Aktuelles TV-Programm Österreich: Was läuft heute im Fernsehen? Alle Sendungen auf ORF 1, ORF 2, ORF III, ServusTV, ATV, PULS 4 & den beliebtesten Sendern heute Abend im Überblick.';
-const keywords    = 'tv programm österreich, fernsehprogramm österreich, orf 1 programm heute, orf 2 programm, servustv programm, atv programm, puls 4 programm, fernsehen österreich heute, was läuft heute orf';
+const pageTitle   = "TV-Programm heute Österreich – Was spielt's im TV? | FernsehHeute";
+const description = "Was spielt's heute im Fernsehen? Das TV-Programm für Österreich: ORF 1, ORF 2, ServusTV, ATV & PULS 4 heute Abend und im Hauptabend auf einen Blick.";
+const keywords    = "tv programm österreich, fernsehprogramm heute österreich, was spielt es heute im fernsehen, orf 1 programm heute abend, orf 2 programm, servustv programm, atv programm, puls 4 programm, hauptabendprogramm heute, was spielt's heute im tv";
 
 // JSON-LD Structured Data
 const jsonLd = [
@@ -166,18 +166,17 @@ const jsonLd = [
       <div class="flex items-center gap-2 mb-2.5">
         <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-red-700 dark:text-red-400 bg-red-100/70 dark:bg-red-950/50 border border-red-200 dark:border-red-800/60 px-3 py-1 rounded-full shadow-xs">
           <span>🇦🇹</span>
-          Österreich &bull; Österreichisches TV-Programm
+          Österreich &bull; TV-Programm &amp; Hauptabend
         </span>
       </div>
 
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-        TV-Programm Österreich heute &amp; <span class="text-red-600 dark:text-red-400">Österreichisches Fernsehen</span>
+        TV-Programm heute in Österreich – <span class="text-red-600 dark:text-red-400">Was spielt's im TV?</span>
       </h1>
       
       <p class="text-slate-600 dark:text-slate-400 mt-2.5 text-sm sm:text-base max-w-3xl leading-relaxed">
         <span class="font-semibold text-slate-800 dark:text-slate-200" data-live-date>{dateLabel}</span> &mdash; 
-        <strong>Was läuft heute im österreichischen Fernsehen?</strong> 
-        Aktuelle Sendezeiten und Programmvorschau für <strong>ORF 1, ORF 2, ORF III, ServusTV, ATV, PULS 4, PULS 24</strong> sowie alle Partnersender in Österreich.
+        Aktuelle Sendezeiten und Programmvorschau für den Hauptabend auf <strong>ORF 1, ORF 2, ORF III, ServusTV, ATV, PULS 4, PULS 24</strong> und allen Partnersendern in Österreich.
       </p>
 
       <!-- Quick Switcher Navigation Pills -->
@@ -213,7 +212,7 @@ const jsonLd = [
           <input
             id="channel-search-input"
             type="text"
-            placeholder="Österreichischen Sender oder Sendung suchen..."
+            placeholder="Sender oder Sendung suchen (z. B. ORF 1, Tatort, ServusTV)..."
             class="w-full pl-9 pr-4 py-2 text-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-hidden focus:ring-2 focus:ring-red-500 text-slate-900 dark:text-white placeholder-slate-400"
             autocomplete="off"
           />
@@ -296,12 +295,12 @@ const jsonLd = [
       <!-- Textual Guide -->
       <div class="lg:col-span-7 space-y-4 text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
         <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Österreichisches Fernsehen heute Abend: Ihr verlässlicher TV-Guide
+          TV-Programm heute Abend in Österreich: ORF &amp; Privatsender im Hauptabend
         </h2>
         <p>
-          Mit <strong>FernsehHeute Österreich</strong> haben Sie das gesamte TV-Programm für Österreich im Blick. 
-          Von den verlässlichen Informationsformaten des ORF («Bundesland heute» um 19:00, «Zeit im Bild / ZIB 1» um 19:30, 
-          «Sport aktuell» und packende Hauptabend-Filme und Serien ab 20:15 Uhr auf <strong>ORF 1</strong> und <strong>ORF 2</strong>) 
+          Mit <strong>FernsehHeute</strong> haben Sie das gesamte TV-Programm für Österreich im Blick. 
+          Von den verlässlichen Informationsformaten des ORF („Bundesland heute“ um 19:00, „Zeit im Bild / ZIB 1“ um 19:30, 
+          „Sport aktuell“ und packende Hauptabend-Filme und Serien ab 20:15 Uhr auf <strong>ORF 1</strong> und <strong>ORF 2</strong>) 
           über niveauvolle Dokumentationen und Magazine auf <strong>ServusTV</strong> bis zu beliebten Unterhaltungsshows auf <strong>ATV</strong> und <strong>PULS 4</strong>.
         </p>
         <p>
