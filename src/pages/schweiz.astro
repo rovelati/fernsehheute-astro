@@ -78,26 +78,26 @@ try {
 
 const FAQS = [
   {
-    question: 'Was läuft heute im TV in der Schweiz?',
-    answer: 'Auf FernsehHeute finden Sie das komplette Fernsehprogramm für heute Abend auf allen beliebten Sendern in der Schweiz: SRF 1, SRF zwei, SRF info, 3+, 4+, TV24, TeleZüri, Tele Bärn sowie den beliebten Partnersendern aus Deutschland und Österreich.',
+    question: 'Was läuft heute im TV?',
+    answer: 'Auf FernsehHeute finden Sie das komplette Fernsehprogramm für heute Abend auf allen beliebten Sendern: SRF 1, SRF zwei, SRF info, 3+, 4+, TV24, TeleZüri, Tele Bärn sowie den beliebten Partnersendern aus Deutschland und Österreich.',
   },
   {
-    question: 'Wann beginnt die Prime Time in der Schweiz?',
-    answer: 'Bei SRF 1 beginnt der Hauptabend bereits um 20:05 Uhr direkt im Anschluss an die Tagesschau (19:30 Uhr) und Meteo (19:55 Uhr). Private Schweizer Sender wie 3+, 4+ und TV24 sowie die deutschen Sender starten ihre Hauptabend-Spielfilme und Shows wie gewohnt um 20:15 Uhr.',
+    question: 'Wann beginnt die Prime Time?',
+    answer: 'Bei SRF 1 beginnt der Hauptabend bereits um 20:05 Uhr direkt im Anschluss an die Tagesschau (19:30 Uhr) und Meteo (19:55 Uhr). Private Sender wie 3+, 4+ und TV24 sowie die Partnersender starten ihre Hauptabend-Spielfilme und Shows wie gewohnt um 20:15 Uhr.',
   },
   {
-    question: 'Welche Sender sind heute im TV-Programm für die Schweiz verfügbar?',
+    question: 'Welche Sender sind heute im TV-Programm verfügbar?',
     answer: 'Das Programm umfasst die öffentlich-rechtlichen Sender der SRG SSR (SRF 1, SRF zwei, SRF info), die nationalen Privatsender von CH Media und Entertainment Media (3+, 4+, 5+, 6+, 7+, TV24, TV25, Puls 8, SWISS 1, Star TV) sowie alle grossen Deutschschweizer Regionalsender (TeleZüri, Tele Bärn, Tele 1, Tele M1, Telebasel, Tele Top).',
   },
   {
-    question: 'Wo kann ich Schweizer Sender live im Internet schauen?',
-    answer: 'Sendungen von SRF 1, SRF zwei und SRF info können innerhalb der Schweiz kostenlos über die Play SRF Mediathek und App gestreamt werden. Privatsender wie 3+ sind über oneplus sowie die TV-Apps von Swisscom blue TV, Sunrise TV, Zattoo und Quickline verfügbar.',
+    question: 'Wo kann ich die Sender live im Internet schauen?',
+    answer: 'Sendungen von SRF 1, SRF zwei und SRF info können kostenlos über die Play SRF Mediathek und App gestreamt werden. Privatsender wie 3+ sind über oneplus sowie die TV-Apps von Swisscom blue TV, Sunrise TV, Zattoo und Quickline verfügbar.',
   },
 ];
 
-const pageTitle   = 'TV-Programm Schweiz heute – SRF 1, SRF zwei & 3+ | FernsehHeute';
-const description = 'Was läuft heute im TV? Das TV-Programm für die Schweiz: SRF 1, SRF zwei, 3+, TV24 & TeleZüri heute Abend und ab 20:05 Uhr im schnellen Überblick.';
-const keywords    = 'tv programm schweiz, fernsehprogramm schweiz, srf 1 programm heute, srf zwei programm heute abend, 3+ programm, tv24 programm, telezüri programm, was läuft heute im tv schweiz, prime time schweiz';
+const pageTitle   = 'TV-Programm heute Abend: SRF 1, SRF zwei & 3+ | FernsehHeute';
+const description = 'Was läuft heute im TV? Alle Sendungen auf SRF 1, SRF zwei, 3+, TV24 & TeleZüri heute Abend und ab 20:05 Uhr im schnellen Überblick.';
+const keywords    = 'tv programm heute, fernsehprogramm heute, srf 1 programm heute, srf zwei programm heute abend, 3+ programm, tv24 programm, telezüri programm, was läuft heute im tv, prime time 20:05';
 
 // JSON-LD Structured Data
 const jsonLd = [
@@ -166,17 +166,17 @@ const jsonLd = [
       <div class="flex items-center gap-2 mb-2.5">
         <span class="inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-red-700 dark:text-red-400 bg-red-100/70 dark:bg-red-950/50 border border-red-200 dark:border-red-800/60 px-3 py-1 rounded-full shadow-xs">
           <span>🇨🇭</span>
-          Schweiz &bull; TV-Programm Deutschschweiz
+          TV-Programm &bull; Hauptabend ab 20:05
         </span>
       </div>
 
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-        TV-Programm heute in der Schweiz – <span class="text-red-600 dark:text-red-400">Was läuft im TV?</span>
+        TV-Programm heute – <span class="text-red-600 dark:text-red-400">Was läuft im TV?</span>
       </h1>
       
       <p class="text-slate-600 dark:text-slate-400 mt-2.5 text-sm sm:text-base max-w-3xl leading-relaxed">
         <span class="font-semibold text-slate-800 dark:text-slate-200" data-live-date>{dateLabel}</span> &mdash; 
-        Aktuelle Sendezeiten und Programmvorschau für heute Abend auf <strong>SRF 1, SRF zwei, SRF info, 3+, 4+, TV24, TV25, TeleZüri</strong> und allen Partnersendern in der Schweiz.
+        Aktuelle Sendezeiten und Programmvorschau für heute Abend auf <strong>SRF 1, SRF zwei, SRF info, 3+, 4+, TV24, TeleZüri</strong> und allen beliebten Sendern.
       </p>
 
       <!-- Quick Switcher Navigation Pills -->
@@ -295,10 +295,10 @@ const jsonLd = [
       <!-- Textual Guide -->
       <div class="lg:col-span-7 space-y-4 text-slate-700 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
         <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-          TV-Programm heute Abend in der Schweiz: SRF &amp; Privatsender im Hauptabend
+          TV-Programm heute Abend: SRF &amp; Privatsender im Hauptabend
         </h2>
         <p>
-          Mit <strong>FernsehHeute</strong> verpassen Sie kein Highlight im Deutschschweizer Programm. 
+          Mit <strong>FernsehHeute</strong> verpassen Sie kein Highlight im Programm. 
           Vom traditionsreichen Informationsabend auf <strong>SRF 1</strong> («Schweiz aktuell» um 19:00, «Tagesschau» um 19:30, 
           «Meteo» um 19:55 und packende Dokumentationen oder Unterhaltungsshows ab 20:05 Uhr) über Live-Sport, 
           UEFA Champions League und Serien auf <strong>SRF zwei</strong> bis hin zu Blockbustern auf <strong>3+</strong> und <strong>TV24</strong>.
