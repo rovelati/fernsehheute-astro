@@ -2,31 +2,39 @@
 /**
  * AdSlot.astro — UX-First Google AdSense Component für FernsehHeute.de
  *
- * Grundsätze (analog zu ProntoFarmacie):
- * - Klare Kennzeichnung als "Anzeige" (DDG / Google AdSense Richtlinien)
- * - Fester Mindestplatzbedarf (minHeight) zur Vermeidung von Layout Shifts (CLS = 0)
- * - Sicherheitsabstand zu interaktiven Elementen & CTAs
- * - Volle Dark-Mode-Unterstützung
+ * Optimierungen (analog zu Programme Ce Soir & ProntoFarmacie):
+ * - Smart Lazy-Load (IntersectionObserver mit rootMargin 280px):
+ *   Trigger adsbygoogle.push({}) nur wenn der User sich dem Slot nähert (~280px).
+ *   Verhindert 0% Viewability Impressions am Seitenende und hebt Active View > 75%,
+ *   wodurch Premium-Programmatic Bids und private Marketplace Deals freigeschaltet werden.
+ * - Anti-CLS Box (minHeight konfigurierbar, Standard 250px) zur Vermeidung von Layout Shifts (CLS = 0).
+ * - Option eager={true} für High-Viewability Positionen im 1./2. Scroll.
+ * - Transparente Kennzeichnung als "Anzeige" (DDG / Google Publisher Policy).
+ * - Volle Dark-Mode-Unterstützung.
  */
 import { ADSENSE_CLIENT_ID, ADSENSE_SLOTS } from '../lib/adsense';
 
-interface Props {
+export interface Props {
   slot?: string;
-  format?: string;
+  format?: 'auto' | 'fluid' | 'rectangle' | 'horizontal';
+  layoutKey?: string;
   responsive?: string;
   minHeight?: number;
   className?: string;
   label?: string;
+  eager?: boolean;
   inFeedWrapper?: boolean;
 }
 
 const {
   slot = ADSENSE_SLOTS.IN_FEED_SENDERLISTE,
   format = 'auto',
+  layoutKey,
   responsive = 'true',
-  minHeight = 200,
+  minHeight = 250,
   className = '',
   label = 'Anzeige',
+  eager = false,
   inFeedWrapper = false,
 } = Astro.props;
 ---
@@ -34,72 +42,80 @@ const {
 <aside
   aria-label={label}
   data-ad-container
+  data-ad-unit={slot}
   data-infeed-ad={inFeedWrapper ? 'true' : null}
   class:list={[
-    ' fh-ad-slot rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 px-4 py-3 text-center shadow-xs transition-opacity',
+    'fh-ad-slot rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 px-4 py-3 text-center shadow-xs transition-opacity',
     inFeedWrapper ? 'my-3 mx-2 sm:mx-4' : 'my-6',
     className,
   ]}
 >
-  <div class="mb-1.5 text-[10px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500 select-none">
-    {label}
+  <div class="mb-1.5 flex items-center justify-between px-1">
+    <span class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500 select-none">
+      {label}
+    </span>
   </div>
   <div
-    class="w-full overflow-hidden flex items-center justify-center mx-auto"
+    class="w-full overflow-hidden flex items-center justify-center mx-auto rounded-xl bg-white/70 dark:bg-slate-950/40"
     style={`min-height: ${minHeight}px;`}
   >
     <ins
       class="adsbygoogle block w-full mx-auto"
-      style={`display: block; min-height: ${minHeight}px; width: 100%;`}
+      style={`display: block; width: 100%; min-height: ${minHeight}px;`}
       data-ad-client={ADSENSE_CLIENT_ID}
       data-ad-slot={slot}
       data-ad-format={format}
       data-full-width-responsive={responsive}
+      data-fh-eager={eager ? '1' : '0'}
+      {...(layoutKey ? { 'data-ad-layout-key': layoutKey } : {})}
     ></ins>
   </div>
 </aside>
 
 <script is:inline>
   (function () {
-    if (window.__fhAdsenseInit) return;
-    window.__fhAdsenseInit = true;
-
     function pushAd(ins) {
-      if (!ins || ins.getAttribute('data-adsbygoogle-status') || ins.dataset.fhPushed === 'true') return;
-      if (ins.offsetParent === null) return; // hidden element
+      if (!ins || ins.dataset.fhLoaded === '1') return;
+      if (ins.offsetParent === null) return; // Nicht sichtbar (display:none)
+      if (ins.closest('#program-overlay')) return; // Modal Overlay separat gesteuert
+      ins.dataset.fhLoaded = '1';
       try {
-        ins.dataset.fhPushed = 'true';
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (e) {}
     }
 
-    function initAds() {
-      var slots = document.querySelectorAll('ins.adsbygoogle:not([data-fh-observed])');
-      for (var i = 0; i < slots.length; i++) {
-        var ins = slots[i];
-        if (ins.closest('#program-overlay')) continue; // Overlay wird beim Öffnen initialisiert
-        ins.setAttribute('data-fh-observed', 'true');
+    function initFhAds() {
+      var nodes = document.querySelectorAll('ins.adsbygoogle:not([data-fh-bound="1"])');
+      for (var i = 0; i < nodes.length; i++) {
+        var ins = nodes[i];
+        if (ins.closest('#program-overlay')) continue;
+        ins.dataset.fhBound = '1';
 
-        if ('IntersectionObserver' in window) {
-          var io = new IntersectionObserver(function (entries, obs) {
-            for (var j = 0; j < entries.length; j++) {
-              if (entries[j].isIntersecting) {
-                pushAd(entries[j].target);
-                obs.unobserve(entries[j].target);
-              }
-            }
-          }, { rootMargin: '250px 0px' });
-          io.observe(ins);
+        if (ins.dataset.fhEager === '1' || !('IntersectionObserver' in window)) {
+          pushAd(ins);
         } else {
-          setTimeout((function (el) { return function () { pushAd(el); }; })(ins), 200);
+          if (!window.__fhAdObserver) {
+            window.__fhAdObserver = new IntersectionObserver(
+              function (entries, obs) {
+                for (var j = 0; j < entries.length; j++) {
+                  if (entries[j].isIntersecting) {
+                    obs.unobserve(entries[j].target);
+                    pushAd(entries[j].target);
+                  }
+                }
+              },
+              { rootMargin: '280px 0px' }
+            );
+          }
+          window.__fhAdObserver.observe(ins);
         }
       }
     }
 
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initAds);
+      document.addEventListener('DOMContentLoaded', initFhAds, { once: true });
     } else {
-      initAds();
+      initFhAds();
     }
   })();
 </script>

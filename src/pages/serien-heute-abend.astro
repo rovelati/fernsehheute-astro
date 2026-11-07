@@ -268,9 +268,14 @@ const moreSeriesJson = JSON.stringify(moreSeries.map(prog => {
                   </div>
                 )}
               </li>
+              {idx === 1 && (
+                <li role="presentation" class="py-2 list-none">
+                  <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} className="my-2" minHeight={250} eager={true} />
+                </li>
+              )}
               {idx === 5 && (
                 <li role="presentation" class="py-2 list-none">
-                  <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} className="my-2" minHeight={180} />
+                  <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} className="my-2" minHeight={250} eager={false} />
                 </li>
               )}
               </>
@@ -304,7 +309,8 @@ const moreSeriesJson = JSON.stringify(moreSeries.map(prog => {
       </div>
     )}
 
-    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-10 mb-2" minHeight={200} />
+    <!-- Pre-Footer FAQ AdSlot (Smart Lazy-Load) -->
+    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-10 mb-2" minHeight={250} eager={false} />
   </main>
 
   <ProgramOverlay />

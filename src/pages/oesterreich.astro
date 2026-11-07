@@ -249,7 +249,7 @@ const jsonLd = [
 
   <!-- ── Top Leaderboard Ad ────────────────────────────────────────────────── -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 my-4">
-    <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={160} />
+    <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={250} eager={true} />
   </div>
 
   <!-- ── Main Grid ─────────────────────────────────────────────────────────── -->
@@ -377,6 +377,11 @@ const jsonLd = [
 
     </div>
   </section>
+
+  <!-- Pre-Footer AdSlot (Smart Lazy-Load) -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 my-6">
+    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} minHeight={250} eager={false} />
+  </div>
 
   <Footer />
 </BaseLayout>

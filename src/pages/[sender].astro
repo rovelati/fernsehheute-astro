@@ -431,6 +431,13 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
           </section>
         )}
 
+        {/* ── High-Viewability Mid-Content AdSlot (direkt nach Prime Time) ── */}
+        {sectionPrimeTime.length > 0 && (
+          <div class="p-3 bg-slate-50/40 dark:bg-slate-900/40 border-b border-slate-100 dark:border-slate-700/50">
+            <AdSlot slot={ADSENSE_SLOTS.SENDER_MID_CONTENT} className="my-1" minHeight={250} eager={true} />
+          </div>
+        )}
+
         {/* ── Abend ── */}
         {sectionAbend.length > 0 && (
           <section aria-label="Abend">
@@ -445,10 +452,10 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
           </section>
         )}
 
-        {/* ── UX-First Mid-Content AdSlot (nach Prime Time & Vorabend) ── */}
-        {(sectionPrimeTime.length > 0 || sectionAbend.length > 0) && (
+        {/* ── Fallback Mid-Content AdSlot (wenn keine Prime Time vorhanden) ── */}
+        {sectionPrimeTime.length === 0 && sectionAbend.length > 0 && (
           <div class="p-3 bg-slate-50/40 dark:bg-slate-900/40 border-b border-slate-100 dark:border-slate-700/50">
-            <AdSlot slot={ADSENSE_SLOTS.SENDER_MID_CONTENT} className="my-1" minHeight={180} />
+            <AdSlot slot={ADSENSE_SLOTS.SENDER_MID_CONTENT} className="my-1" minHeight={250} eager={false} />
           </div>
         )}
 
@@ -497,8 +504,8 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
       </div>
     )}
 
-    <!-- ── UX-First Footer AdSlot vor den FAQs ──────────────────────── -->
-    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-8 mb-2" minHeight={200} />
+    <!-- ── UX-First Footer AdSlot vor den FAQs (Smart Lazy-Load) ────── -->
+    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-8 mb-2" minHeight={250} eager={false} />
 
     <!-- ── Senderprofil / Über den Sender ────────────────────────── -->
     <section class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Über ${cleanName}`}>

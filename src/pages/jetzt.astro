@@ -182,18 +182,35 @@ const keywords    = 'was läuft jetzt im tv, tv programm jetzt, fernsehprogramm 
 
   <!-- ── Main Grid ─────────────────────────────────────────────────────────── -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <!-- Top 3 Sender (ARD, ZDF, RTL) -->
     <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
-      {channelsWithPrograms.slice(0, 10).map(ch => (
+      {channelsWithPrograms.slice(0, 3).map(ch => (
         <ChannelCard channel={ch} programs={ch.programs} slug={ch.slug} mode="jetzt" />
       ))}
     </div>
 
-    <!-- AdSlot In-Feed -->
-    <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={160} />
+    <!-- High-Viewability In-Feed Ad nach den Top-3-Sendern -->
+    <div class="my-4">
+      <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={250} eager={true} />
+    </div>
 
-    {channelsWithPrograms.length > 10 && (
-      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800 mt-6">
-        {channelsWithPrograms.slice(10).map(ch => (
+    {channelsWithPrograms.length > 3 && (
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
+        {channelsWithPrograms.slice(3, 8).map(ch => (
+          <ChannelCard channel={ch} programs={ch.programs} slug={ch.slug} mode="jetzt" />
+        ))}
+      </div>
+    )}
+
+    {channelsWithPrograms.length > 8 && (
+      <div class="my-4">
+        <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={250} eager={false} />
+      </div>
+    )}
+
+    {channelsWithPrograms.length > 8 && (
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden divide-y divide-slate-100 dark:divide-slate-800">
+        {channelsWithPrograms.slice(8).map(ch => (
           <ChannelCard channel={ch} programs={ch.programs} slug={ch.slug} mode="jetzt" />
         ))}
       </div>
@@ -218,8 +235,8 @@ const keywords    = 'was läuft jetzt im tv, tv programm jetzt, fernsehprogramm 
       </div>
     </section>
 
-    <!-- AdSlot Pre-Footer -->
-    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} minHeight={200} />
+    <!-- AdSlot Pre-Footer (Smart Lazy-Load) -->
+    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} minHeight={250} eager={false} />
   </main>
 
   <Footer />

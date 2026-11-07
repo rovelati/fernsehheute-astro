@@ -229,9 +229,16 @@ const keywords    = 'fernsehprogramm heute, tv programm heute, tv programm, fern
                 slug={ch.slug}
                 mode="abend"
               />
+              {/* High-Viewability In-Feed Ad nach den Top-3-Sendern (ARD, ZDF, RTL) */}
+              {idx === 2 && (
+                <div data-infeed-ad-wrapper class="bg-slate-50/40 dark:bg-slate-950/40 py-1 border-y border-dashed border-slate-200/80 dark:border-slate-800">
+                  <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={250} eager={true} />
+                </div>
+              )}
+              {/* 2. In-Feed Ad mit Smart Lazy-Load nach Sender 8 */}
               {idx === 7 && (
-                <div data-infeed-ad-wrapper class="bg-slate-50/40 dark:bg-slate-950/40 py-1">
-                  <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={180} />
+                <div data-infeed-ad-wrapper class="bg-slate-50/40 dark:bg-slate-950/40 py-1 border-y border-dashed border-slate-200/80 dark:border-slate-800">
+                  <AdSlot slot={ADSENSE_SLOTS.IN_FEED_SENDERLISTE} inFeedWrapper={true} minHeight={250} eager={false} />
                 </div>
               )}
             </>
@@ -276,8 +283,8 @@ const keywords    = 'fernsehprogramm heute, tv programm heute, tv programm, fern
       </div>
     ) : null}
 
-    <!-- UX-First AdSlot vor den FAQs -->
-    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-10 mb-2" minHeight={200} />
+    <!-- UX-First AdSlot vor den FAQs (Smart Lazy-Load) -->
+    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-10 mb-2" minHeight={250} eager={false} />
 
     <!-- SEO FAQ Section -->
     <section class="mt-10 pt-10 border-t border-slate-200 dark:border-slate-800" aria-label="Häufige Fragen zum TV-Programm">
