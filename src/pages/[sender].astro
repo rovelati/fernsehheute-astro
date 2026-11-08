@@ -139,16 +139,12 @@ const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_E
 const cleanName   = channel.name.replace(/^(DE|CH|AT)\s*-\s*/i, '').trim();
 const isSwiss     = isSwissExclusiveChannel(slug, channel.category);
 const isAustria   = isAustriaExclusiveChannel(slug, channel.category);
-const pageTitle   = isSwiss
-  ? `${cleanName} Programm heute & heute Abend – TV-Programm Schweiz`
-  : isAustria
-  ? `${cleanName} Programm heute & heute Abend – TV-Programm Österreich`
-  : `${cleanName} Programm heute & heute Abend – TV-Programm`;
+const pageTitle   = `${cleanName} Programm heute & heute Abend`;
 const description = isSwiss
-  ? `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien im Schweizer TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`
+  ? `Aktuelles ${cleanName} Programm heute: alle Sendungen, Spielfilme & Serien mit genauen Sendezeiten und Mediathek-Tipps im schnellen Überblick.`
   : isAustria
-  ? `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien im TV-Programm Österreich mit genauen Sendezeiten und Mediathek-Infos.`
-  : `Aktuelles ${cleanName} Programm von heute: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr auf ${cleanName} im TV-Programm mit genauen Sendezeiten und Mediathek-Infos.`;
+  ? `Aktuelles ${cleanName} Programm heute: alle Sendungen, Spielfilme & Serien im Hauptabend mit genauen Sendezeiten und Mediathek-Tipps.`
+  : `Aktuelles ${cleanName} Programm heute: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr im TV mit genauen Sendezeiten und Mediathek-Tipps.`;
 const keywords    = `${cleanName.toLowerCase()} programm heute, ${cleanName.toLowerCase()} heute, ${cleanName.toLowerCase()} programm heute abend, ${cleanName.toLowerCase()} heute abend, ${cleanName.toLowerCase()} programm, was läuft heute auf ${cleanName.toLowerCase()}, ${cleanName.toLowerCase()} sendeplan, ${cleanName.toLowerCase()} fernsehprogramm`;
 const canonicalUrl = `https://fernsehheute.de/${slug}/`;
 const ogImage      = resolvedLogo.startsWith('http') || resolvedLogo.startsWith('/') ? resolvedLogo : undefined;
