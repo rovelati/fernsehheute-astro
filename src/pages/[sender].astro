@@ -143,15 +143,16 @@ const pageTitle   = slug === 'hse24'
   ? `HSE24 Programm heute: Teleshopping & Sendezeiten`
   : `${cleanName} Programm heute & heute Abend`;
 const description = slug === 'hse24'
-  ? `HSE24 Programm heute: alle Sendungen mit Uhrzeit – Beauty, Mode, Schmuck & Wohnen live. Sendeplan von HSE (früher HSE24) auf einen Blick.`
+  ? `📺 HSE24 Programm heute: alle Sendungen mit Uhrzeit – Beauty, Mode, Schmuck & Wohnen live. Sendeplan von HSE kostenlos im schnellen TV-Überblick.`
   : isSwiss
-  ? `Aktuelles ${cleanName} Programm heute: alle Sendungen, Spielfilme & Serien mit genauen Sendezeiten und Mediathek-Tipps im schnellen Überblick.`
+  ? `📺 Aktuelles ${cleanName} Programm von heute: Alle Sendungen, Spielfilme & Serien mit genauen Sendezeiten kostenlos im schnellen TV-Überblick.`
   : isAustria
-  ? `Aktuelles ${cleanName} Programm heute: alle Sendungen, Spielfilme & Serien im Hauptabend mit genauen Sendezeiten und Mediathek-Tipps.`
-  : `Aktuelles ${cleanName} Programm heute: alle Sendungen, Spielfilme & Serien ab 20:15 Uhr im TV mit genauen Sendezeiten und Mediathek-Tipps.`;
+  ? `📺 Aktuelles ${cleanName} Programm von heute: Alle Sendungen, Spielfilme & Serien ab 20:15 Uhr mit genauen Sendezeiten kostenlos im TV-Überblick.`
+  : `📺 Aktuelles ${cleanName} Programm von heute: Alle Sendungen, Spielfilme & Serien ab 20:15 Uhr kostenlos im schnellen TV-Überblick mit genauen Sendezeiten.`;
 const keywords    = `${cleanName.toLowerCase()} programm heute, ${cleanName.toLowerCase()} heute, ${cleanName.toLowerCase()} programm heute abend, ${cleanName.toLowerCase()} heute abend, ${cleanName.toLowerCase()} programm, was läuft heute auf ${cleanName.toLowerCase()}, ${cleanName.toLowerCase()} sendeplan, ${cleanName.toLowerCase()} fernsehprogramm`;
 const canonicalUrl = `https://fernsehheute.de/${slug}/`;
-const ogImage      = resolvedLogo.startsWith('http') || resolvedLogo.startsWith('/') ? resolvedLogo : undefined;
+// High-CTR 600x600 thumbnail card with centered logo + red pill badge
+const ogImage      = `https://fernsehheute.de/og/sender/${slug}.png`;
 
 const isClub = isClubChannel(slug, channel.name);
 
@@ -174,7 +175,12 @@ const clubFaqs = [
 
 const channelFaqs = isClub ? clubFaqs : editorial.faqs;
 
-const channelSchemas = buildHubChannelJsonLd({ channel: { ...channel, name: cleanName, logo: resolvedLogo }, programs, today });
+const channelSchemas = buildHubChannelJsonLd({
+  channel: { ...channel, name: cleanName, logo: resolvedLogo },
+  programs,
+  today,
+  imageUrl: ogImage,
+});
 const faqSchema      = buildFaqJsonLd(channelFaqs);
 const jsonLd         = [...channelSchemas, faqSchema];
 

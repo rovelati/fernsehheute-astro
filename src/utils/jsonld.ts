@@ -228,7 +228,7 @@ function websiteEntity(): Record<string, unknown> {
  * WebPage-Entität mit dateModified = Build-Zeitpunkt.
  * KRITISCH für Freshness: Google-Leak bestätigt dateModified als starkes Signal.
  */
-function webPageEntity(url: string, name: string, description: string): Record<string, unknown> {
+function webPageEntity(url: string, name: string, description: string, imageUrl?: string): Record<string, unknown> {
   return {
     '@type': 'WebPage',
     '@id': `${url}#webpage`,
@@ -240,11 +240,21 @@ function webPageEntity(url: string, name: string, description: string): Record<s
     isPartOf: { '@id': WEBSITE_ID },
     publisher: { '@id': ORG_ID },
     breadcrumb: { '@id': `${url}#breadcrumb` },
+    ...(imageUrl
+      ? {
+          primaryImageOfPage: {
+            '@type': 'ImageObject',
+            url: imageUrl,
+            width: 600,
+            height: 600,
+          },
+        }
+      : {}),
   };
 }
 
 /** BroadcastService-Entität mit Wikidata sameAs */
-function broadcastServiceEntity(channel: Channel, siteUrl = SITE_URL): Record<string, unknown> {
+function broadcastServiceEntity(channel: Channel, siteUrl = SITE_URL, imageUrl?: string): Record<string, unknown> {
   const channelUrl = `${siteUrl}/${channel.id}/`;
   const wikidata   = CHANNEL_WIKIDATA[channel.id];
 
@@ -254,6 +264,7 @@ function broadcastServiceEntity(channel: Channel, siteUrl = SITE_URL): Record<st
     name: channel.name,
     broadcastDisplayName: channel.name,
     ...(channel.number ? { broadcastChannelId: String(channel.number) } : {}),
+    ...(imageUrl ? { image: imageUrl, logo: imageUrl } : {}),
     broadcastTimezone: 'Europe/Berlin',
     inLanguage: 'de-DE',
     areaServed: [
@@ -356,11 +367,13 @@ export function buildHubChannelJsonLd({
   channel,
   programs,
   today,
+  imageUrl,
   siteUrl = SITE_URL,
 }: {
   channel: Channel;
   programs: Program[];
   today: string;
+  imageUrl?: string;
   siteUrl?: string;
 }): object[] {
   const channelUrl = `${siteUrl}/${channel.id}/`;
@@ -373,7 +386,7 @@ export function buildHubChannelJsonLd({
     return h >= 18 && h <= 21;
   });
 
-  const broadcastService = broadcastServiceEntity(channel, siteUrl);
+  const broadcastService = broadcastServiceEntity(channel, siteUrl, imageUrl);
 
   const broadcastEvents = primeTime.slice(0, 10).map(p =>
     broadcastEventEntity(
@@ -422,7 +435,7 @@ export function buildHubChannelJsonLd({
 
   const webPage: object = {
     '@context': 'https://schema.org',
-    ...webPageEntity(channelUrl, pageTitle, pageDesc),
+    ...webPageEntity(channelUrl, pageTitle, pageDesc, imageUrl),
   };
 
   return [

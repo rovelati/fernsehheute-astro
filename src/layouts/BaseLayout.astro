@@ -20,7 +20,17 @@ interface Props {
 const { title, description, canonicalUrl, jsonLd, noindex, ogImage, keywords, author } = Astro.props;
 const SITE_URL = 'https://fernsehheute.de';
 const resolvedCanonical = canonicalUrl ?? new URL(Astro.url.pathname, SITE_URL).href;
-const defaultOgImage = `${SITE_URL}/og-default.png`;
+const defaultOgImage = `${SITE_URL}/og/default.png`;
+
+function toAbsoluteUrl(url?: string | null): string {
+  if (!url?.trim()) return defaultOgImage;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+  if (trimmed.startsWith('//')) return `https:${trimmed}`;
+  if (trimmed.startsWith('/')) return `${SITE_URL}${trimmed}`;
+  return `${SITE_URL}/${trimmed}`;
+}
+const resolvedOgImage = toAbsoluteUrl(ogImage);
 ---
 
 <!doctype html>
@@ -96,17 +106,21 @@ const defaultOgImage = `${SITE_URL}/og-default.png`;
   <meta property="og:url" content={resolvedCanonical} />
   <meta property="og:title" content={title} />
   {description && <meta property="og:description" content={description} />}
-  <meta property="og:image" content={ogImage ?? defaultOgImage} />
+  <meta property="og:image" content={resolvedOgImage} />
+  <meta property="og:image:secure_url" content={resolvedOgImage} />
+  <meta property="og:image:width" content="600" />
+  <meta property="og:image:height" content="600" />
   <meta property="og:locale" content="de_DE" />
   <meta property="og:locale:alternate" content="de_AT" />
   <meta property="og:locale:alternate" content="de_CH" />
   <meta property="og:site_name" content="FernsehHeute" />
+  <link rel="image_src" href={resolvedOgImage} />
 
   <!-- Twitter / Edge Feed Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={title} />
   {description && <meta name="twitter:description" content={description} />}
-  <meta name="twitter:image" content={ogImage ?? defaultOgImage} />
+  <meta name="twitter:image" content={resolvedOgImage} />
 
   <!-- JSON-LD -->
   {jsonLd?.map(schema => (

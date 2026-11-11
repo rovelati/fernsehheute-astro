@@ -100,8 +100,9 @@ const faqSchema   = buildFaqJsonLd(FAQS);
 const jsonLd      = [...homeSchemas, faqSchema];
 
 const pageTitle   = 'Fernsehprogramm heute: TV-Programm & heute Abend | FernsehHeute';
-const description = 'Was läuft heute im TV? Das aktuelle Fernsehprogramm heute & heute Abend: Alle Sendungen auf ARD, ZDF, RTL & über 50 Sendern im schnellen Überblick.';
+const description = '📺 Was läuft heute im TV? Das aktuelle Fernsehprogramm heute & heute Abend: Alle Sendungen auf ARD, ZDF, RTL & über 50 Sendern kostenlos im schnellen Überblick.';
 const keywords    = 'fernsehprogramm heute, tv programm heute, tv programm heute abend, fernsehen heute abend, was läuft heute im tv, tv heute, programm heute, fernsehprogramm heute abend, tv programm 20:15';
+const ogImage     = 'https://fernsehheute.de/og/default.png';
 ---
 
 <BaseLayout
@@ -110,6 +111,7 @@ const keywords    = 'fernsehprogramm heute, tv programm heute, tv programm heute
   {keywords}
   canonicalUrl="https://fernsehheute.de/"
   {jsonLd}
+  {ogImage}
 >
   <Header />
 

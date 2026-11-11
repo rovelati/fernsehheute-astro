@@ -78,8 +78,9 @@ const moreChannelsJson = JSON.stringify(moreChannels.map(ch => serializeChannelF
 
 const jsonLd = buildHubMorgenJsonLd({ channels: channelsWithPrograms, tomorrow });
 
-const description = 'TV Programm morgen: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben und weiteren deutschen Sendern mit genauen Sendezeiten.';
+const description = '📅 TV Programm morgen: alle Sendungen auf ARD, ZDF, RTL, SAT.1, ProSieben & weiteren Sendern kostenlos im schnellen Überblick mit genauen Sendezeiten.';
 const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morgen im tv, tv morgen abend, programm morgen abend';
+const ogImage     = 'https://fernsehheute.de/og/default.png';
 ---
 
 <BaseLayout
@@ -88,6 +89,7 @@ const keywords    = 'tv programm morgen, fernsehprogramm morgen, was läuft morg
   keywords={keywords}
   canonicalUrl="https://fernsehheute.de/morgen/"
   jsonLd={jsonLd}
+  ogImage={ogImage}
 >
   <Header />
 
