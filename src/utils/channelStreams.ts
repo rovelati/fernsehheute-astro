@@ -48,7 +48,11 @@ const CHANNEL_STREAMS: Record<string, ChannelStream> = {
   'sport1':     { url: 'https://www.sport1.de/liveticker/livestream',    login_required: false, geo_de: true,  label: 'SPORT1' },
 
   // ── Tele 5 ───────────────────────────────────────────────────────────────
-  'tele5':      { url: 'https://tele5.de/',                              login_required: false, geo_de: true,  label: 'Tele 5' },
+  'tele5':      { url: 'https://tele5.de/',                              login_required: false, geo_de: false, label: 'Tele 5' },
+
+  // ── Teleshopping ────────────────────────────────────────────────────────
+  'hse24':      { url: 'https://www.hse.de/live',                        login_required: false, geo_de: false, label: 'HSE' },
+  'qvc':        { url: 'https://www.qvc.de/',                            login_required: false, geo_de: false, label: 'QVC' },
 };
 
 /** Ritorna i dati di streaming per un channel_id, o null se non disponibile. */

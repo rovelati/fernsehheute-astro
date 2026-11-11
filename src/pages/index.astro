@@ -99,9 +99,9 @@ const homeSchemas = buildHubHomeJsonLd({ channels: channelsWithPrograms, today }
 const faqSchema   = buildFaqJsonLd(FAQS);
 const jsonLd      = [...homeSchemas, faqSchema];
 
-const pageTitle   = 'Fernsehprogramm heute: TV-Programm aller Sender | FernsehHeute';
-const description = 'Aktuelles TV-Programm heute: Was läuft heute im Fernsehen? Alle Sendungen, Spielfilme & Serien auf Das Erste, ZDF, RTL, Sat.1 & Co. im schnellen Überblick.';
-const keywords    = 'fernsehprogramm heute, tv programm heute, tv programm, fernsehen heute, was läuft heute im tv, tv heute, programm heute, fernsehprogramm heute abend, tv programm 20:15';
+const pageTitle   = 'Fernsehprogramm heute: TV-Programm & heute Abend | FernsehHeute';
+const description = 'Was läuft heute im TV? Das aktuelle Fernsehprogramm heute & heute Abend: Alle Sendungen auf ARD, ZDF, RTL & über 50 Sendern im schnellen Überblick.';
+const keywords    = 'fernsehprogramm heute, tv programm heute, tv programm heute abend, fernsehen heute abend, was läuft heute im tv, tv heute, programm heute, fernsehprogramm heute abend, tv programm 20:15';
 ---
 
 <BaseLayout
@@ -123,7 +123,7 @@ const keywords    = 'fernsehprogramm heute, tv programm heute, tv programm, fern
         </span>
       </div>
       <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white">
-        Fernsehprogramm heute &amp; <span class="text-blue-600 dark:text-blue-400">TV Programm aller Sender</span>
+        Fernsehprogramm heute &amp; <span class="text-blue-600 dark:text-blue-400">TV-Programm heute Abend</span>
       </h1>
       <p class="text-slate-600 dark:text-slate-400 mt-2.5 text-sm sm:text-base max-w-3xl leading-relaxed">
         <span class="font-semibold text-slate-800 dark:text-slate-200" data-live-date>{dateLabel}</span> &mdash; <strong>Was läuft heute im Fernsehen?</strong> 

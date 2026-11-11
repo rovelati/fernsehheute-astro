@@ -339,6 +339,29 @@ const TOP_EDITORIAL: Record<string, ChannelEditorial> = {
     ],
   },
 
+  'hse24': {
+    summary: 'HSE (früher HSE24) ist Deutschlands führendes Teleshopping-Netzwerk und sendet 24 Stunden täglich Live-Shopping-Sendungen für Mode, Beauty, Schmuck und Wohnaccessoires. Als Pionier des deutschen Teleshopping seit 1995 verbindet HSE inspirierende Produktpräsentationen mit direkter Kaufmöglichkeit per Telefon, App oder Website.',
+    focus: 'Live-Teleshopping, Mode, Beauty & Kosmetik, Schmuck, Wohnen & Lifestyle.',
+    signatureShows: ['Beauty Night', 'Fashion Week auf HSE', 'HSE Gold-Edition', 'Küche & Genuss'],
+    broadcaster: 'HSE GmbH (Home Shopping Europe)',
+    headquarters: 'Ismaning bei München',
+    streamInfo: 'HSE sendet 24/7 als kostenloser Livestream auf hse.de und in der HSE-App für iOS und Android. Produkte können live per Telefon, App oder Website bestellt werden.',
+    faqs: [
+      {
+        question: 'Was zeigt HSE24 (HSE) heute im Programm?',
+        answer: 'HSE sendet rund um die Uhr Live-Shopping-Sendungen mit Mode, Beauty, Kosmetik, Schmuck, Wohnaccessoires und Lifestyle-Produkten. Den genauen Sendeplan mit Uhrzeiten und Themen findest du hier im Überblick.',
+      },
+      {
+        question: 'Wie kann man bei HSE24 live Produkte bestellen?',
+        answer: 'Während der Live-Sendungen können Produkte direkt über die HSE-Website (hse.de), die HSE-App oder telefonisch unter der jeweiligen Service-Nummer bestellt werden. Viele Artikel sind exklusiv nur während der Sendung erhältlich.',
+      },
+      {
+        question: 'Wo kann man HSE24 (HSE) live im Stream sehen?',
+        answer: 'HSE sendet rund um die Uhr als kostenloser Livestream auf hse.de und in der offiziellen HSE-App. Zusätzlich ist der Sender über alle gängigen TV-Kabelnetze, Satellit (ASTRA) und Internet-TV-Dienste empfangbar.',
+      },
+    ],
+  },
+
   'crimeplusinvestigation': {
     summary: 'Crime+Investigation ist der führende True-Crime-Sender im deutschsprachigen Raum. Der Spartensender bietet fesselnde Dokumentationen über reale Kriminalfälle, Gerichtsverhandlungen, Cold Cases und forensische Ermittlungen rund um den Globus.',
     focus: 'Echte Kriminalfälle, True Crime Dokumentationen, Forensik und investigative Reportagen.',

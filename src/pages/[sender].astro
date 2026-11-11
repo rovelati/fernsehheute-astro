@@ -139,8 +139,12 @@ const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_E
 const cleanName   = channel.name.replace(/^(DE|CH|AT)\s*-\s*/i, '').trim();
 const isSwiss     = isSwissExclusiveChannel(slug, channel.category);
 const isAustria   = isAustriaExclusiveChannel(slug, channel.category);
-const pageTitle   = `${cleanName} Programm heute & heute Abend`;
-const description = isSwiss
+const pageTitle   = slug === 'hse24'
+  ? `HSE24 Programm heute: Teleshopping & Sendezeiten`
+  : `${cleanName} Programm heute & heute Abend`;
+const description = slug === 'hse24'
+  ? `HSE24 Programm heute: alle Sendungen mit Uhrzeit – Beauty, Mode, Schmuck & Wohnen live. Sendeplan von HSE (früher HSE24) auf einen Blick.`
+  : isSwiss
   ? `Aktuelles ${cleanName} Programm heute: alle Sendungen, Spielfilme & Serien mit genauen Sendezeiten und Mediathek-Tipps im schnellen Überblick.`
   : isAustria
   ? `Aktuelles ${cleanName} Programm heute: alle Sendungen, Spielfilme & Serien im Hauptabend mit genauen Sendezeiten und Mediathek-Tipps.`
@@ -287,6 +291,28 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
           Live ansehen
           <span class="text-red-200 font-normal text-xs">· {streamLabel}</span>
+        </a>
+      )}
+      <!-- ZDF Mediathek outbound link -->
+      {slug === 'zdf' && (
+        <a
+          href="https://www.zdf.de/mediathek"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold rounded-xl transition-colors shadow-sm border border-slate-200 dark:border-slate-700"
+        >
+          📺 ZDF Mediathek
+        </a>
+      )}
+      <!-- HSE24 official website outbound link -->
+      {slug === 'hse24' && (
+        <a
+          href="https://www.hse.de"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
+        >
+          🛍 HSE – Offizieller Shop
         </a>
       )}
       <!-- Quick Links -->
