@@ -1,58 +1,58 @@
 # Domain canonicalization: www to apex
-https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301!
+https://www.fernsehheute.de/* https://fernsehheute.de/:splat 301
 
 # Sitemap canonical alias
 /sitemap.xml /sitemap-index.xml 301
 
 # ---------------------------------------------------------------------------
-# Swiss dedicated 301 migrations to tvch.ch (Cloudflare Pages force 301!)
+# Swiss dedicated 301 migrations to tvch.ch (Cloudflare Pages force 301)
 # ---------------------------------------------------------------------------
-/schweiz                 https://tvch.ch/             301!
-/schweiz/                https://tvch.ch/             301!
-/srf-1                   https://tvch.ch/srf-1/       301!
-/srf-1/                  https://tvch.ch/srf-1/       301!
-/srf-zwei                https://tvch.ch/srf-zwei/    301!
-/srf-zwei/               https://tvch.ch/srf-zwei/    301!
-/srf-info                https://tvch.ch/srf-info/    301!
-/srf-info/               https://tvch.ch/srf-info/    301!
-/3plus                   https://tvch.ch/3plus/       301!
-/3plus/                  https://tvch.ch/3plus/       301!
-/4plus                   https://tvch.ch/4plus/       301!
-/4plus/                  https://tvch.ch/4plus/       301!
-/5plus                   https://tvch.ch/5plus/       301!
-/5plus/                  https://tvch.ch/5plus/       301!
-/6plus                   https://tvch.ch/6plus/       301!
-/6plus/                  https://tvch.ch/6plus/       301!
-/7plus                   https://tvch.ch/             301!
-/7plus/                  https://tvch.ch/             301!
-/puls-8                  https://tvch.ch/puls-8/      301!
-/puls-8/                 https://tvch.ch/puls-8/      301!
-/swiss-1                 https://tvch.ch/swiss-1/     301!
-/swiss-1/                https://tvch.ch/swiss-1/     301!
-/tv24                    https://tvch.ch/tv24/        301!
-/tv24/                   https://tvch.ch/tv24/        301!
-/tv25                    https://tvch.ch/tv25/        301!
-/tv25/                   https://tvch.ch/tv25/        301!
-/telezueri               https://tvch.ch/telezueri/   301!
-/telezueri/              https://tvch.ch/telezueri/   301!
-/tele-baern              https://tvch.ch/telebaern/   301!
-/tele-baern/             https://tvch.ch/telebaern/   301!
-/telebaern               https://tvch.ch/telebaern/   301!
-/telebaern/              https://tvch.ch/telebaern/   301!
-/tele-m1                 https://tvch.ch/telem1/      301!
-/tele-m1/                https://tvch.ch/telem1/      301!
-/telem1                  https://tvch.ch/telem1/      301!
-/telem1/                 https://tvch.ch/telem1/      301!
-/tele-1                  https://tvch.ch/             301!
-/tele-1/                 https://tvch.ch/             301!
-/tele-top                https://tvch.ch/             301!
-/tele-top/               https://tvch.ch/             301!
-/telebasel               https://tvch.ch/             301!
-/telebasel/              https://tvch.ch/             301!
-/telebielingue           https://tvch.ch/             301!
-/telebielingue/          https://tvch.ch/             301!
-/star-tv                 https://tvch.ch/             301!
-/star-tv/                https://tvch.ch/             301!
+/schweiz                 https://tvch.ch/             301
+/schweiz/                https://tvch.ch/             301
+/srf-1                   https://tvch.ch/srf-1/       301
+/srf-1/                  https://tvch.ch/srf-1/       301
+/srf-zwei                https://tvch.ch/srf-zwei/    301
+/srf-zwei/               https://tvch.ch/srf-zwei/    301
+/srf-info                https://tvch.ch/srf-info/    301
+/srf-info/               https://tvch.ch/srf-info/    301
+/3plus                   https://tvch.ch/3plus/       301
+/3plus/                  https://tvch.ch/3plus/       301
+/4plus                   https://tvch.ch/4plus/       301
+/4plus/                  https://tvch.ch/4plus/       301
+/5plus                   https://tvch.ch/5plus/       301
+/5plus/                  https://tvch.ch/5plus/       301
+/6plus                   https://tvch.ch/6plus/       301
+/6plus/                  https://tvch.ch/6plus/       301
+/7plus                   https://tvch.ch/             301
+/7plus/                  https://tvch.ch/             301
+/puls-8                  https://tvch.ch/puls-8/      301
+/puls-8/                 https://tvch.ch/puls-8/      301
+/swiss-1                 https://tvch.ch/swiss-1/     301
+/swiss-1/                https://tvch.ch/swiss-1/     301
+/tv24                    https://tvch.ch/tv24/        301
+/tv24/                   https://tvch.ch/tv24/        301
+/tv25                    https://tvch.ch/tv25/        301
+/tv25/                   https://tvch.ch/tv25/        301
+/telezueri               https://tvch.ch/telezueri/   301
+/telezueri/              https://tvch.ch/telezueri/   301
+/tele-baern              https://tvch.ch/telebaern/   301
+/tele-baern/             https://tvch.ch/telebaern/   301
+/telebaern               https://tvch.ch/telebaern/   301
+/telebaern/              https://tvch.ch/telebaern/   301
+/tele-m1                 https://tvch.ch/telem1/      301
+/tele-m1/                https://tvch.ch/telem1/      301
+/telem1                  https://tvch.ch/telem1/      301
+/telem1/                 https://tvch.ch/telem1/      301
+/tele-1                  https://tvch.ch/             301
+/tele-1/                 https://tvch.ch/             301
+/tele-top                https://tvch.ch/             301
+/tele-top/               https://tvch.ch/             301
+/telebasel               https://tvch.ch/             301
+/telebasel/              https://tvch.ch/             301
+/telebielingue           https://tvch.ch/             301
+/telebielingue/          https://tvch.ch/             301
+/star-tv                 https://tvch.ch/             301
+/star-tv/                https://tvch.ch/             301
 
 # Verified legacy Sky channel spellings
 /skycinemaclassics  /sky-cinema-classics/ 301
