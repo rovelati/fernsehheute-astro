@@ -121,14 +121,11 @@ const currentHubChannels = isSchweiz
             <span class="hidden sm:inline">AT</span>
           </a>
           <a
-            href="/schweiz/"
-            class:list={[
-              'px-2 py-0.5 rounded-full transition-all flex items-center gap-1 text-[11px]',
-              isSchweiz
-                ? 'bg-red-600 text-white shadow-xs'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-            ]}
-            title="TV-Programm Schweiz"
+            href="https://tvch.ch/"
+            target="_blank"
+            rel="noopener"
+            class="px-2 py-0.5 rounded-full transition-all flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
+            title="TV-Programm Schweiz (tvch.ch)"
           >
             <span>🇨🇭</span>
             <span class="hidden sm:inline">CH</span>
@@ -149,7 +146,7 @@ const currentHubChannels = isSchweiz
           <a href="/oesterreich/" class:list={['px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-colors whitespace-nowrap', isOesterreich ? 'bg-red-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white']}>
             🇦🇹 AT
           </a>
-          <a href="/schweiz/" class:list={['px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-colors whitespace-nowrap', isSchweiz ? 'bg-red-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white']}>
+          <a href="https://tvch.ch/" target="_blank" rel="noopener" class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-colors whitespace-nowrap text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
             🇨🇭 CH
           </a>
           <a href="/" class:list={['px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wide transition-colors whitespace-nowrap', isHeute ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white']}>

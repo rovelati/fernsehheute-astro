@@ -30,7 +30,7 @@ export default defineConfig({
           return false;
         }
         // Exclude redirect alias pages (they 301 to hub pages)
-        if (url.endsWith('/austria/') || url.endsWith('/filme/') || url.endsWith('/spielfilme/') || url.endsWith('/serien/') || url.endsWith('/sport/')) {
+        if (url.includes('/schweiz') || url.endsWith('/austria/') || url.endsWith('/filme/') || url.endsWith('/spielfilme/') || url.endsWith('/serien/') || url.endsWith('/sport/')) {
           return false;
         }
         // Exclude URLs with spaces or illegal characters

@@ -70,6 +70,7 @@ export async function getStaticPaths() {
     .filter(ch => {
       const slug = normCidLocal(ch.id);
       if (isAdultChannel(slug, ch.name) || isTestChannel(slug, ch.name)) return false;
+      if (isSwissExclusiveChannel(slug, ch.category)) return false;
       return true;
     })
     .map(ch => {
@@ -205,7 +206,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
       {isSwiss && (
         <>
           <span aria-hidden="true">›</span>
-          <a href="/schweiz/" class="hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium text-slate-500 dark:text-slate-400">🇨🇭 Schweiz</a>
+          <a href="https://tvch.ch/" target="_blank" rel="noopener" class="hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium text-slate-500 dark:text-slate-400">🇨🇭 Schweiz (tvch.ch)</a>
         </>
       )}
       {isAustria && (
