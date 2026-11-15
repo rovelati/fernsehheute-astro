@@ -124,11 +124,14 @@ function loadRedirects() {
   return redirectsSet;
 }
 
-function loadFallbackPaths() {
-  const fallbackJsonPath = path.resolve(__dirname, 'top-200-paths.json');
-  if (fs.existsSync(fallbackJsonPath)) {
+function loadTop200Paths() {
+  const jsonPath = path.resolve(__dirname, 'top-200-paths.json');
+  if (fs.existsSync(jsonPath)) {
     try {
-      return JSON.parse(fs.readFileSync(fallbackJsonPath, 'utf8'));
+      const paths = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      if (Array.isArray(paths) && paths.length > 0) {
+        return paths;
+      }
     } catch (e) {
       console.warn('[IndexNow] Could not read top-200-paths.json:', e.message);
     }
@@ -197,13 +200,20 @@ async function getAllCanonicalUrls() {
     }
   };
 
-  // 1. Hubs first
-  for (const h of HUB_PATHS) addPath(h);
+  // 1. Top 200 priority paths loaded FIRST (hubs, top German/Austrian/Swiss channels, top GSC/Bing performers)
+  const top200Paths = loadTop200Paths();
+  for (const p of top200Paths) {
+    addPath(p);
+  }
 
-  // 2. Top channels second (including Swiss channels, muenchen-tv, tv-ingolstadt, etc.)
+  // Ensure any explicit HUB_PATHS or TOP_CHANNEL_PATHS are included
+  for (const h of HUB_PATHS) addPath(h);
   for (const c of TOP_CHANNEL_PATHS) addPath(c);
 
-  // 3. All remaining canonical URLs from sitemap (up to IndexNow max limit of 10,000)
+  const priorityCount = Math.min(orderedUrls.length, 200);
+  console.log(`[IndexNow] Priority 1: Top ${priorityCount} high-priority URLs placed strictly at indices 0..${priorityCount - 1}`);
+
+  // 2. Append all remaining canonical URLs from sitemap (up to IndexNow limit of 10,000)
   if (sitemapUrls && sitemapUrls.length > 0) {
     for (const u of sitemapUrls) {
       const pathPart = u.replace(SITE_URL, '');
@@ -214,12 +224,7 @@ async function getAllCanonicalUrls() {
     }
   }
 
-  // 4. Fill from top-200-paths.json if any are missing
-  const fallbackPaths = loadFallbackPaths();
-  for (const p of fallbackPaths) {
-    addPath(p);
-    if (orderedUrls.length >= 10000) break;
-  }
+  return orderedUrls;
 
   return orderedUrls;
 }
@@ -233,16 +238,25 @@ async function pingIndexNow() {
   console.log(`  100th URL (#100): ${allUrls[99] || '-'}`);
   console.log(`  Last URL (#${allUrls.length}):  ${allUrls[allUrls.length - 1]}`);
 
-  // Specifically verify muenchen-tv, tv-ingolstadt and Swiss channels are included
+  // Specifically verify key GSC/Bing performance URLs and regional channels are in the top 200
+  const top200Slice = allUrls.slice(0, 200);
   const checkUrls = [
+    'https://fernsehheute.de/',
+    'https://fernsehheute.de/jetzt/',
+    'https://fernsehheute.de/20-15/',
+    'https://fernsehheute.de/zdf/',
+    'https://fernsehheute.de/br/',
+    'https://fernsehheute.de/hse24/',
+    'https://fernsehheute.de/qvc/',
+    'https://fernsehheute.de/orf-1/',
+    'https://fernsehheute.de/srf-1/',
     'https://fernsehheute.de/muenchen-tv/',
     'https://fernsehheute.de/tv-ingolstadt/',
-    'https://fernsehheute.de/schweiz/',
-    'https://fernsehheute.de/srf-1/',
-    'https://fernsehheute.de/3plus/',
   ];
   for (const cu of checkUrls) {
-    console.log(`  [Check] ${cu} -> ${allUrls.includes(cu) ? 'INCLUDED' : 'MISSING'}`);
+    const idx = allUrls.indexOf(cu);
+    const inTop200 = idx >= 0 && idx < 200;
+    console.log(`  [Check] ${cu} -> Pos #${idx + 1} (${inTop200 ? '✅ IN TOP 200' : '⚠️ OUTSIDE TOP 200'})`);
   }
 
   const payload = {

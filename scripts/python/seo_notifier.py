@@ -66,8 +66,12 @@ GOOGLE_SEARCH_ANALYTICS_TOP_QUERIES = max(5, int(os.getenv('GOOGLE_SEARCH_ANALYT
 
 # IndexNow
 INDEXNOW_ENABLED = os.getenv('INDEXNOW_ENABLED', '1') in ('1', 'true', 'yes', 'on')
-INDEXNOW_KEY = os.getenv('INDEXNOW_KEY', '').strip()
+INDEXNOW_KEY = os.getenv('INDEXNOW_KEY', '211149cc9ea6e1474b4a1881220eef9b').strip() or '211149cc9ea6e1474b4a1881220eef9b'
 INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow'
+INDEXNOW_ENDPOINTS = [
+    'https://api.indexnow.org/indexnow',
+    'https://www.bing.com/indexnow',
+]
 INDEXNOW_BATCH_SIZE = max(1, min(10000, int(os.getenv('INDEXNOW_BATCH_SIZE', '200'))))
 INDEXNOW_TIMEOUT = int(os.getenv('INDEXNOW_TIMEOUT', '20'))
 INDEXNOW_MAX_RETRIES = max(1, int(os.getenv('INDEXNOW_MAX_RETRIES', '3')))
@@ -162,18 +166,7 @@ def get_all_sitemap_urls() -> List[str]:
 
 
 def get_top_200_urls() -> List[str]:
-    """Build top 200 priority canonical URLs (Hubs -> Top Free-to-Air -> Regional -> Sitemap/Fallback)."""
-    hubs = [
-        '/', '/morgen/', '/film-heute-abend/', '/serien-heute-abend/', '/sport-heute-abend/',
-    ]
-    top_channels = [
-        '/das-erste/', '/zdf/', '/sat1/', '/prosieben/', '/rtl/', '/vox/', '/rtl2/',
-        '/kabel-eins/', '/3sat/', '/arte/', '/nitro/', '/super-rtl/', '/tele5/',
-        '/zdf-neo/', '/zdfinfo/', '/one/', '/sixx/', '/phoenix/', '/tagesschau24/',
-        '/n-tv/', '/welt/', '/sport1/', '/dmax/', '/kika/', '/ard-alpha/',
-        '/wdr/', '/ndr/', '/br/', '/swr-bw/', '/swrrp/', '/hr/', '/rbb-berlin/',
-        '/mdr-thueringen/', '/srfernsehen/',
-    ]
+    """Build strictly top 200 priority canonical URLs (GSC high-traffic + Top 200 paths + Hubs + Fallback)."""
     redirect_sources = set()
     redirects_file = os.path.abspath(os.path.join(PUBLIC_DIR, '_redirects'))
     if os.path.exists(redirects_file):
@@ -188,38 +181,91 @@ def get_top_200_urls() -> List[str]:
         except Exception as e:
             logger.warning(f'Could not parse _redirects: {e}')
 
+    empty_channels = set()
+    empty_file = os.path.abspath(os.path.join(_SCRIPT_DIR, '../../.astro/empty-channels.json'))
+    if os.path.exists(empty_file):
+        try:
+            with open(empty_file, 'r', encoding='utf-8') as f:
+                empty_channels = set(json.load(f))
+        except Exception:
+            pass
+
     def is_valid(path_or_url: str) -> bool:
         norm = path_or_url.replace(SITE_URL, '').rstrip('/')
-        return norm not in redirect_sources
+        if norm in redirect_sources:
+            return False
+        slug = norm.lstrip('/')
+        if slug and slug in empty_channels:
+            return False
+        return True
 
     ordered: List[str] = []
-    for p in hubs + top_channels:
-        u = f"{SITE_URL}{p if p.startswith('/') else '/' + p}"
+
+    def add_target(p: str) -> None:
+        if not p:
+            return
+        u = p if p.startswith('http') else f"{SITE_URL}{p if p.startswith('/') else '/' + p}"
         if is_valid(u) and u not in ordered:
             ordered.append(u)
 
-    sitemap_urls = get_all_sitemap_urls()
-    for u in sitemap_urls:
-        if is_valid(u) and u not in ordered:
-            ordered.append(u)
+    # 1. GSC active URLs from search-performance-report.json if available
+    perf_file = os.path.join(SEO_DATA_DIR, 'search-performance-report.json')
+    if os.path.exists(perf_file):
+        try:
+            with open(perf_file, 'r', encoding='utf-8') as f:
+                perf_data = json.load(f)
+            targets = perf_data.get('targets', [])
+            active_targets = sorted(
+                targets,
+                key=lambda t: (t.get('current', {}).get('impressions', 0) or 0) + (t.get('current', {}).get('clicks', 0) or 0) * 10,
+                reverse=True
+            )
+            for t in active_targets:
+                add_target(t.get('url', ''))
+                if len(ordered) >= 50:
+                    break
+        except Exception as e:
+            logger.warning(f'Could not extract GSC targets from search-performance-report.json: {e}')
+
+    # 2. Top 200 paths from curated top-200-paths.json (Strict Priority)
+    json_path = os.path.abspath(os.path.join(_SCRIPT_DIR, '..', 'top-200-paths.json'))
+    if os.path.exists(json_path):
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                paths = json.load(f)
+            for p in paths:
+                add_target(p)
+                if len(ordered) >= 200:
+                    break
+        except Exception as e:
+            logger.warning(f'Could not load top-200-paths.json: {e}')
+
+    # 3. Fallback hubs and top channels
+    hubs = [
+        '/', '/jetzt/', '/20-15/', '/oesterreich/', '/schweiz/', '/morgen/',
+        '/film-heute-abend/', '/serien-heute-abend/', '/sport-heute-abend/',
+    ]
+    top_channels = [
+        '/das-erste/', '/zdf/', '/sat1/', '/prosieben/', '/rtl/', '/vox/', '/rtl2/',
+        '/kabel-eins/', '/3sat/', '/arte/', '/nitro/', '/super-rtl/', '/tele5/',
+        '/zdf-neo/', '/zdfinfo/', '/one/', '/sixx/', '/phoenix/', '/tagesschau24/',
+        '/n-tv/', '/welt/', '/sport1/', '/dmax/', '/kika/', '/ard-alpha/',
+        '/wdr/', '/ndr/', '/br/', '/swr-bw/', '/swrrp/', '/hr/', '/rbb-berlin/',
+        '/mdr-thueringen/', '/srfernsehen/', '/hse24/', '/qvc/', '/orf-1/', '/orf-2/',
+        '/servus-tv/', '/atv/', '/puls-4/', '/srf-1/', '/srf-zwei/', '/3plus/',
+    ]
+    for p in hubs + top_channels:
+        add_target(p)
         if len(ordered) >= 200:
             break
 
-    # If still under 200, check top-200-paths.json
+    # 4. Fill from sitemap if still under 200
     if len(ordered) < 200:
-        json_path = os.path.abspath(os.path.join(_SCRIPT_DIR, '..', 'top-200-paths.json'))
-        if os.path.exists(json_path):
-            try:
-                with open(json_path, 'r', encoding='utf-8') as f:
-                    paths = json.load(f)
-                for p in paths:
-                    u = f"{SITE_URL}{p if p.startswith('/') else '/' + p}"
-                    if is_valid(u) and u not in ordered:
-                        ordered.append(u)
-                    if len(ordered) >= 200:
-                        break
-            except Exception as e:
-                logger.warning(f'Could not load top-200-paths.json: {e}')
+        sitemap_urls = get_all_sitemap_urls()
+        for u in sitemap_urls:
+            add_target(u)
+            if len(ordered) >= 200:
+                break
 
     return ordered[:200]
 
@@ -816,22 +862,24 @@ def submit_indexnow(urls: List[str]) -> None:
         if key_location:
             payload['keyLocation'] = key_location
 
-        try:
-            response = post_with_backoff(
-                INDEXNOW_ENDPOINT,
-                json=payload,
-                headers={'Content-Type': 'application/json; charset=utf-8'},
-                timeout=INDEXNOW_TIMEOUT,
-                max_retries=INDEXNOW_MAX_RETRIES,
-                delay_ms=INDEXNOW_REQUEST_DELAY_MS,
-            )
-            if response.status_code not in (200, 202):
-                logger.warning(f'IndexNow rejected batch {i + 1}: {response.status_code} — {response.text[:200]}')
-            else:
-                total += len(batch)
-                logger.info(f'  [IndexNow] Batch {i + 1}/{len(batches)}: {len(batch)} URLs submitted')
-        except Exception as e:
-            logger.warning(f'IndexNow batch {i + 1} error: {e}')
+        for endpoint in INDEXNOW_ENDPOINTS:
+            try:
+                response = post_with_backoff(
+                    endpoint,
+                    json=payload,
+                    headers={'Content-Type': 'application/json; charset=utf-8'},
+                    timeout=INDEXNOW_TIMEOUT,
+                    max_retries=INDEXNOW_MAX_RETRIES,
+                    delay_ms=INDEXNOW_REQUEST_DELAY_MS,
+                )
+                if response.status_code not in (200, 202):
+                    logger.warning(f'IndexNow ({endpoint}) rejected batch {i + 1}: {response.status_code} — {response.text[:200]}')
+                else:
+                    logger.info(f'  [IndexNow] ({endpoint}) Batch {i + 1}/{len(batches)}: {len(batch)} URLs submitted successfully')
+            except Exception as e:
+                logger.warning(f'IndexNow ({endpoint}) batch {i + 1} error: {e}')
+
+        total += len(batch)
 
         if INDEXNOW_REQUEST_DELAY_MS > 0 and i < len(batches) - 1:
             time.sleep(INDEXNOW_REQUEST_DELAY_MS / 1000)
