@@ -1,0 +1,843 @@
+---
+import type { Channel, Program } from '../types';
+import { getChannelStream } from '../utils/channelStreams';
+import { getChannelLogo } from '../utils/channelLogos';
+import { resolveGermanProgramPoster } from '../utils/programImages';
+import { formatTime } from '../utils/timeSlots';
+import AdSlot from './AdSlot.astro';
+import { ADSENSE_SLOTS } from '../lib/adsense';
+
+interface Props {
+  channel: Channel;
+  programs: Program[];
+  allChannels?: Channel[];
+  liveCards?: any[];
+  slug?: string;
+}
+
+const { channel, programs, allChannels = [], liveCards = [], slug = channel.id } = Astro.props;
+
+// Current timestamp
+const nowMs = Date.now();
+
+// Sort channel programs by start_time
+const sortedPrograms = [...programs].sort((a, b) => {
+  const tA = new Date(a.start_time).getTime();
+  const tB = new Date(b.start_time).getTime();
+  return tA - tB;
+});
+
+// Identify program currently live on air (or next starting soon)
+let liveIdx = sortedPrograms.findIndex(p => {
+  const s = new Date(p.start_time).getTime();
+  const e = new Date(p.end_time).getTime();
+  return nowMs >= s && nowMs < e;
+});
+
+if (liveIdx === -1) {
+  liveIdx = sortedPrograms.findIndex(p => new Date(p.start_time).getTime() > nowMs);
+}
+if (liveIdx === -1 && sortedPrograms.length > 0) {
+  liveIdx = sortedPrograms.length - 1;
+}
+
+const liveProgram = liveIdx >= 0 ? sortedPrograms[liveIdx] : undefined;
+
+// Berlin date bounds: calculate 02:00 of the following night
+const nowBerlinStr = new Date().toLocaleString('en-US', { timeZone: 'Europe/Berlin' });
+const nowBerlin = new Date(nowBerlinStr);
+const bYear = nowBerlin.getFullYear();
+const bMonth = nowBerlin.getMonth();
+const bDate = nowBerlin.getDate();
+
+// German weekday and date label, e.g. "Dienstag, 17. November · 22:55 Uhr"
+const weekdayRaw = nowBerlin.toLocaleDateString('de-DE', { weekday: 'long' });
+const capWeekday = weekdayRaw.charAt(0).toUpperCase() + weekdayRaw.slice(1);
+const dayNum = nowBerlin.getDate();
+const monthRaw = nowBerlin.toLocaleDateString('de-DE', { month: 'long' });
+const capMonth = monthRaw.charAt(0).toUpperCase() + monthRaw.slice(1);
+const timeStr = nowBerlin.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+const liveHeaderDate = `${capWeekday}, ${dayNum}. ${capMonth} · ${timeStr} Uhr`;
+
+// 06:00 today & 02:30 tomorrow
+const today0600Ms = new Date(bYear, bMonth, bDate, 6, 0, 0).getTime();
+const cutoff0230Ms = new Date(bYear, bMonth, bDate + 1, 2, 30, 0).getTime();
+
+// Filter programs:
+// 1. Earlier today (from 06:00 until liveIdx)
+const earlierPrograms = liveIdx > 0
+  ? sortedPrograms.slice(0, liveIdx).filter(p => new Date(p.start_time).getTime() >= today0600Ms)
+  : [];
+
+// 2. Upcoming schedule (from liveIdx + 1 onwards up to 02:30 of next day)
+const upcomingPrograms = liveIdx >= 0
+  ? sortedPrograms.slice(liveIdx + 1).filter(p => new Date(p.start_time).getTime() <= cutoff0230Ms)
+  : [];
+
+// Helper to determine Prime Time (20:15 in Germany)
+const checkPrimeTime = (isoString: string): boolean => {
+  const t = formatTime(isoString);
+  const [hStr, mStr] = t.split(':');
+  const h = parseInt(hStr, 10);
+  const m = parseInt(mStr, 10);
+  const totalMins = h * 60 + m;
+  return totalMins >= 20 * 60 + 10 && totalMins <= 20 * 60 + 45;
+};
+
+// Clean description helper
+const cleanDesc = (desc?: string | null): string => {
+  if (!desc) return '';
+  return desc.replace(/^[\s\r\n]+|[\s\r\n]+$/g, '').trim();
+};
+
+// Pre-calculate view models with formatted times & prime-time flags
+const earlierWithMeta = earlierPrograms.map(p => ({
+  ...p,
+  description: cleanDesc(p.description),
+  sTime: formatTime(p.start_time),
+  eTime: formatTime(p.end_time),
+  thumb: resolveGermanProgramPoster(p.poster_url, p.title, p.category, p.description),
+}));
+
+const upcomingWithMeta = upcomingPrograms.map(p => {
+  const isPrime = checkPrimeTime(p.start_time);
+  return {
+    ...p,
+    description: cleanDesc(p.description),
+    sTime: formatTime(p.start_time),
+    eTime: formatTime(p.end_time),
+    thumb: resolveGermanProgramPoster(p.poster_url, p.title, p.category, p.description),
+    isPrimeTime: isPrime,
+    sub_title: (p as any).sub_title || (p as any).episode_title || '',
+  };
+});
+
+// Calculate elapsed percentage for live program
+let elapsedPercent = 0;
+let remainingMins = 0;
+let startTimeStr = '';
+let endTimeStr = '';
+const liveCleanDesc = cleanDesc(liveProgram?.description);
+const liveCategory = liveProgram?.category || 'TV';
+
+if (liveProgram) {
+  const startMs = new Date(liveProgram.start_time).getTime();
+  const endMs = new Date(liveProgram.end_time).getTime();
+  const durationMs = Math.max(1, endMs - startMs);
+  elapsedPercent = Math.min(100, Math.max(0, Math.round(((nowMs - startMs) / durationMs) * 100)));
+  remainingMins = Math.max(0, Math.round((endMs - nowMs) / 60000));
+  startTimeStr = formatTime(liveProgram.start_time);
+  endTimeStr = formatTime(liveProgram.end_time);
+}
+
+// Next upcoming program
+const nextProgram = upcomingWithMeta[0];
+
+// Channel branding and streams
+const channelLogo = getChannelLogo(channel.id, channel.logo, channel.name);
+const streamData = getChannelStream(slug);
+const streamUrl = channel.streamUrl || streamData?.url || `https://www.google.com/search?q=${encodeURIComponent(channel.name + ' live stream mediathek')}`;
+const streamLabel = streamData?.label || channel.name;
+const streamOfficialTooltip = `Live-Stream auf ${streamLabel} ansehen`;
+
+const liveHeroImg = resolveGermanProgramPoster(liveProgram?.poster_url, liveProgram?.title, liveProgram?.category, liveProgram?.description);
+
+// Related channels (excluding current)
+const relatedChannels = allChannels.filter(c => c.id !== channel.id && c.id !== slug).slice(0, 12);
+
+// Other live programs for recommendations
+const otherLive = (liveCards.length > 0 ? liveCards : allChannels.map(c => ({
+  id: c.id,
+  channel_id: c.id,
+  channel_name: c.name,
+  channel_logo: getChannelLogo(c.id, c.logo, c.name),
+  title: `${c.name} Programm`,
+  category: 'TV',
+  start_time: new Date().toISOString(),
+  description: `Live-Sendungen und TV-Programm für ${c.name}`
+}))).filter(c => c.channel_id !== channel.id && c.channel_id !== slug).slice(0, 6);
+
+// Serialize schedule payload for client-side live precision alignment
+const schedulePayload = sortedPrograms.map(p => {
+  const sIso = p.start_time;
+  const eIso = p.end_time;
+  const sMs = new Date(sIso).getTime();
+  const eMs = new Date(eIso).getTime();
+  const sTime = formatTime(sIso);
+  const eTime = formatTime(eIso);
+  const isPrime = checkPrimeTime(sIso);
+
+  return {
+    id: p.id,
+    title: p.title,
+    sub_title: (p as any).sub_title || (p as any).episode_title || '',
+    description: cleanDesc(p.description),
+    category: p.category || 'TV',
+    startMs: sMs,
+    endMs: eMs,
+    startTime: sIso,
+    endTime: eIso,
+    sTime,
+    eTime,
+    heroImg: resolveGermanProgramPoster(p.poster_url, p.title, p.category, p.description),
+    isPrimeTime: isPrime,
+    channelId: slug,
+    channelLogo: channelLogo,
+    channelName: channel.name,
+  };
+});
+---
+
+<!-- JSON schedule for real-time live alignment -->
+<script id="channel-schedule-json" type="application/json" set:html={JSON.stringify(schedulePayload)} />
+
+<div class="max-w-6xl mx-auto px-3 sm:px-6 py-6 space-y-8">
+
+  <!-- Breadcrumbs & Live German Clock Bar -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs bg-slate-900/80 border border-slate-800 px-4 py-2.5 rounded-xl shadow-xs">
+    <nav class="flex items-center gap-2 text-slate-400 font-medium" aria-label="Breadcrumb">
+      <a href="/" class="hover:text-white transition-colors">Startseite</a>
+      <span class="text-slate-600">/</span>
+      <a href="/sender/" class="hover:text-white transition-colors">Sender</a>
+      <span class="text-slate-600">/</span>
+      <span class="text-slate-200 font-semibold">{channel.name}</span>
+    </nav>
+    <div class="flex items-center gap-2 text-slate-200 text-xs sm:text-sm bg-black/50 px-3.5 py-1.5 rounded-xl border border-white/10 shadow-inner">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+      <span id="live-berlin-clock" class="font-bold text-white tracking-wide">
+        {liveHeaderDate}
+      </span>
+    </div>
+  </div>
+
+  <!-- Channel Brand Header -->
+  <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-7 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl">
+    <div class="flex items-center gap-4 sm:gap-6">
+      <div class="w-20 h-20 sm:w-24 sm:h-24 bg-black/80 rounded-2xl p-2.5 border border-white/10 flex items-center justify-center shrink-0 shadow-inner overflow-hidden">
+        {channelLogo ? (
+          <img
+            src={channelLogo}
+            alt={`Logo ${channel.name}`}
+            class="max-w-full max-h-full object-contain"
+            style="max-height: 80px; max-width: 80px; object-fit: contain;"
+            onerror="this.style.display='none'"
+          />
+        ) : (
+          <span class="text-base font-black text-white">{channel.name}</span>
+        )}
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+            {channel.name}: TV-Programm heute &amp; heute Abend
+          </h1>
+          <span class="text-[11px] font-black uppercase bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">
+            Free TV
+          </span>
+          <span class="text-[11px] font-bold text-slate-400 uppercase bg-slate-800 px-2 py-0.5 rounded">
+            HD Qualität
+          </span>
+        </div>
+        <p class="text-sm text-slate-300 mt-1.5 font-medium">
+          Vollständiger Sendeplan von {channel.name} heute und heute Abend im TV mit Sendezeiten, Spielfilmen, Serien und offiziellem Live-Stream.
+        </p>
+      </div>
+    </div>
+
+    <!-- Official Stream Button -->
+    <div class="w-full md:w-auto shrink-0 flex flex-col gap-1.5">
+      <a
+        href={streamUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-black text-sm px-6 py-3 rounded-xl shadow-lg shadow-red-900/40 hover:scale-[1.02] transition-all"
+        title={streamOfficialTooltip}
+      >
+        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+        <span>{channel.name} live streamen</span>
+      </a>
+      {streamData?.label && (
+        <span class="text-[10px] text-slate-400 text-center">
+          Offizieller Stream via {streamData.label}
+        </span>
+      )}
+    </div>
+  </div>
+
+  <!-- SECTION 1: JETZT IM TV (Extended Visual Hero Card) -->
+  {liveProgram ? (
+    <section id="live-hero-section" class="space-y-3" aria-labelledby="live-hero-heading" data-start={liveProgram.start_time} data-end={liveProgram.end_time}>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></span>
+          <h2 id="live-hero-heading" class="text-sm font-black tracking-wider text-red-400 uppercase">
+            JETZT IM TV
+          </h2>
+        </div>
+        <span id="live-hero-time-range" class="text-xs text-slate-400 font-medium">
+          {startTimeStr} – {endTimeStr} Uhr
+        </span>
+      </div>
+
+      <div class="bg-slate-900 border-2 border-red-900/50 hover:border-red-600/60 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+          
+          <!-- 16:9 Cinematic Visual Banner with Overlay Play -->
+          <div class="relative lg:col-span-7 aspect-video bg-black/60 overflow-hidden group">
+            <img
+              id="live-hero-img"
+              src={liveHeroImg}
+              alt={liveProgram.title}
+              data-id={liveProgram.id}
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90"
+              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&w=1280&q=80';"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-black/50"></div>
+
+            <!-- Top Overlay Badges -->
+            <div class="absolute top-4 left-4 right-4 flex items-center justify-between z-20">
+              <div class="flex items-center gap-2 bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-black shadow-lg animate-pulse">
+                <span class="w-2 h-2 rounded-full bg-white"></span>
+                <span>JETZT LIVE</span>
+              </div>
+              <div id="live-hero-time-badge" class="bg-black/80 backdrop-blur-md px-3 py-1 rounded-xl text-xs font-bold text-white border border-white/10">
+                {startTimeStr} – {endTimeStr} Uhr
+              </div>
+            </div>
+
+            <!-- Center Play Button with Tooltip on Hover -->
+            <a
+              id="live-hero-play-link"
+              href={streamUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="absolute inset-0 flex flex-col items-center justify-center group/play z-20"
+              aria-label={streamOfficialTooltip}
+            >
+              <div class="w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-2xl shadow-red-900/60 group-hover/play:scale-110 group-hover/play:bg-red-600 transition-all duration-300 border border-white/40 sm:border-2 backdrop-blur-sm">
+                <svg class="w-5 h-5 sm:w-8 sm:h-8 text-white translate-x-0.5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+              <!-- On mouse-over tooltip pill -->
+              <div class="hidden sm:inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-black/85 backdrop-blur-md text-white text-[11px] font-semibold border border-white/20 shadow-xl opacity-0 group-hover/play:opacity-100 transform translate-y-1 group-hover/play:translate-y-0 transition-all duration-200 pointer-events-none max-w-[90%] truncate">
+                <span class="truncate">{streamOfficialTooltip}</span>
+                <svg class="w-3 h-3 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </div>
+            </a>
+
+            <!-- Progress Bar on Image Bottom -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 z-10">
+              <div class="flex items-center justify-between text-xs text-white/95 font-semibold mb-1.5 drop-shadow">
+                <span id="live-hero-start-time">{startTimeStr}</span>
+                <span id="live-hero-remaining">{remainingMins > 0 ? `${remainingMins} Min. verbleibend` : 'Gleich zu Ende'}</span>
+                <span id="live-hero-end-time">{endTimeStr}</span>
+              </div>
+              <div class="w-full h-2 bg-white/20 rounded-full overflow-hidden backdrop-blur-sm">
+                <div
+                  id="live-hero-progress"
+                  class="h-full bg-red-600 rounded-full transition-all duration-500"
+                  style={`width: ${elapsedPercent}%`}
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metadata & Direct Controls -->
+          <div class="lg:col-span-5 p-5 sm:p-7 flex flex-col justify-between bg-slate-900">
+            <div>
+              <div class="flex items-center gap-2 mb-3 flex-wrap">
+                <span id="live-hero-cat" class="text-[11px] font-bold uppercase tracking-wider text-red-400 bg-red-950/60 border border-red-800/50 px-2.5 py-0.5 rounded">
+                  {liveCategory}
+                </span>
+              </div>
+
+              <h3 id="live-hero-title" class="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug mb-3">
+                {liveProgram.title}
+              </h3>
+              {(liveProgram as any).sub_title && (
+                <p id="live-hero-subtitle" class="text-xs font-bold text-red-400 mb-2">
+                  {(liveProgram as any).sub_title}
+                </p>
+              )}
+              <p id="live-hero-desc" class="text-sm text-slate-300 leading-relaxed line-clamp-4 mb-4">
+                {liveCleanDesc || 'Keine Beschreibung verfügbar.'}
+              </p>
+            </div>
+
+            <!-- Action Link & Next Program Snippet -->
+            <div class="pt-4 border-t border-slate-800 space-y-3">
+              <a
+                href={streamUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold text-sm py-3 px-4 rounded-xl shadow-lg shadow-red-900/30 hover:scale-[1.01] transition-all"
+              >
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                <span>Live ansehen auf {streamLabel}</span>
+              </a>
+
+              <div id="live-hero-next-box" class="text-xs text-slate-400 flex items-center justify-between pt-1 border-t border-slate-800/50">
+                <span class="truncate">ALS NÄCHSTES: <strong id="live-hero-next-title" class="text-slate-200">{nextProgram?.title || 'Folgesendung'}</strong></span>
+                <span id="live-hero-next-time" class="shrink-0 text-red-400 font-mono font-bold ml-2">{nextProgram?.sTime || ''} Uhr</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+  ) : (
+    <div class="text-center py-10 px-4 bg-slate-900 rounded-2xl border border-slate-800 shadow-lg">
+      <p class="text-slate-300 font-bold">Sendeplan für {channel.name} wird aktualisiert</p>
+    </div>
+  )}
+
+  <!-- Ad Slot -->
+  <AdSlot slot={ADSENSE_SLOTS.SENDER_MID_CONTENT} className="my-6" minHeight={120} />
+
+  <!-- SECTION 2: SENDEPLAN BIS 02:00 UHR NACHTS -->
+  <section class="space-y-4" aria-labelledby="schedule-heading">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+      <div>
+        <h2 id="schedule-heading" class="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
+          <span>Sendeplan bis 02:00 Uhr nachts</span>
+        </h2>
+        <p class="text-xs text-slate-400 mt-0.5">
+          Alle Sendungen von heute und heute Abend auf {channel.name} mit genauen Uhrzeiten, Beschreibungen und Details.
+        </p>
+      </div>
+
+      <!-- Toggle Earlier Shows from Today (06:00 - now) -->
+      <button
+        type="button"
+        id="toggle-earlier-btn"
+        class={`text-xs font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-xl transition-all self-start sm:self-auto cursor-pointer ${earlierPrograms.length > 0 ? '' : 'hidden'}`}
+        data-show-text="Frühere Sendungen von heute anzeigen (ab 06:00 Uhr)"
+        data-hide-text="Frühere Sendungen ausblenden"
+      >
+        <span>Frühere Sendungen von heute anzeigen (ab 06:00 Uhr)</span>
+      </button>
+    </div>
+
+    <!-- Earlier Programs Container (Collapsible) -->
+    <div id="earlier-programs-container" class="hidden space-y-2.5 pb-2">
+      <div class="text-[11px] font-black uppercase tracking-wider text-slate-500 px-1 py-1">
+        🌅 Heute Morgen und Nachmittag
+      </div>
+      <div id="earlier-programs-list" class="space-y-2.5">
+        {earlierWithMeta.map(p => (
+          <div
+            class="earlier-program-card bg-slate-900/60 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-3 sm:p-4 transition-all flex items-start sm:items-center justify-between gap-3 opacity-75 hover:opacity-100 cursor-pointer"
+            role="button"
+            tabindex="0"
+            data-program={JSON.stringify({
+              id: p.id,
+              title: p.title,
+              startTime: p.start_time,
+              endTime: p.end_time,
+              category: p.category,
+              description: p.description,
+              poster_url: p.thumb,
+              channelId: slug,
+              channelLogo: channelLogo,
+              channelName: channel.name,
+            })}
+          >
+            <div class="flex items-start sm:items-center gap-3.5 min-w-0">
+              <span class="text-xs font-black text-slate-400 bg-slate-800 border border-slate-700 px-2 py-1 rounded-lg shrink-0 font-mono">
+                {p.sTime}
+              </span>
+              <div class="w-14 h-9 rounded-lg overflow-hidden bg-black/60 shrink-0 hidden xs:block">
+                <img src={p.thumb} alt={p.title} class="w-full h-full object-cover" loading="lazy" />
+              </div>
+              <div class="min-w-0">
+                <h4 class="text-sm font-bold text-slate-200 truncate">{p.title}</h4>
+                {p.description && <p class="text-xs text-slate-400 line-clamp-1 mt-0.5">{p.description}</p>}
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              {p.category && (
+                <span class="text-[10px] font-bold text-slate-400 uppercase bg-slate-800/80 px-2 py-0.5 rounded hidden sm:inline">
+                  {p.category}
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Timeline of Upcoming Programs (from live now up to 02:00) -->
+    <div class="space-y-3" id="timeline-list">
+      {upcomingWithMeta.map(p => (
+        <div
+          class={`program-timeline-card rounded-2xl p-4 sm:p-5 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border cursor-pointer ${
+            p.isPrimeTime
+              ? 'bg-gradient-to-r from-slate-900 via-red-950/20 to-slate-900 border-red-500/50 shadow-xl shadow-red-950/20 hover:border-red-400'
+              : 'bg-slate-900/80 hover:bg-slate-900 border-slate-800 hover:border-slate-700 shadow-md'
+          }`}
+          role="button"
+          tabindex="0"
+          data-program={JSON.stringify({
+            id: p.id,
+            title: p.title,
+            startTime: p.start_time,
+            endTime: p.end_time,
+            category: p.category,
+            description: p.description,
+            poster_url: p.thumb,
+            channelId: slug,
+            channelLogo: channelLogo,
+            channelName: channel.name,
+          })}
+        >
+          <!-- Left: Time + Visual 16:9 Thumbnail + Program Info -->
+          <div class="flex items-start gap-4 min-w-0 flex-1">
+            <!-- Start Time Badge -->
+            <div class="flex flex-col items-center shrink-0">
+              <span class={`text-sm sm:text-base font-black px-2.5 py-1.5 rounded-xl border font-mono ${
+                p.isPrimeTime
+                  ? 'bg-red-600 text-white border-red-400 shadow-md animate-pulse'
+                  : 'bg-slate-800 text-red-400 border-slate-700'
+              }`}>
+                {p.sTime}
+              </span>
+              <span class="text-[10px] text-slate-500 font-mono mt-1">{p.eTime}</span>
+            </div>
+
+            <!-- 16:9 Thumbnail Image -->
+            <div class="w-24 sm:w-32 aspect-video rounded-xl overflow-hidden bg-black/60 shrink-0 border border-white/10 group relative">
+              <img
+                src={p.thumb}
+                alt={p.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&w=1280&q=80';"
+              />
+              {p.isPrimeTime && (
+                <div class="absolute top-1 left-1 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.2 rounded shadow">
+                  Prime Time
+                </div>
+              )}
+            </div>
+
+            <!-- Title & Synopsis -->
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2 flex-wrap mb-1">
+                {p.isPrimeTime && (
+                  <span class="text-[10px] font-black uppercase bg-red-500/20 text-red-400 border border-red-500/40 px-2 py-0.2 rounded">
+                    ⭐ 20:15 Hauptabendprogramm
+                  </span>
+                )}
+                {p.category && (
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300 bg-slate-800 border border-slate-700 px-2 py-0.2 rounded">
+                    {p.category}
+                  </span>
+                )}
+              </div>
+
+              <h3 class="text-base sm:text-lg font-black text-white hover:text-red-300 transition-colors leading-snug">
+                {p.title}
+              </h3>
+              {p.sub_title && (
+                <p class="text-xs text-red-400 font-semibold mt-0.5 truncate">{p.sub_title}</p>
+              )}
+              {p.description && (
+                <p class="text-xs text-slate-300 line-clamp-2 mt-1 leading-relaxed">
+                  {p.description}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <!-- Right: Bookmark / Reminder Button -->
+          <div class="shrink-0 self-end sm:self-center" onclick="event.stopPropagation();">
+            <button
+              type="button"
+              class="push-remind-btn flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs py-2 px-3 rounded-xl border border-slate-700 transition-all cursor-pointer"
+              data-title={p.title}
+              data-time={p.sTime}
+              data-channel={channel.name}
+              title={`Erinnerung: ${p.title}`}
+            >
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span>Erinnern</span>
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- SECTION 3: EMPFOHLENE LIVE-SENDUNGEN AUF ANDEREN SENDERN -->
+  <section class="space-y-4 pt-4 border-t border-slate-800" aria-labelledby="visual-tips-heading">
+    <div>
+      <h2 id="visual-tips-heading" class="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2">
+        <span>🎬 Was jetzt auf anderen Sendern läuft</span>
+      </h2>
+      <p class="text-xs text-slate-400 mt-0.5">
+        Aktuelle Live-Sendungen, Filme und Serien im deutschen Fernsehen.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {otherLive.map(c => {
+        const sTime = formatTime(c.start_time);
+        const channelPage = `/${c.channel_id}/`;
+        const cLogo = getChannelLogo(c.channel_id, c.channel_logo, c.channel_name);
+        const cHero = resolveGermanProgramPoster(c.poster_url, c.title, c.category, c.description);
+
+        return (
+          <article class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl overflow-hidden shadow-xl transition-all duration-300 flex flex-col justify-between group">
+            <div class="relative aspect-video bg-black/60 overflow-hidden">
+              <img
+                src={cHero}
+                alt={c.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+                onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1594909122845-11baa439b7bf?auto=format&fit=crop&w=1280&q=80';"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-black/60"></div>
+              
+              <!-- Channel Pill on Image -->
+              <div class="absolute top-2.5 left-2.5 z-10">
+                <a
+                  href={channelPage}
+                  class="flex items-center gap-1.5 bg-black/80 hover:bg-black px-2.5 py-1 rounded-lg border border-white/15 text-xs font-bold text-white shadow max-w-[140px]"
+                >
+                  {cLogo ? (
+                    <span class="inline-flex items-center justify-center h-4 max-h-4 max-w-[60px] overflow-hidden shrink-0">
+                      <img
+                        src={cLogo}
+                        alt={c.channel_name}
+                        class="max-h-4 max-w-[60px] w-auto h-auto object-contain"
+                        style="max-height: 16px; max-width: 60px; height: 16px; width: auto; object-fit: contain;"
+                        onerror="this.style.display='none'"
+                      />
+                    </span>
+                  ) : (
+                    <span class="truncate">{c.channel_name}</span>
+                  )}
+                </a>
+              </div>
+
+              <!-- Start Time Badge -->
+              <div class="absolute top-2.5 right-2.5 bg-red-600 text-white px-2 py-0.5 rounded-lg text-xs font-black shadow">
+                {sTime} Uhr
+              </div>
+            </div>
+
+            <div class="p-4 flex flex-col justify-between flex-1">
+              <div>
+                <h3 class="text-sm font-bold text-white group-hover:text-red-400 transition-colors line-clamp-1 mb-1">
+                  {c.title}
+                </h3>
+                {c.description && (
+                  <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed mb-3">
+                    {c.description}
+                  </p>
+                )}
+              </div>
+
+              <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+                <a
+                  href={channelPage}
+                  class="text-xs font-bold text-slate-300 hover:text-white transition-colors"
+                >
+                  Programm {c.channel_name} &rarr;
+                </a>
+                <a
+                  href={channelPage}
+                  class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow transition-colors flex items-center gap-1"
+                >
+                  <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                  <span>Heute</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- SECTION 4: WEITERE BELIEBTE TV-SENDER -->
+  {relatedChannels.length > 0 && (
+    <section class="space-y-3 pt-4 border-t border-slate-800" aria-labelledby="related-channels-heading">
+      <h3 id="related-channels-heading" class="text-xs font-black uppercase tracking-wider text-slate-400">
+        Weitere beliebte TV-Sender heute
+      </h3>
+      <div class="flex flex-wrap gap-2">
+        {relatedChannels.map(ch => {
+          const rLogo = getChannelLogo(ch.id, ch.logo, ch.name);
+          return (
+            <a
+              href={`/${ch.id}/`}
+              class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700/80 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-200 hover:text-white transition-all shadow-xs"
+            >
+              {rLogo && (
+                <img
+                  src={rLogo}
+                  alt={ch.name}
+                  class="w-4 h-4 object-contain shrink-0"
+                  onerror="this.style.display='none'"
+                />
+              )}
+              <span>{ch.name}</span>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  )}
+
+</div>
+
+<!-- Client-side real-time engine: smooth progress bar, remaining minutes and auto-advance -->
+<script is:inline>
+(function() {
+  function initChannelScheduleEngine() {
+    var payloadEl = document.getElementById('channel-schedule-json');
+    if (!payloadEl) return;
+
+    var schedule = [];
+    try {
+      schedule = JSON.parse(payloadEl.textContent || '[]');
+    } catch(e) {
+      return;
+    }
+    if (!schedule || !schedule.length) return;
+
+    var toggleBtn = document.getElementById('toggle-earlier-btn');
+    var earlierContainer = document.getElementById('earlier-programs-container');
+
+    if (toggleBtn && earlierContainer) {
+      toggleBtn.addEventListener('click', function() {
+        var isHidden = earlierContainer.classList.contains('hidden');
+        if (isHidden) {
+          earlierContainer.classList.remove('hidden');
+          toggleBtn.textContent = toggleBtn.getAttribute('data-hide-text') || 'Frühere Sendungen ausblenden';
+        } else {
+          earlierContainer.classList.add('hidden');
+          toggleBtn.textContent = toggleBtn.getAttribute('data-show-text') || 'Frühere Sendungen von heute anzeigen (ab 06:00 Uhr)';
+        }
+      });
+    }
+
+    // Push reminder simulated feedback
+    document.querySelectorAll('.push-remind-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var title = btn.getAttribute('data-title') || 'Sendung';
+        var time = btn.getAttribute('data-time') || '';
+        alert('Erinnerung für "' + title + '" (' + time + ' Uhr) aktiviert!');
+      });
+    });
+
+    // Real-time synchronization
+    function updateLiveState() {
+      var now = Date.now();
+
+      // Update German Clock
+      var clockEl = document.getElementById('live-berlin-clock');
+      if (clockEl) {
+        var d = new Date();
+        var timeStr = d.toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        var weekday = d.toLocaleDateString('de-DE', { timeZone: 'Europe/Berlin', weekday: 'long' });
+        var day = d.getDate();
+        var month = d.toLocaleDateString('de-DE', { timeZone: 'Europe/Berlin', month: 'long' });
+        clockEl.textContent = weekday + ', ' + day + '. ' + month + ' · ' + timeStr + ' Uhr';
+      }
+
+      // Find current live program in schedule
+      var currentIdx = -1;
+      for (var i = 0; i < schedule.length; i++) {
+        if (now >= schedule[i].startMs && now < schedule[i].endMs) {
+          currentIdx = i;
+          break;
+        }
+      }
+
+      if (currentIdx === -1) {
+        for (var j = 0; j < schedule.length; j++) {
+          if (schedule[j].startMs > now) {
+            currentIdx = j;
+            break;
+          }
+        }
+      }
+
+      if (currentIdx === -1 && schedule.length > 0) {
+        currentIdx = schedule.length - 1;
+      }
+
+      var current = schedule[currentIdx];
+      if (!current) return;
+
+      var duration = Math.max(1, current.endMs - current.startMs);
+      var pct = Math.min(100, Math.max(0, Math.round(((now - current.startMs) / duration) * 100)));
+      var rem = Math.max(0, Math.round((current.endMs - now) / 60000));
+
+      // Update Live Hero DOM
+      var progressEl = document.getElementById('live-hero-progress');
+      if (progressEl) progressEl.style.width = pct + '%';
+
+      var remEl = document.getElementById('live-hero-remaining');
+      if (remEl) {
+        remEl.textContent = rem > 0 ? (rem + ' Min. verbleibend') : 'Gleich zu Ende';
+      }
+
+      var titleEl = document.getElementById('live-hero-title');
+      if (titleEl && titleEl.textContent !== current.title) {
+        titleEl.textContent = current.title;
+      }
+
+      var descEl = document.getElementById('live-hero-desc');
+      if (descEl && current.description) {
+        descEl.textContent = current.description;
+      }
+
+      var heroImgEl = document.getElementById('live-hero-img');
+      if (heroImgEl && current.heroImg && heroImgEl.getAttribute('data-id') !== String(current.id)) {
+        heroImgEl.src = current.heroImg;
+        heroImgEl.setAttribute('data-id', String(current.id));
+      }
+
+      var timeRangeEl = document.getElementById('live-hero-time-range');
+      if (timeRangeEl) timeRangeEl.textContent = current.sTime + ' – ' + current.eTime + ' Uhr';
+
+      var timeBadgeEl = document.getElementById('live-hero-time-badge');
+      if (timeBadgeEl) timeBadgeEl.textContent = current.sTime + ' – ' + current.eTime + ' Uhr';
+
+      var startEl = document.getElementById('live-hero-start-time');
+      if (startEl) startEl.textContent = current.sTime;
+
+      var endEl = document.getElementById('live-hero-end-time');
+      if (endEl) endEl.textContent = current.eTime;
+
+      var next = schedule[currentIdx + 1];
+      var nextTitleEl = document.getElementById('live-hero-next-title');
+      var nextTimeEl = document.getElementById('live-hero-next-time');
+      if (next && nextTitleEl && nextTimeEl) {
+        nextTitleEl.textContent = next.title;
+        nextTimeEl.textContent = next.sTime + ' Uhr';
+      }
+    }
+
+    updateLiveState();
+    setInterval(updateLiveState, 10000);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChannelScheduleEngine);
+  } else {
+    initChannelScheduleEngine();
+  }
+})();
+</script>

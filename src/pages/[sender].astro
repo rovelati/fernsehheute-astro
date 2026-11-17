@@ -2,22 +2,24 @@
 /**
  * /[sender] — Senderprogramm-Seite (z.B. /zdf, /rtl, /das-erste)
  *
- * Struktur angelehnt an 123programmitv.it:
- * - Hero Section: großes Logo, Sender, Datum, Live-Button
- * - Programm-Sektionen: Prime Time (orange), Abend, Nachmittag, Vormittag, Nacht
- * - ProgramRow mit Overlay-Klick, Kategorie-Badges, Poster
- * - Internal Links zu anderen Sendern
- * - SEO: Datum im Titel, Keywords, JSON-LD
+ * Replicato con la stessa UX e motore di intvstasera.it (Rai 1):
+ * - Real-time German clock bar ("Dienstag, 17. November · 22:55 Uhr")
+ * - Hero Channel Header (80x80 logo, category pills, Mediathek official stream link)
+ * - Section 1: "JETZT IM TV / LIVE" (16:9 visual banner, progress bar, remaining time, subtitle, synopsis, Folgesendung teaser)
+ * - Section 2: "Sendeplan bis 02:00 Uhr nachts" (collapsible morning shows, timeline cards with 20:15 Prime Time highlight, ProgramOverlay trigger)
+ * - Section 3: "🎬 Was jetzt auf anderen Sendern läuft" (Recommended live programs on other German channels)
+ * - Section 4: "Weitere beliebte TV-Sender" (Pills)
+ * - Technical FAQs, Club Channel guidance & Editorial
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ProgramRow from '../components/ProgramRow.astro';
+import ChannelSchedule from '../components/ChannelSchedule.astro';
 import AdSlot from '../components/AdSlot.astro';
 import { ADSENSE_SLOTS } from '../lib/adsense';
 import { fetchChannels, fetchProgramsForDate, fetchTmdbEnrichment } from '../lib/epg';
 import { getChannelLogo } from '../utils/channelLogos';
-import { getTodayInBerlin, formatDateDE, getBerlinHour } from '../utils/timeSlots';
+import { getTodayInBerlin, getTomorrowInBerlin, formatDateDE } from '../utils/timeSlots';
 import { buildHubChannelJsonLd, buildFaqJsonLd } from '../utils/jsonld';
 import { getChannelStream } from '../utils/channelStreams';
 import { HUB_CHANNELS } from '../utils/hubChannels';
@@ -33,11 +35,14 @@ export async function getStaticPaths() {
   const normCidLocal = normCid;
 
   const today = getTodayInBerlin();
-  const [channels, allPrograms] = await Promise.all([
+  const tomorrow = getTomorrowInBerlin();
+  const [channels, programsToday, programsTomorrow] = await Promise.all([
     fetchChannels(),
     fetchProgramsForDate(today),
+    fetchProgramsForDate(tomorrow),
   ]);
 
+  const allPrograms = [...programsToday, ...programsTomorrow];
   const programsByChannel = new Map<string, Program[]>();
   for (const prog of allPrograms) {
     const key = normCidLocal(prog.channel_id ?? '');
@@ -66,6 +71,31 @@ export async function getStaticPaths() {
     }
   }
 
+  // Pre-calculate live recommendation cards from other channels
+  const liveCards = channels
+    .map(ch => {
+      const chProgs = programsByChannel.get(normCidLocal(ch.id)) ?? [];
+      const now = Date.now();
+      const live = chProgs.find(p => {
+        const s = new Date(p.start_time).getTime();
+        const e = new Date(p.end_time).getTime();
+        return now >= s && now < e;
+      }) || chProgs[0];
+      return live ? {
+        id: live.id,
+        channel_id: ch.id,
+        channel_name: ch.name,
+        channel_logo: ch.logo,
+        channel_number: ch.number,
+        title: live.title,
+        description: live.description,
+        category: live.category,
+        start_time: live.start_time,
+        rating: (live as any).rating
+      } : null;
+    })
+    .filter(Boolean);
+
   const paths = channels
     .filter(ch => {
       const slug = normCidLocal(ch.id);
@@ -79,7 +109,14 @@ export async function getStaticPaths() {
       const realProgs = filterRealPrograms(progs);
       return {
         params: { sender: slug },
-        props: { channel: { ...ch, programs: realProgs } as Channel, today, slug },
+        props: {
+          channel: { ...ch, programs: realProgs } as Channel,
+          programs: realProgs,
+          allChannels: channels,
+          liveCards,
+          today,
+          slug,
+        },
       };
     });
 
@@ -88,7 +125,7 @@ export async function getStaticPaths() {
     const { writeFileSync, mkdirSync } = await import('node:fs');
     const { resolve } = await import('node:path');
     const emptySlugs = paths
-      .filter(p => (p.props.channel.programs ?? []).length === 0)
+      .filter(p => (p.props.programs ?? []).length === 0)
       .map(p => p.params.sender);
     const outDir = resolve(process.cwd(), '.astro');
     mkdirSync(outDir, { recursive: true });
@@ -100,41 +137,28 @@ export async function getStaticPaths() {
   return paths;
 }
 
-interface Props { channel: Channel; today: string; slug: string; }
-const { channel, today, slug } = Astro.props;
+interface Props {
+  channel: Channel;
+  programs: Program[];
+  allChannels: Channel[];
+  liveCards: any[];
+  today: string;
+  slug: string;
+}
+
+const { channel, programs, allChannels, liveCards, today, slug } = Astro.props;
 
 // Risolve logo locale ad alta definizione con fallback SVG
 const resolvedLogo = getChannelLogo(channel.id, channel.logo, channel.name);
 const initials = ((channel.name || slug).replace(/^DE\s*-\s*/i, '').trim().slice(0, 3) || 'TV').toUpperCase();
 const fallbackDataUri = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231e293b'/><text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' fill='%2338bdf8' font-family='system-ui,sans-serif' font-weight='900' font-size='28'>${initials}</text></svg>`;
 
-type ExtProgram = Program & {
-  cast_json?:    { name: string; role: string; character?: string }[];
-  release_year?: number;
-  runtime_min?:  number;
-};
-
-const programs = (channel.programs ?? []) as ExtProgram[];
 const dateLabel = formatDateDE(today);
 
 // Stream
 const staticStream = getChannelStream(slug);
 const streamUrl    = channel.streamUrl ?? staticStream?.url ?? null;
 const streamLabel  = staticStream?.label ?? channel.name;
-
-// ── Zeit-Sektionen (Berlin) ────────────────────────────────────────────────
-// UTC-Minuten (CEST = Berlin UTC+2)
-const toUTCMin = (t: string) => { const d = new Date(t); return d.getUTCHours() * 60 + d.getUTCMinutes(); };
-const PRIME_START =  18 * 60 + 15; // 20:15 Berlin
-const PRIME_END   =  21 * 60;      // 23:00 Berlin
-const NOON_UTC    =  10 * 60;      // 12:00 Berlin
-const AFTNOON_UTC =  15 * 60;      // 17:00 Berlin
-
-const sectionVormittag  = programs.filter(p => toUTCMin(p.start_time) < NOON_UTC);
-const sectionNachmittag = programs.filter(p => { const m = toUTCMin(p.start_time); return m >= NOON_UTC && m < AFTNOON_UTC; });
-const sectionAbend      = programs.filter(p => { const m = toUTCMin(p.start_time); return m >= AFTNOON_UTC && m < PRIME_START; });
-const sectionPrimeTime  = programs.filter(p => { const m = toUTCMin(p.start_time); return m >= PRIME_START && m < PRIME_END; });
-const sectionNacht      = programs.filter(p => toUTCMin(p.start_time) >= PRIME_END);
 
 // ── SEO ───────────────────────────────────────────────────────────────────
 const cleanName   = channel.name.replace(/^(DE|CH|AT)\s*-\s*/i, '').trim();
@@ -220,35 +244,9 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
     </nav>
   </div>
 
-  <!-- ── Hero Section ───────────────────────────────────────────────────── -->
-  <section class="max-w-7xl mx-auto px-4 sm:px-6 py-6 border-b border-slate-100 dark:border-slate-700/50">
-    <div class="flex items-center gap-4 mb-3">
-      <!-- Logo -->
-      <div class="w-16 h-16 flex-shrink-0 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shadow-sm p-2">
-        <img
-          src={resolvedLogo}
-          alt={`Logo ${cleanName}`}
-          width="56" height="56"
-          class="w-14 h-14 object-contain"
-          loading="eager"
-          onerror={`this.onerror=null; this.src='${fallbackDataUri}';`}
-        />
-      </div>
-      <!-- Name + Datum -->
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-          <span class="text-blue-600 dark:text-blue-400">{cleanName}</span> Programm heute &amp; heute Abend
-        </h1>
-        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1"><span data-live-date>{dateLabel}</span></p>
-      </div>
-    </div>
-
-    <p class="text-slate-500 dark:text-slate-400 text-sm mb-4">
-      Vollständiger Sendeplan für {cleanName} heute: alle Sendungen mit Uhrzeit, Beschreibung und Details ab 20:15 Uhr.
-    </p>
-
-    {isClub && (
-      <div class="mb-5 rounded-2xl border border-amber-200 dark:border-amber-900/60 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 p-4 sm:p-5 shadow-xs">
+  {isClub && (
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+      <div class="rounded-2xl border border-amber-200 dark:border-amber-900/60 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 p-4 sm:p-5 shadow-xs">
         <div class="flex items-start gap-3 sm:gap-4">
           <div class="p-2 sm:p-2.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 shrink-0 text-xl">
             ⚽
@@ -284,260 +282,26 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
           </div>
         </div>
       </div>
-    )}
-
-    <div class="flex flex-wrap gap-2">
-      <!-- Live-Stream Button -->
-      {streamUrl && (
-        <a
-          href={streamUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
-        >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5,3 19,12 5,21"/></svg>
-          Live ansehen
-          <span class="text-red-200 font-normal text-xs">· {streamLabel}</span>
-        </a>
-      )}
-      <!-- ZDF Mediathek outbound link -->
-      {slug === 'zdf' && (
-        <a
-          href="https://www.zdf.de/mediathek"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-bold rounded-xl transition-colors shadow-sm border border-slate-200 dark:border-slate-700"
-        >
-          📺 ZDF Mediathek
-        </a>
-      )}
-      <!-- HSE24 official website outbound link -->
-      {slug === 'hse24' && (
-        <a
-          href="https://www.hse.de"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
-        >
-          🛍 HSE – Offizieller Shop
-        </a>
-      )}
-      <!-- Quick Links -->
-      <a href="/" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition-colors">
-        ← Alle Sender
-      </a>
-      <a href="/sport-heute-abend/" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-xs font-semibold transition-colors border border-amber-200 dark:border-amber-800/40">
-        ⚽ Fußball &amp; Sport heute
-      </a>
-      <a href="/film-heute-abend/" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 text-xs font-semibold transition-colors border border-purple-200 dark:border-purple-800/40">
-        🎬 Filme heute Abend
-      </a>
-      <a href="/morgen/" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition-colors">
-        Programm morgen →
-      </a>
     </div>
-  </section>
+  )}
 
-  <!-- ── Programmliste ──────────────────────────────────────────────────── -->
-  <main id="main-content" class="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-12">
-
-    {programs.length === 0 ? (
-      isClub ? (
-        <div class="max-w-2xl mx-auto text-center py-12 px-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm my-6">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/60 flex items-center justify-center text-3xl shadow-inner">
-            ⚽
-          </div>
-          <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-            Keine Live-Übertragung auf {cleanName} heute
-          </h2>
-          <p class="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto mb-6 leading-relaxed">
-            Auf diesem Vereinskanal findet heute kein reguläres Live-Spiel statt. Die heutigen Bundesliga-Begegnungen des Spieltags sowie alle Zusammenfassungen siehst du live auf Sky, DAZN und in der ARD Sportschau.
-          </p>
-          <div class="flex flex-wrap justify-center gap-3 mb-6">
-            <a
-              href="/sport-heute-abend/"
-              class="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-2xl transition-all shadow-md shadow-blue-500/20"
-            >
-              Zum heutigen Fußball- &amp; Sportprogramm &rarr;
-            </a>
-            <a
-              href="/sky-sport-bundesliga/"
-              class="inline-flex items-center gap-2 px-5 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-sm font-semibold rounded-2xl transition-colors border border-slate-200 dark:border-slate-700"
-            >
-              Sky Sport Bundesliga
-            </a>
-          </div>
-          <div class="border-t border-slate-100 dark:border-slate-800 pt-6">
-            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
-              Wichtige Sport- &amp; TV-Sender heute
-            </p>
-            <div class="flex flex-wrap justify-center gap-2">
-              {[
-                { id: 'sky-sport-bundesliga', name: 'Sky Sport Bundesliga' },
-                { id: 'dazn1', name: 'DAZN 1' },
-                { id: 'sport1', name: 'SPORT1' },
-                { id: 'das-erste', name: 'Das Erste (Sportschau)' },
-                { id: 'zdf', name: 'ZDF (Sportstudio)' },
-              ].map(ch => (
-                <a
-                  href={`/${ch.id}/`}
-                  class="px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/60 dark:border-slate-700 transition-colors"
-                >
-                  {ch.name}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div class="max-w-2xl mx-auto text-center py-14 px-6 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm my-6">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl shadow-inner">
-            📺
-          </div>
-          <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
-            Keine Sendedaten für {channel.name.replace(/^DE\s*-\s*/i, '')} heute
-          </h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6 leading-relaxed">
-            Für diesen Sender liegt für heute kein elektronischer EPG-Sendeplan vor. Du kannst den Sender online im Live-Stream ansehen oder das Hauptabendprogramm beliebter deutscher Sender durchstöbern.
-          </p>
-
-          {streamUrl && (
-            <div class="mb-8">
-              <a
-                href={streamUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 px-5 py-3 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-2xl transition-all shadow-md shadow-red-500/20"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
-                Offiziellen Live-Stream öffnen
-              </a>
-            </div>
-          )}
-
-          <div class="border-t border-slate-100 dark:border-slate-800 pt-6">
-            <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-4">
-              Beliebte TV-Sender heute Abend
-            </p>
-            <div class="flex flex-wrap justify-center gap-2">
-              {[
-                { id: 'das-erste', name: 'Das Erste' },
-                { id: 'zdf', name: 'ZDF' },
-                { id: 'rtl', name: 'RTL' },
-                { id: 'sat1', name: 'SAT.1' },
-                { id: 'prosieben', name: 'ProSieben' },
-                { id: 'vox', name: 'VOX' },
-                { id: 'kabel-eins', name: 'Kabel Eins' },
-                { id: 'arte', name: 'Arte' },
-                { id: '3sat', name: '3sat' },
-              ].map(ch => (
-                <a
-                  href={`/${ch.id}/`}
-                  class="px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-blue-600 hover:text-white dark:hover:bg-blue-600 text-slate-700 dark:text-slate-300 text-xs font-semibold border border-slate-200/60 dark:border-slate-700 transition-colors"
-                >
-                  {ch.name}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    ) : (
-      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden bg-white dark:bg-slate-800/50 shadow-sm">
-
-        {/* ── Prime Time (orange) ── */}
-        {sectionPrimeTime.length > 0 && (
-          <section aria-label="Prime Time">
-            <h2 class="text-[11px] font-bold uppercase tracking-widest text-orange-600 dark:text-orange-400 px-4 py-2.5 bg-orange-50 dark:bg-orange-900/20 border-b border-orange-100 dark:border-orange-800/30 flex items-center gap-1.5">
-              <span class="w-2 h-2 bg-orange-500 rounded-full inline-block" aria-hidden="true"></span>
-              Prime Time · ab 20:15 Uhr
-            </h2>
-            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
-              {sectionPrimeTime.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* ── High-Viewability Mid-Content AdSlot (direkt nach Prime Time) ── */}
-        {sectionPrimeTime.length > 0 && (
-          <div class="p-3 bg-slate-50/40 dark:bg-slate-900/40 border-b border-slate-100 dark:border-slate-700/50">
-            <AdSlot slot={ADSENSE_SLOTS.SENDER_MID_CONTENT} className="my-1" minHeight={250} eager={true} />
-          </div>
-        )}
-
-        {/* ── Abend ── */}
-        {sectionAbend.length > 0 && (
-          <section aria-label="Abend">
-            <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-4 py-2 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
-              Abend · 17:00 – 20:15 Uhr
-            </h2>
-            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
-              {sectionAbend.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* ── Fallback Mid-Content AdSlot (wenn keine Prime Time vorhanden) ── */}
-        {sectionPrimeTime.length === 0 && sectionAbend.length > 0 && (
-          <div class="p-3 bg-slate-50/40 dark:bg-slate-900/40 border-b border-slate-100 dark:border-slate-700/50">
-            <AdSlot slot={ADSENSE_SLOTS.SENDER_MID_CONTENT} className="my-1" minHeight={250} eager={false} />
-          </div>
-        )}
-
-        {/* ── Nacht ── */}
-        {sectionNacht.length > 0 && (
-          <section aria-label="Nacht">
-            <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-4 py-2 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
-              Nacht · ab 23:00 Uhr
-            </h2>
-            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
-              {sectionNacht.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* ── Nachmittag ── */}
-        {sectionNachmittag.length > 0 && (
-          <section aria-label="Nachmittag">
-            <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-4 py-2 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
-              Nachmittag · 12:00 – 17:00 Uhr
-            </h2>
-            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
-              {sectionNachmittag.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {/* ── Vormittag ── */}
-        {sectionVormittag.length > 0 && (
-          <section aria-label="Vormittag">
-            <h2 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 px-4 py-2 bg-slate-50 dark:bg-slate-800/30 border-b border-slate-100 dark:border-slate-700/50">
-              Vormittag · bis 12:00 Uhr
-            </h2>
-            <ul role="list" class="divide-y divide-slate-100 dark:divide-slate-700/50">
-              {sectionVormittag.map(prog => (
-                <ProgramRow program={prog} channelId={slug} channelLogo={resolvedLogo} channelName={channel.name} />
-              ))}
-            </ul>
-          </section>
-        )}
-
-      </div>
-    )}
+  <!-- ── Main Channel Schedule Engine (intvstasera-style) ──────────────── -->
+  <main id="main-content" class="min-h-screen">
+    <ChannelSchedule
+      channel={channel}
+      programs={programs}
+      allChannels={allChannels}
+      liveCards={liveCards}
+      slug={slug}
+    />
 
     <!-- ── UX-First Footer AdSlot vor den FAQs (Smart Lazy-Load) ────── -->
-    <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-8 mb-2" minHeight={250} eager={false} />
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <AdSlot slot={ADSENSE_SLOTS.CONTENT_FOOTER_FAQ} className="mt-8 mb-2" minHeight={250} eager={false} />
+    </div>
 
     <!-- ── Senderprofil / Über den Sender ────────────────────────── -->
-    <section class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Über ${cleanName}`}>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Über ${cleanName}`}>
       <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60 rounded-2xl p-5 sm:p-6">
         <h2 class="text-base font-bold text-slate-900 dark:text-slate-100 mb-2">
           Über {cleanName} &amp; das heutige Programm
@@ -558,7 +322,7 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
     </section>
 
     <!-- ── Channel FAQs ─────────────────────────────────────────────── -->
-    <section class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Häufige Fragen zu ${channel.name}`}>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 pt-6 border-t border-slate-200 dark:border-slate-800" aria-label={`Häufige Fragen zu ${channel.name}`}>
       <h2 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-4">
         Häufige Fragen zum {channel.name} Programm heute
       </h2>
@@ -577,20 +341,21 @@ const otherChannels = HUB_CHANNELS.filter(c => c.id !== slug).slice(0, 12);
     </section>
 
     <!-- ── Internal Links ──────────────────────────────────────────────── -->
-    <div class="mt-8 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
-      <p class="text-sm text-slate-500 dark:text-slate-400 mb-3 font-medium">Weitere Sender:</p>
-      <nav class="flex flex-wrap gap-x-4 gap-y-2 text-sm" aria-label="Andere TV-Sender">
-        {otherChannels.map(ch => (
-          <a href={`/${ch.id}/`} class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline transition-colors">
-            {ch.name} Programm heute
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 my-8">
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-3 font-medium">Weitere Sender:</p>
+        <nav class="flex flex-wrap gap-x-4 gap-y-2 text-sm" aria-label="Andere TV-Sender">
+          {otherChannels.map(ch => (
+            <a href={`/${ch.id}/`} class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline transition-colors">
+              {ch.name} Programm heute
+            </a>
+          ))}
+          <a href="/" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline transition-colors font-semibold">
+            Alle Sender heute Abend →
           </a>
-        ))}
-        <a href="/" class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:underline transition-colors font-semibold">
-          Alle Sender heute Abend →
-        </a>
-      </nav>
+        </nav>
+      </div>
     </div>
-
   </main>
 
   <Footer />
